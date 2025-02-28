@@ -1,6 +1,6 @@
 // load navbar
 fetch("nav.html")
-  .then(response => response.text()) // 讀取 nav.html 內容
+  .then(response => response.text()) // load nav.html content
   .then(data => {
     document.getElementById("nav-placeholder").innerHTML = data;
   })
