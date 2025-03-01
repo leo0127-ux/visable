@@ -39,8 +39,9 @@ input{
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 40px;
-            height: 40px;
+            width :100%;
+            height: auto;
+            max-width: 160px;;
             background-position: center;
         }
         .avator{
