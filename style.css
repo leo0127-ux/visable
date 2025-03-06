@@ -16,18 +16,80 @@ input {
 
 :root {
   /* Primary Colors */
-  --primary-color: #007bff;
-  --primary-dark: #0056b3;
-  --primary-light: #66b3ff;
-  /*Neutrals*/
-  --text-color: #333;
-  --text-light: #666;
-  --background-color: #f8f9fa;
-  --card-bg: #ffffff;
+  --primary-800: #0C2D6B;
+  --primary-700: #045AE9;
+  --primary-600: #0056E5;
+  --primary-500: #0062FF;
+  --primary-400: #73A6FF;
+  --primary-300: #99C1FF;
+  --primary-200: #B1D3FF;
+  --primary-100: #C7E1FF;
+  --primary-80: #E9F2FF;
+  --primary-50: #F5F9FF;
+  /*Greys*/
+  --grey-800: #1C1E31;
+  --grey-700: #5C6183;
+  --grey-600: #7A80A8;
+  --grey-500: #838BB4;
+  --grey-400: #B2B9E3;
+  --grey-300: #C7CCED;
+  --grey-200: #D3D8F2;
+  --grey-100: #EAEEFF;
+  --grey-80: #EDF0FC;
+  --grey-50: #F6F9FF;
   /* Alert & Status Colors*/
   --success-color: #28a745;
   --error-color: #dc3545;
   --warning-color: #ffc107;
+  --Greyscale-Surface-Default:var(--grey-100);
+  --Greyscale-Surface-Subtitle:var(--grey-80);
+  --Greyscale-Surface-Disabled:var(--grey-50);
+  --Greyscale-Border-Default: var(--grey-300);
+  --Greyscale-Border-Disabled:var(--grey-80);
+  --Greyscale-Border-Darker:var(--grey-500);
+  --Greyscale-Text-Title:var(--grey-800);
+  --Greyscale-Text-Body: var(--grey-700);
+  --Greyscale-Text-Subtitle:var(--grey-600);
+  --Greyscale-Text-Caption:var(--grey-500);
+  --Greyscale-Text-Negative: var(--grey-300);
+  --Greyscale-Text-Disabled: var(--grey-200);
+  --Default-radius: 12px;
+  --Full-radius: 100px;
+  --space-x1: 4px;
+  --space-x2: 8px;
+  --space-x3: 12px;
+  --space-x4: 16px;
+  --space-x5: 20px;
+  --space-x6: 24px;
+  --space-x7: 28px;
+  --space-x8: 32px;
+  --space-x9: 36px;
+  --space-x10: 40px;
+}
+
+.typography-h1 {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.typography-h2 {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.typography-h3 {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.typography-body {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.typography-note {
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .navbar {
@@ -53,21 +115,57 @@ input {
   margin: 8px 12px;
 }
 .navbar .nav-search {
-  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  background-color: var(--Greyscale-Surface-Disabled);
+  border-radius: var(--Full-radius);
+  padding: 0 var(--space-x4);
+  gap: var(--space-x2);
+  width: 100%;
+  max-width: 731px;
+  height: 48px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  .search-icon-color: var(--Greyscale-Text-Body);
+}
+.navbar .nav-search .nav-search-input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 16px;
+}
+.navbar .nav-search:hover {
+  border: 1px solid var(--Greyscale-Border-Disabled);
+}
+.navbar .nav-search:active {
+  border: 1px solid var(--Greyscale-Border-Darker);
+}
+.navbar .nav-search:focus {
+  border: 1px solid var(--Greyscale-Border-Darker);
 }
 .navbar .right-icon-btn {
   display: flex;
   justify-items: center;
   align-items: center;
-  gap: 9px;
+  gap: var(--space-x2);
+}
+.navbar .right-icon-btn .create-post {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  font-size: 14px;
+  color: var(--Greyscale-Text-Body);
+  padding: var(--space-x4);
+  background-color: var(--Greyscale-Surface-Disabled);
+  gap: var(--space-x2);
 }
 .navbar .right-icon-btn .icon-btn {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: auto;
-  max-width: 160px;
+  width: 48px;
+  height: 48px;
   background-position: center;
 }
 .navbar .right-icon-btn .avator {
