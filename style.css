@@ -14,19 +14,46 @@ input {
   background: none;
 }
 
+:root {
+  /* Primary Colors */
+  --primary-color: #007bff;
+  --primary-dark: #0056b3;
+  --primary-light: #66b3ff;
+  /*Neutrals*/
+  --text-color: #333;
+  --text-light: #666;
+  --background-color: #f8f9fa;
+  --card-bg: #ffffff;
+  /* Alert & Status Colors*/
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --warning-color: #ffc107;
+}
+
 .navbar {
   display: flex;
   justify-items: center;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  margin: 12px 24px;
+  padding: 12px 24px;
   color: white;
+  height: 72px;
+  border: solid 1px black;
 }
 .navbar .nav-logo {
+  display: flex;
+}
+.navbar .nav-logo .visable-logo {
   background-image: url(/asset/image/Logo/IconText\ Logo.jpg);
   background-size: cover;
-  width: 160px;
-  height: 40px;
+  width: 172px;
+  height: 32px;
+  min-width: 160px;
+  margin: 8px 12px;
+}
+.navbar .nav-search {
+  padding: 12px;
 }
 .navbar .right-icon-btn {
   display: flex;
@@ -40,7 +67,7 @@ input {
   align-items: center;
   width: 100%;
   height: auto;
-  max-width: 200px;
+  max-width: 160px;
   background-position: center;
 }
 .navbar .right-icon-btn .avator {
