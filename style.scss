@@ -41,6 +41,7 @@ input{
     --grey-100: #EAEEFF;  
     --grey-80: #EDF0FC;  
     --grey-50: #F6F9FF;  
+    --grey-0: #ffffff;
   
     /* Alert & Status Colors*/
     --success-color: #28a745;      
@@ -64,8 +65,8 @@ input{
     --Greyscale-Text-Disabled: var(--grey-200);
 
     // border-radius
-    --Default-radius: 12px;
-    --Full-radius: 100px;
+    --radius-x3: 12px;
+    --radius-full: 100px;
 
     // Spacing system
     --space-x1: 4px;
@@ -103,36 +104,153 @@ input{
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: var(--space-x4);
-    color: black;
 }
 
-// Button color varient
-$button-color-varients:(
-    Primary: --(primary-600),
-    Grey:--(--grey-100),
-);
+//inherit from button-base
+.btn{
+    @include button-base;
+}
 
-@each $name, $color in $button-color-varients{
+// Button styles varient
+$button-style-varients:(
+    //primary
+    primary-8px-r: (
+        color: var(--grey-0), 
+        background-color: var(--primary-600), 
+        border-radius: var(--space-x2),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px
+        ),
+    primary-full-r: (
+        color: var(--grey-0), 
+        background-color: var(--primary-600), 
+        border-radius: var(--radius-full),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px
+        ),
+
+    //grey
+    grey-8px-r: (
+        color: var(--grey-800), 
+        background-color: var(--Greyscale-Surface-Disabled), 
+        border-radius: var(--space-x2)
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px
+        ),
+    grey-full-r: (
+        color: var(--grey-800), 
+        background-color: var(--Greyscale-Surface-Disabled), 
+        border-radius: var(--radius-full),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px
+        ),
+
+    //border
+    border-8px-r:(
+        color: var(--Greyscale-Text-Title),
+        backgrould-color:transparent,
+        border-radius: var(--radius-x3),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px
+        )
+    border-full-r:(
+        color: var(--Greyscale-Text-Title),
+        backgrould-color:transparent,
+        border-radius: var(--radius-x3),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px
+        )
+    );
+
+@each $name, $styles in $button-style-varients{
     .btn-#{$name}{
-        @include button-base;
-        
+        color: map-get($styles, color);
+        background-color: map-get($styles, background-color);
+        border-radius: map-get($styles, border-radius);
+        height: map-get($styles, height);
+
+
+        img{
+            &.icon{
+                @if $name == "Primary" {
+                    filter: invert(1) brightness(100%);
+                } @else {
+                    filter: invert(1) brightness(0%);
+                }                
+            }
+        }
+
         &:hover {
-            background-color: darken($color, 10%);
+            filter: brightness(90%);
         }
     }
 }
 
-// Button size varient
-$button-size:(
-    large: (padding: var(--space-x2) var(--space-x2))
-);
+// icon button
+$icon-button: (
 
-@each $size, $styles in $button-size{
-    .btn-#{$size}{
-        padding: map-get($styles, padding);
+    icon-48px:(
+        background-color:transparent,
+        border-radius:var(--radius-full),
+        icon-size: var(--space-x6), 
+        width: 48px,
+        height: 48px
+        )
+
+    );
+
+@each $name, $styles in $icon-button{
+    .btn-#{$name}{
+        background-color: map-get($styles, background-color);
+        border-radius: map-get($styles, border-radius);
+        width: map-get($styles, width);
+        height: map-get($styles, height);
+
+        img.icon{
+            width: map-get($styles, icon-size);
+            height: map-get($styles, icon-size);
+        }
+
+        &:hover {
+            filter: brightness(90%);
+        }
     }
 }
+
+// // Button size varient
+// $button-size:(
+//     large: (
+//         padding: 0  var(--space-x4),
+//         icon-size: var(--space-x6), 
+//         height:48px
+//         ),
+//     medium: (
+//         padding: 0 var(--space-x4),
+//         icon-size: var(--space-x6), 
+//         height:36px
+//         ),
+//     small: (
+//         padding: 0 var(--space-x3),
+//         icon-size: var(--space-x4), 
+//         height:32px)
+// );
+
+// @each $size, $styles in $button-size{
+//     .btn-#{$size}{
+//         padding: map-get($styles, padding);
+//         height: map-get($styles, height);
+//         img.icon {
+//             height: map-get($styles, icon-size);
+//             width: map-get($styles, icon-size);
+//         }
+//     }
+// }
 
 
 // Icon Setting
@@ -141,11 +259,6 @@ $button-size:(
     flex-direction: row;
     align-items: center;
     gap: var(--space-x2);
-
-    img{
-        width: 24px;
-        height: 24px;
-    }
 }
 
 .btn-icon-right{
@@ -182,17 +295,16 @@ $button-size:(
             align-items: center;
             justify-items: center;
             background-color: var(--Greyscale-Surface-Disabled);
-            border-radius: var(--Full-radius);
+            border-radius: var(--radius-full);
             padding:0 var(--space-x4);
-            gap: var(--space-x2);
+            gap: var(--space-x3);
             width: 100%;
             max-width: 731px;
             height: 48px;
             border: 1px solid transparent;
-            cursor: pointer;
-
-            .search-icon:{
-                color:var(--Greyscale-Text-Body);
+            
+            .search-icon{
+                filter: brightness(1.5);
             }
 
             .nav-search-input{
@@ -200,17 +312,12 @@ $button-size:(
                 outline: none;
                 width: 100%;
                 font-size: 16px;
+                color: var(--grey-800);
+                background-color: transparent;
             }
 
             &:hover,{
                 border: 1px solid var(--Greyscale-Border-Disabled);
-            }
-            &:active{
-                border: 1px solid var(--Greyscale-Border-Darker);
-            }
-
-            &:focus{
-                border: 1px solid var(--Greyscale-Border-Darker);
             }
         }
         .right-icon-btn{
