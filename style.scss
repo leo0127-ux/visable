@@ -3,16 +3,17 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
+    font-family: inter, sans-serif;
 }
 
 button{
-    all: unset;
+    all:unset;
     cursor: pointer;
 }
 
 input{
+    all:unset;
     border: none;
-    background: none;
 }
 
 // Design system
@@ -62,9 +63,6 @@ input{
     --Greyscale-Text-Negative: var(--grey-300);
     --Greyscale-Text-Disabled: var(--grey-200);
 
-
-
-
     // border-radius
     --Default-radius: 12px;
     --Full-radius: 100px;
@@ -98,6 +96,63 @@ input{
             font-weight: map-get($styles , font-weight);
         }
     }
+
+// Button System
+@mixin button-base{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: var(--space-x4);
+    color: black;
+}
+
+// Button color varient
+$button-color-varients:(
+    Primary: --(primary-600),
+    Grey:--(--grey-100),
+);
+
+@each $name, $color in $button-color-varients{
+    .btn-#{$name}{
+        @include button-base;
+        
+        &:hover {
+            background-color: darken($color, 10%);
+        }
+    }
+}
+
+// Button size varient
+$button-size:(
+    large: (padding: var(--space-x2) var(--space-x2))
+);
+
+@each $size, $styles in $button-size{
+    .btn-#{$size}{
+        padding: map-get($styles, padding);
+    }
+}
+
+
+// Icon Setting
+.btn-icon-left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-x2);
+
+    img{
+        width: 24px;
+        height: 24px;
+    }
+}
+
+.btn-icon-right{
+    @extend .btn-icon-left;
+    flex-direction: row-reverse;
+}
+
 
 
 // navbar style
