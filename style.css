@@ -225,7 +225,7 @@ input {
   align-items: center;
   justify-items: center;
   background-color: var(--Greyscale-Surface-Disabled);
-  border-radius: var(--Full-radius);
+  border-radius: var(--radius-full);
   padding: 0 var(--space-x4);
   gap: var(--space-x3);
   width: 100%;

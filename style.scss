@@ -135,7 +135,7 @@ $button-style-varients:(
     grey-8px-r: (
         color: var(--grey-800), 
         background-color: var(--Greyscale-Surface-Disabled), 
-        border-radius: var(--space-x2)
+        border-radius: var(--space-x2),
         padding: 0  var(--space-x4),
         icon-size: var(--space-x6), 
         height:48px
@@ -174,8 +174,7 @@ $button-style-varients:(
         background-color: map-get($styles, background-color);
         border-radius: map-get($styles, border-radius);
         height: map-get($styles, height);
-
-
+        padding: map-get($styles, padding);
         img{
             &.icon{
                 @if $name == "Primary" {
@@ -194,25 +193,22 @@ $button-style-varients:(
 
 // icon button
 $icon-button: (
-
-    icon-48px:(
-        background-color:transparent,
+    icon-48px: (
+        background-color:var(--grey-0),
         border-radius:var(--radius-full),
-        icon-size: var(--space-x6), 
-        width: 48px,
-        height: 48px
+        icon-size: var(--space-x6),
+        button-size: 48px,
         )
-
     );
 
 @each $name, $styles in $icon-button{
     .btn-#{$name}{
         background-color: map-get($styles, background-color);
         border-radius: map-get($styles, border-radius);
-        width: map-get($styles, width);
-        height: map-get($styles, height);
+        width: map-get($styles, button-size);
+        height: map-get($styles, button-size);
 
-        img.icon{
+        img.icon-24{
             width: map-get($styles, icon-size);
             height: map-get($styles, icon-size);
         }
@@ -223,34 +219,28 @@ $icon-button: (
     }
 }
 
-// // Button size varient
-// $button-size:(
-//     large: (
-//         padding: 0  var(--space-x4),
-//         icon-size: var(--space-x6), 
-//         height:48px
-//         ),
-//     medium: (
-//         padding: 0 var(--space-x4),
-//         icon-size: var(--space-x6), 
-//         height:36px
-//         ),
-//     small: (
-//         padding: 0 var(--space-x3),
-//         icon-size: var(--space-x4), 
-//         height:32px)
-// );
+// Button size varient
+$button-size:(
+    large: (
+        padding: 0  var(--space-x4),
+        height:48px
+        ),
 
-// @each $size, $styles in $button-size{
-//     .btn-#{$size}{
-//         padding: map-get($styles, padding);
-//         height: map-get($styles, height);
-//         img.icon {
-//             height: map-get($styles, icon-size);
-//             width: map-get($styles, icon-size);
-//         }
-//     }
-// }
+    medium: (
+        padding: 0 var(--space-x2),
+        height:36px
+        ),
+    small: (
+        padding: 0 var(--space-x2),
+        height:32px)
+);
+
+@each $size, $styles in $button-size{
+    .btn-#{$size}{
+        padding: map-get($styles, padding);
+        height: map-get($styles, height);
+    }
+}
 
 
 // Icon Setting
@@ -295,7 +285,7 @@ $icon-button: (
             align-items: center;
             justify-items: center;
             background-color: var(--Greyscale-Surface-Disabled);
-            border-radius: var(--radius-full);
+            border-radius: 16px;
             padding:0 var(--space-x4);
             gap: var(--space-x3);
             width: 100%;
