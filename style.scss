@@ -120,7 +120,7 @@ $button-style-varients:(
         border-radius: var(--space-x2),
         padding: 0  var(--space-x4),
         icon-size: var(--space-x6), 
-        height:48px
+        height:48px,
         ),
     primary-full-r: (
         color: var(--grey-0), 
@@ -128,7 +128,7 @@ $button-style-varients:(
         border-radius: var(--radius-full),
         padding: 0  var(--space-x4),
         icon-size: var(--space-x6), 
-        height:48px
+        height:48px,
         ),
 
     //grey
@@ -138,34 +138,55 @@ $button-style-varients:(
         border-radius: var(--space-x2),
         padding: 0  var(--space-x4),
         icon-size: var(--space-x6), 
-        height:48px
+        height:48px,
         ),
     grey-full-r: (
         color: var(--grey-800), 
+        hover-color: var(--grey-100),
         background-color: var(--Greyscale-Surface-Disabled), 
         border-radius: var(--radius-full),
         padding: 0  var(--space-x4),
         icon-size: var(--space-x6), 
-        height:48px
+        height:48px,
         ),
 
     //border
-    border-8px-r:(
+    border-8px-r: (
         color: var(--Greyscale-Text-Title),
         backgrould-color:transparent,
         border-radius: var(--radius-x3),
         padding: 0  var(--space-x4),
         icon-size: var(--space-x6), 
-        height:48px
-        )
-    border-full-r:(
+        height:48px,
+        ),
+    border-full-r: (
         color: var(--Greyscale-Text-Title),
         backgrould-color:transparent,
         border-radius: var(--radius-x3),
         padding: 0  var(--space-x4),
         icon-size: var(--space-x6), 
-        height:48px
-        )
+        height:48px,
+        ),
+
+    //Icon
+    icon-full-r:(
+        color: var(--grey-0),
+        hover-color: var(--grey-100),
+        backgrould-color: transparent,
+        border-radius: var(--radius-full),
+        padding: 0  var(--space-x3),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+    icon-full-r-28:(
+        color: var(--grey-0),
+        hover-color: var(--grey-100),
+        backgrould-color: transparent,
+        border-radius: var(--radius-full),
+        padding: 0  2px,
+        icon-size: var(--space-x6), 
+        height:28px,
+        ),
     );
 
 @each $name, $styles in $button-style-varients{
@@ -186,68 +207,17 @@ $button-style-varients:(
         }
 
         &:hover {
-            filter: brightness(90%);
+            background-color: map-get($styles, hover-color);
         }
     }
 }
-
-// icon button
-$icon-button: (
-    icon-48px: (
-        background-color:var(--grey-0),
-        border-radius:var(--radius-full),
-        icon-size: var(--space-x6),
-        button-size: 48px,
-        )
-    );
-
-@each $name, $styles in $icon-button{
-    .btn-#{$name}{
-        background-color: map-get($styles, background-color);
-        border-radius: map-get($styles, border-radius);
-        width: map-get($styles, button-size);
-        height: map-get($styles, button-size);
-
-        img.icon-24{
-            width: map-get($styles, icon-size);
-            height: map-get($styles, icon-size);
-        }
-
-        &:hover {
-            filter: brightness(90%);
-        }
-    }
-}
-
-// Button size varient
-$button-size:(
-    large: (
-        padding: 0  var(--space-x4),
-        height:48px
-        ),
-
-    medium: (
-        padding: 0 var(--space-x2),
-        height:36px
-        ),
-    small: (
-        padding: 0 var(--space-x2),
-        height:32px)
-);
-
-@each $size, $styles in $button-size{
-    .btn-#{$size}{
-        padding: map-get($styles, padding);
-        height: map-get($styles, height);
-    }
-}
-
 
 // Icon Setting
 .btn-icon-left{
     display: flex;
-    flex-direction: row;
     align-items: center;
+    justify-items: center;
+    flex-direction: row;
     gap: var(--space-x2);
 }
 
@@ -255,8 +225,6 @@ $button-size:(
     @extend .btn-icon-left;
     flex-direction: row-reverse;
 }
-
-
 
 // navbar style
 .navbar{
@@ -268,7 +236,8 @@ $button-size:(
     padding: 12px 24px;
     color: white;
     height: 72px;
-    border: solid 1px black;
+    gap: var(--space-x4);
+    // border: solid 1px black;
         .nav-logo{
             display: flex;
             .visable-logo{
@@ -285,7 +254,7 @@ $button-size:(
             align-items: center;
             justify-items: center;
             background-color: var(--Greyscale-Surface-Disabled);
-            border-radius: 16px;
+            border-radius: var(--radius-full);
             padding:0 var(--space-x4);
             gap: var(--space-x3);
             width: 100%;
@@ -306,15 +275,23 @@ $button-size:(
                 background-color: transparent;
             }
 
+            .clear-icon{
+                display: none;
+                width: 24px;
+                height: 24px;
+            }
+
             &:hover,{
                 border: 1px solid var(--Greyscale-Border-Disabled);
             }
         }
         .right-icon-btn{
             display: flex;
+            flex-direction: row-reverse;
             justify-items: center;
             align-items: center;
             gap: var(--space-x2);
+            min-width: 317px;
 
             .create-post{
                 display: flex;
@@ -345,4 +322,18 @@ $button-size:(
                 border: 0;
             }
         }
+    }
+
+// main container (includes sidebar and main content)
+.main-container{
+    display: flex;
+    margin-top: 72px;
+
+    .sidebar{
+        width: 271px;
+        height: 100%;
+        border: 1px solid black;
+        padding: 0 var(--space-x6);
+    }
+
 }
