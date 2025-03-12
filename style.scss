@@ -226,6 +226,27 @@ $button-style-varients:(
     flex-direction: row-reverse;
 }
 
+//define divider style
+@mixin default-divider($color: var(--Greyscale-Border-Disabled), $padding: var(--space-x2) ){
+    display: flex;
+    align-items: center;
+    width:100%;
+    padding: $padding 0;
+
+    &::before{
+        content: "";
+        flex-grow: 1;
+        height: 1px;
+        background-color: $color;
+    }
+}
+
+//use divider
+.default-divider{
+    @include default-divider();
+}
+
+
 // navbar style
 .navbar{
     display: flex;
@@ -327,13 +348,65 @@ $button-style-varients:(
 // main container (includes sidebar and main content)
 .main-container{
     display: flex;
-    margin-top: 72px;
+    height: calc(100vh - 72px);
 
     .sidebar{
         width: 271px;
         height: 100%;
         border: 1px solid black;
+        padding: var(--space-x5) var(--space-x6);
+
+        .menu-list,
+        .forum-list{
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-x2);
+        }
+
+            li{
+                display: flex;
+                align-items: center;
+                padding: 0 var(--space-x4);
+                height: 40px;
+                gap: var(--space-x2);
+
+                //hover
+                &:hover{
+                    background-color: var(--Greyscale-Surface-Subtitle);
+                    border-radius: var(--radius-x3);
+                    cursor: pointer;
+                }
+
+                img{
+                    width: 24px;
+                    height: 24px;
+                }
+
+                span{
+                    font-size: 16px;
+                    color: var(--Greyscale-Text-Body);
+                }
+            }
+            .forum-header{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+    
+                .toggle-icon{
+                    width:24px;
+                    height: 24px;
+                }
+            }
+        }
+
+    .main-content{
+        flex-grow: 1;
         padding: 0 var(--space-x6);
+        border: 1px solid rgb(255, 0, 0);
+        display: flex;
     }
 
 }
