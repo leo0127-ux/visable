@@ -261,6 +261,7 @@ $button-style-varients:(
     // border: solid 1px black;
         .nav-logo{
             display: flex;
+            min-width: 228px;
             .visable-logo{
                 background-image: url(/asset/image/Logo/IconText\ Logo.jpg);
                 background-size: cover;
@@ -403,10 +404,20 @@ $button-style-varients:(
         }
 
     .main-content{
+        display: flex;
         flex-grow: 1;
         padding: 0 var(--space-x6);
         border: 1px solid rgb(255, 0, 0);
-        display: flex;
+
+        .forum-card{
+            width: 100%;
+            align-content: center;
+        }
+
+        .right-sidebar{
+            width: 327px;
+            border: 1px solid red;
+        }
     }
 
 }
