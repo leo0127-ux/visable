@@ -111,3 +111,4 @@ window.logout = function () {
   localStorage.setItem("loggedIn", "false");
   updateNavbar();
 };
+
