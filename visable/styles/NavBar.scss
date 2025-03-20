@@ -1,0 +1,98 @@
+// navbar style
+.navbar{
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 24px;
+    color: white;
+    height: 72px;
+    gap: var(--space-x4);
+    // border: solid 1px black;
+        .nav-logo{
+            display: flex;
+            min-width: 228px;
+            .visable-logo{
+                background-image: url(/asset/image/Logo/IconText\ Logo.jpg);
+                background-size: cover;
+                width: 172px;
+                height: 32px;
+                min-width: 160px;
+                margin: 8px 12px;
+            }
+        }
+        .nav-search{
+            display: flex;
+            align-items: center;
+            justify-items: center;
+            background-color: var(--Greyscale-Surface-Disabled);
+            border-radius: var(--radius-full);
+            padding:0 var(--space-x4);
+            gap: var(--space-x3);
+            width: 100%;
+            max-width: 731px;
+            height: 48px;
+            border: 1px solid transparent;
+            
+            .search-icon{
+                filter: brightness(1.5);
+            }
+
+            .nav-search-input{
+                border: none;
+                outline: none;
+                width: 100%;
+                font-size: 16px;
+                color: var(--grey-800);
+                background-color: transparent;
+            }
+
+            .clear-icon{
+                display: none;
+                width: 24px;
+                height: 24px;
+            }
+
+            &:hover,{
+                border: 1px solid var(--Greyscale-Border-Disabled);
+            }
+        }
+        .right-icon-btn{
+            display: flex;
+            flex-direction: row-reverse;
+            justify-items: center;
+            align-items: center;
+            gap: var(--space-x2);
+            min-width: 317px;
+
+            .create-post{
+                display: flex;
+                justify-items: center;
+                align-items: center;
+                font-size: 14px;
+                color: var(--Greyscale-Text-Body);
+                padding: var(--space-x4);
+                background-color: var(--Greyscale-Surface-Disabled);
+                gap: var(--space-x2);
+            }
+
+            .icon-btn{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width :48px;
+                height: 48px;
+                background-position: center;
+            }
+            .avator{
+                background-image: url(/asset/image/uifaces-popular-image.jpg);
+                background-size: cover;
+                background-position: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 0;
+            }
+        }
+    }

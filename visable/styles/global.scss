@@ -1,3 +1,8 @@
+@import "MainContent";
+@import "NavBar";
+@import "SideBar";
+@import "MainContent";
+
 // Global Reset
 *{
     margin:0;
@@ -226,7 +231,7 @@ $button-style-varients:(
     flex-direction: row-reverse;
 }
 
-//define divider style
+//divider style
 @mixin default-divider($color: var(--Greyscale-Border-Disabled), $padding: var(--space-x2) ){
     display: flex;
     align-items: center;
@@ -244,180 +249,4 @@ $button-style-varients:(
 //use divider
 .default-divider{
     @include default-divider();
-}
-
-
-// navbar style
-.navbar{
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 12px 24px;
-    color: white;
-    height: 72px;
-    gap: var(--space-x4);
-    // border: solid 1px black;
-        .nav-logo{
-            display: flex;
-            min-width: 228px;
-            .visable-logo{
-                background-image: url(/asset/image/Logo/IconText\ Logo.jpg);
-                background-size: cover;
-                width: 172px;
-                height: 32px;
-                min-width: 160px;
-                margin: 8px 12px;
-            }
-        }
-        .nav-search{
-            display: flex;
-            align-items: center;
-            justify-items: center;
-            background-color: var(--Greyscale-Surface-Disabled);
-            border-radius: var(--radius-full);
-            padding:0 var(--space-x4);
-            gap: var(--space-x3);
-            width: 100%;
-            max-width: 731px;
-            height: 48px;
-            border: 1px solid transparent;
-            
-            .search-icon{
-                filter: brightness(1.5);
-            }
-
-            .nav-search-input{
-                border: none;
-                outline: none;
-                width: 100%;
-                font-size: 16px;
-                color: var(--grey-800);
-                background-color: transparent;
-            }
-
-            .clear-icon{
-                display: none;
-                width: 24px;
-                height: 24px;
-            }
-
-            &:hover,{
-                border: 1px solid var(--Greyscale-Border-Disabled);
-            }
-        }
-        .right-icon-btn{
-            display: flex;
-            flex-direction: row-reverse;
-            justify-items: center;
-            align-items: center;
-            gap: var(--space-x2);
-            min-width: 317px;
-
-            .create-post{
-                display: flex;
-                justify-items: center;
-                align-items: center;
-                font-size: 14px;
-                color: var(--Greyscale-Text-Body);
-                padding: var(--space-x4);
-                background-color: var(--Greyscale-Surface-Disabled);
-                gap: var(--space-x2);
-            }
-
-            .icon-btn{
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width :48px;
-                height: 48px;
-                background-position: center;
-            }
-            .avator{
-                background-image: url(/asset/image/uifaces-popular-image.jpg);
-                background-size: cover;
-                background-position: center;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                border: 0;
-            }
-        }
-    }
-
-// main container (includes sidebar and main content)
-.main-container{
-    display: flex;
-    height: calc(100vh - 72px);
-
-    .sidebar{
-        width: 271px;
-        height: 100%;
-        border: 1px solid black;
-        padding: var(--space-x5) var(--space-x6);
-
-        .menu-list,
-        .forum-list{
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-x2);
-        }
-
-            li{
-                display: flex;
-                align-items: center;
-                padding: 0 var(--space-x4);
-                height: 40px;
-                gap: var(--space-x2);
-
-                //hover
-                &:hover{
-                    background-color: var(--Greyscale-Surface-Subtitle);
-                    border-radius: var(--radius-x3);
-                    cursor: pointer;
-                }
-
-                img{
-                    width: 24px;
-                    height: 24px;
-                }
-
-                span{
-                    font-size: 16px;
-                    color: var(--Greyscale-Text-Body);
-                }
-            }
-            .forum-header{
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-    
-                .toggle-icon{
-                    width:24px;
-                    height: 24px;
-                }
-            }
-        }
-
-    .main-content{
-        display: flex;
-        flex-grow: 1;
-        padding: 0 var(--space-x6);
-        border: 1px solid rgb(255, 0, 0);
-
-        .forum-card{
-            width: 100%;
-            align-content: center;
-        }
-
-        .right-sidebar{
-            width: 327px;
-            border: 1px solid red;
-        }
-    }
-
 }
