@@ -1,0 +1,38 @@
+.layout {
+  display: flex;
+  flex-direction: column; /* 讓 Navbar 在上方 */
+  height: 100vh; /* 讓佈局佔滿整個視窗高度 */
+}
+
+.navbar {
+  height: 72px; /* 固定 Navbar 的高度 */
+  background: var(--grey-0); /* 保留背景色 */
+  border-bottom: 1px solid var(--grey-200);
+  position: fixed; /* 固定在頂部 */
+  top: 0;
+  left: 0;
+  width: 100%; /* 覆蓋整個寬度 */
+  z-index: 1000; /* 確保 Navbar 在最上層 */
+}
+
+.layout__content {
+  display: flex; /* 讓 Sidebar 和 MainContent 水平排列 */
+  flex: 1; /* 讓 layout__content 占據剩餘空間 */
+  margin-top: 72px; /* 確保內容在 Navbar 下方 */
+  width: 100%;
+}
+
+.sidebar {
+  width: 240px; /* 固定 Sidebar 的寬度 */
+  height: calc(100vh - 72px); /* 減去 Navbar 的高度 */
+  background: var(--grey-0); /* 使用全局變數 */
+  border-right: 1px solid var(--grey-200);
+}
+
+.main-content {
+  flex: 1; /* 讓 MainContent 占據剩餘空間 */
+  overflow-y: auto; /* 如果內容超出，允許滾動 */
+  padding: 16px; /* 添加內邊距 */
+  background: var(--grey-100); /* 保留背景色 */
+  margin-left: 240px;
+}

@@ -1,0 +1,47 @@
+.jobs-page {
+  padding: 16px;
+  background-color: var(--grey-100);
+
+  h1 {
+    font-size: 24px;
+    color: var(--primary-600); /* Use primary color */
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--grey-700);
+  }
+
+  .jobs-list {
+    list-style: none;
+    padding: 0;
+
+    .job-card {
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+
+      h3 {
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
+
+      p {
+        margin: 4px 0;
+      }
+
+      a {
+        color: var(--primary-600); /* Use primary color */
+        text-decoration: none;
+
+        &:hover {
+          color: var(--primary-700); /* Use primary hover color */
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

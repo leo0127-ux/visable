@@ -1,0 +1,23 @@
+.job-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .job-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+  }
+  
+  .job-card h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .job-card p {
+    margin: 4px 0;
+    color: #555;
+  }

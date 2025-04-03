@@ -1,0 +1,64 @@
+.filter-button__trigger {
+  height: 36px; /* Set fixed height */
+  padding: 0 16px; /* Adjust padding to fit height */
+  background: var(--Greyscale-Surface-Disabled); /* Use disabled surface color */
+  color: var(--grey-800);
+  border-radius: var(--radius-full); /* Keep maximum border radius */
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-x2); /* Ensure text and arrow icon are separated by --space-x2 */
+
+  &:hover {
+    background: var(--grey-100); /* Use hover background color */
+  }
+
+  .dropdown-icon {
+    width: 12px;
+    height: 12px;
+    border: solid var(--grey-600);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+}
+
+.filter-button__dropdown {
+  position: absolute;
+  background: var(--grey-0);
+  border: 1px solid var(--grey-300);
+  border-radius: var(--radius-md); /* Keep dropdown border radius */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+  padding: 8px;
+  min-width: 100%; /* Ensure dropdown width matches button width */
+
+  &-item {
+    padding: 8px;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      background: var(--grey-100);
+    }
+  }
+
+  &-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+
+    .confirm-button {
+      padding: 8px 16px;
+      background: var(--Greyscale-Surface-Disabled); /* Use disabled surface color */
+      color: var(--grey-800);
+      border-radius: var(--radius-full); /* Keep maximum border radius */
+      cursor: pointer;
+      font-size: 14px;
+
+      &:hover {
+        background: var(--grey-100); /* Use hover background color */
+      }
+    }
+  }
+}

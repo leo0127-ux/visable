@@ -1,0 +1,187 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px; /* 確保高度固定 */
+  padding: 0 24px;
+  background: white; /* 保留背景色 */
+  border-bottom: 1px solid var(--Greyscale-Border-Disabled, #EDF0FC);
+  
+  &__logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* 靠左對齊 */
+    width: 228px;
+    height: 48px;
+
+    img {
+      width: 160px;
+      height: 32px;
+    }
+  }
+
+  &__searchbar {
+    flex: 1;
+    max-width: 731px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+    background: var(--Greyscale-Surface-Disabled, #F6F9FF);
+    border-radius: 100px;
+
+    .navbar__search-icon {
+      width: 24px;
+      height: 24px;
+
+      .icon {
+        width: 100%;
+        height: 100%;
+        color: var(--Greyscale-Text-Body, #5C6183);
+      }
+    }
+
+    .navbar__search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--Greyscale-Text-Caption, #838BB4);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* 增加按鈕之間的間距 */
+    margin-left: auto; /* 確保按鈕區域靠右對齊 */
+    padding-right: 24px; /* 確保按鈕不會被畫面切掉 */
+
+    .navbar__button {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--Greyscale-Surface-Disabled, #F6F9FF);
+      border-radius: 100%;
+      border: none;
+      cursor: pointer;
+
+      &--create {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 0 16px;
+        height: 48px;
+        background: var(--primary-600); /* 使用主色 */
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+
+        &:hover {
+          background: var(--primary-700); /* 使用全局變數定義懸停顏色 */
+        }
+
+        .navbar__button-icon {
+          width: 24px;
+          height: 24px;
+          position: relative;
+
+          .navbar__add-icon {
+            width: 18px;
+            height: 18px;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            background: black;
+            border-radius: 50%;
+          }
+        }
+
+        span {
+          font-size: 14px;
+          font-weight: 400;
+          color: black;
+        }
+      }
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        color: var(--Greyscale-Text-Body, #5C6183);
+      }
+    }
+
+    .navbar__login {
+      background: var(--primary-600); /* 使用主色 */
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--primary-700); /* 使用全局變數定義懸停顏色 */
+      }
+    }
+
+    .navbar__profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .navbar__avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 100%;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .navbar__logout {
+        background: var(--primary-600); /* 使用主色 */
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+          background: var(--primary-700); /* 使用全局變數定義懸停顏色 */
+        }
+      }
+    }
+  }
+}
+
+.navbar__search {
+  flex-grow: 1;
+  margin-left: 16px;
+}
+
+.navbar__search-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}

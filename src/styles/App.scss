@@ -1,0 +1,22 @@
+// 定義變數
+$primary-color: #2d3b8b;
+$secondary-color: #f5f5f5;
+
+// 按鈕樣式
+button {
+  background: $primary-color;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+// 職缺卡片
+.job-card {
+  background: $secondary-color;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

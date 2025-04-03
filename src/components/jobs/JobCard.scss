@@ -1,0 +1,26 @@
+.job-card {
+  padding: 16px;
+  border: 1px solid var(--grey-300);
+  border-radius: var(--radius-x3); /* Use --radius-x3 */
+  background: var(--grey-0);
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    background: var(--primary-100); /* Use primary hover background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--grey-900);
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--grey-700);
+    margin: 4px 0;
+  }
+}

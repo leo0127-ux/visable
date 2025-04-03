@@ -1,0 +1,362 @@
+// Global Reset
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: inter, sans-serif;
+}
+
+button{
+    all:unset;
+    cursor: pointer;
+}
+
+input{
+    all:unset;
+    border: none;
+}
+
+// Design system
+:root {
+    /* Primary Colors */
+    --primary-800: #0C2D6B;
+    --primary-700: #045AE9;    
+    --primary-600: #0056E5;
+    --primary-500: #0062FF;
+    --primary-400: #73A6FF;
+    --primary-300: #99C1FF;
+    --primary-200: #B1D3FF;
+    --primary-100: #C7E1FF;      
+    --primary-80: #E9F2FF;
+    --primary-50: #F5F9FF;
+  
+    /* Greys */
+    --grey-800: #1C1E31;           
+    --grey-700: #5C6183;  
+    --grey-600: #7A80A8;  
+    --grey-500: #838BB4;  
+    --grey-400: #B2B9E3;  
+    --grey-300: #C7CCED;  
+    --grey-200: #D3D8F2;            
+    --grey-100: #EAEEFF;  
+    --grey-80: #EDF0FC;  
+    --grey-50: #F6F9FF;  
+    --grey-0: #ffffff;
+  
+    /* Alert & Status Colors */
+    --success-color: #28a745;      
+    --error-color: #dc3545;        
+    --warning-color: #ffc107;
+
+    /* Style Tokens */
+    --Greyscale-Surface-Default: var(--grey-100);
+    --Greyscale-Surface-Subtitle: var(--grey-80);
+    --Greyscale-Surface-Disabled: var(--grey-50);
+    
+    --Greyscale-Border-Default: var(--grey-300);
+    --Greyscale-Border-Disabled: var(--grey-80);
+    --Greyscale-Border-Darker: var(--grey-500);
+
+    --Greyscale-Text-Title: var(--grey-800);
+    --Greyscale-Text-Body: var(--grey-700);
+    --Greyscale-Text-Subtitle: var(--grey-600);
+    --Greyscale-Text-Caption: var(--grey-500);
+    --Greyscale-Text-Negative: var(--grey-300);
+    --Greyscale-Text-Disabled: var(--grey-200);
+
+    // border-radius
+    --radius-x3: 12px;
+    --radius-full: 100px;
+
+    // Spacing system
+    --space-x1: 4px;
+    --space-x2: 8px;
+    --space-x3: 12px;
+    --space-x4: 16px;
+    --space-x5: 20px;
+    --space-x6: 24px;
+    --space-x7: 28px;
+    --space-x8: 32px;
+    --space-x9: 36px;
+    --space-x10: 40px;
+
+    // Colors
+    --white: #FFFFFF;
+  
+    // Grey scale
+    --grey-50: #F9FAFB;
+    --grey-100: #F3F4F6;
+    --grey-200: #E5E7EB;
+    --grey-300: #D1D5DB;
+    --grey-400: #9CA3AF;
+    --grey-500: #6B7280;
+    --grey-600: #4B5563;
+    --grey-700: #374151;
+    --grey-800: #1F2937;
+  
+    // Text colors
+    --text-primary: var(--grey-800);
+    --text-secondary: var(--grey-600);
+    --text-disabled: var(--grey-400);
+  
+    // Border radius
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-full: 9999px;
+  
+    // Spacing
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+}
+  
+// Typhography
+    $typography: (
+    h1: (font-size: 48px, line-height: 56px, font-weight: 700),
+    h2: (font-size: 36px, line-height: 44px, font-weight: 700),
+    h3: (font-size: 28px, line-height: 36px, font-weight: 600),
+    body: (font-size: 16px, line-height: 24px, font-weight: 400),
+    note: (font-size: 14px, line-height: 20px, font-weight: 400)
+    );
+
+    @each $name, $styles in $typography {
+        .typography-#{$name} {
+            font-size: map-get($styles, font-size);
+            line-height: map-get($styles, ling-height);
+            font-weight: map-get($styles , font-weight);
+        }
+    }
+
+// Button System
+@mixin button-base{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+//inherit from button-base
+.btn{
+    @include button-base;
+}
+
+// Button styles varient
+$button-style-varients:(
+    //primary
+    primary-8px-r: (
+        color: var(--grey-0), 
+        background-color: var(--primary-600), 
+        border-radius: var(--space-x2),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+    primary-full-r: (
+        color: var(--grey-0), 
+        background-color: var(--primary-600), 
+        border-radius: var(--radius-full),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+
+    //grey
+    grey-8px-r: (
+        color: var(--grey-800), 
+        background-color: var(--Greyscale-Surface-Disabled), 
+        border-radius: var(--space-x2),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+    grey-full-r: (
+        color: var(--grey-800), 
+        hover-color: var(--grey-100),
+        background-color: var(--Greyscale-Text-Disabled), /* 修改背景色 */
+        border-radius: var(--radius-full),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+
+    //border
+    border-8px-r: (
+        color: var(--Greyscale-Text-Title),
+        backgrould-color:transparent,
+        border-radius: var(--radius-x3),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+    border-full-r: (
+        color: var(--Greyscale-Text-Title),
+        backgrould-color:transparent,
+        border-radius: var(--radius-x3),
+        padding: 0  var(--space-x4),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+
+    //Icon
+    icon-full-r:(
+        color: var(--grey-0),
+        hover-color: var(--grey-100),
+        backgrould-color: transparent,
+        border-radius: var (--radius-full),
+        padding: 0  var(--space-x3),
+        icon-size: var(--space-x6), 
+        height:48px,
+        ),
+    icon-full-r-28:(
+        color: var(--grey-0),
+        hover-color: var(--grey-100),
+        backgrould-color: transparent,
+        border-radius: var(--radius-full),
+        padding: 0  2px,
+        icon-size: var(--space-x6), 
+        height:28px,
+        ),
+    );
+
+@each $name, $styles in $button-style-varients{
+    .btn-#{$name}{
+        color: map-get($styles, color);
+        background-color: map-get($styles, background-color);
+        border-radius: map-get($styles, border-radius);
+        height: map-get($styles, height);
+        padding: map-get($styles, padding);
+        img{
+            &.icon{
+                @if $name == "Primary" {
+                    filter: invert(1) brightness(100%);
+                } @else {
+                    filter: invert(1) brightness(0%);
+                }                
+            }
+        }
+
+        &:hover {
+            background-color: map-get($styles, hover-color);
+        }
+    }
+}
+
+// Icon Setting
+.btn-icon-left{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    flex-direction: row;
+    gap: var(--space-x2);
+}
+
+.btn-icon-right{
+    @extend .btn-icon-left;
+    flex-direction: row-reverse;
+}
+
+//divider style
+@mixin default-divider($color: var(--Greyscale-Border-Disabled), $padding: var(--space-x2) ){
+    display: flex;
+    align-items: center;
+    width:100%;
+    padding: $padding 0;
+
+    &::before{
+        content: "";
+        flex-grow: 1;
+        height: 1px;
+        background-color: $color;
+    }
+}
+
+//use divider
+.default-divider{
+    @include default-divider();
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--grey-50);
+  line-height: 1.5;
+}
+
+// Link reset
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+// Input reset
+input {
+  font: inherit;
+  color: inherit;
+  
+  &:focus {
+    outline: none;
+  }
+}
+
+// Common utility classes
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: var(--space-2);
+}
+
+.gap-4 {
+  gap: var(--space-4);
+}
+
+// 定義顏色變數
+$primary-color: #2d3b8b;
+$secondary-color: #f5f5f5;
+$grey-50: #f8fafc;
+$grey-200: #e2e8f0;
+$grey-700: #4a5568;
+$grey-800: #2d3748;
+
+// 定義按鈕樣式
+@mixin button-style($bg-color, $text-color) {
+  background-color: $bg-color;
+  color: $text-color;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken($bg-color, 10%);
+  }
+}
+
+// 定義其他全局樣式
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

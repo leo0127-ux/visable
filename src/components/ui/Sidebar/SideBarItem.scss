@@ -1,0 +1,39 @@
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-x3);
+  padding: var(--space-x3) var(--space-x4);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: var(--space-x4);
+  color: var(--Greyscale-Text-Body);
+  border-radius: var(--radius-x3);
+  transition: background-color 0.3s ease;
+
+  &--active {
+    background-color: var(--Greyscale-Surface-Default);
+    color: var(--Greyscale-Text-Title);
+  }
+
+  &:hover {
+    background-color: var(--Greyscale-Surface-Subtitle);
+  }
+
+  &__icon {
+    width: var(--space-x6);
+    height: var(--space-x6);
+  }
+
+  &__icon-placeholder {
+    width: var(--space-x6);
+    height: var(--space-x6);
+    background-color: var(--grey-200);
+    border-radius: 50%;
+  }
+
+  &__title {
+    flex: 1;
+    text-align: left;
+  }
+}

@@ -1,0 +1,45 @@
+.auth-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  
+    &__content {
+      background: #fff;
+      padding: 24px;
+      border-radius: var(--radius-x3); /* Use --radius-x3 */
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  
+    &__button {
+      background: var(--primary-600); /* Use primary color */
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-x3); /* Use --radius-x3 */
+      padding: 8px 16px;
+      cursor: pointer;
+      margin-top: 16px;
+      font-size: 16px;
+      &:hover {
+        background: var(--primary-700); /* Use primary hover color */
+      }
+    }
+  
+    &__close-button {
+      background: #ccc;
+      color: #000;
+      border: none;
+      border-radius: var(--radius-x3); /* Use --radius-x3 */
+      padding: 8px 16px;
+      cursor: pointer;
+      margin-top: 16px;
+      font-size: 16px;
+    }
+  }
