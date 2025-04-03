@@ -1,11 +1,11 @@
 [auth.external.linkedin]
-enabled = true
+enabled = false
 client_id = "env(SUPABASE_AUTH_LINKEDIN_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_LINKEDIN_SECRET)"
-redirect_url = "http://localhost:5173/auth/v1/callback"
+redirect_url = "http://localhost:5174/auth/v1/callback"
 
 [auth.external.google]
 enabled = true
 client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
-redirect_url = "http://localhost:5173/auth/v1/callback"
+redirect_url = "http://localhost:5174/auth/v1/callback"

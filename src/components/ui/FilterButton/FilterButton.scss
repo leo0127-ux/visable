@@ -25,13 +25,17 @@
 
 .filter-button__dropdown {
   position: absolute;
+  top: calc(100% + 4px); /* Position directly below the button */
+  left: 0;
   background: var(--grey-0);
   border: 1px solid var(--grey-300);
   border-radius: var(--radius-md); /* Keep dropdown border radius */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 20;
   padding: 8px;
-  min-width: 100%; /* Ensure dropdown width matches button width */
+  min-width: 200px; /* Set a fixed minimum width */
+  max-width: 240px; /* Restrict the maximum width */
+  width: auto; /* Ensure the width adjusts to content */
 
   &-item {
     padding: 8px;

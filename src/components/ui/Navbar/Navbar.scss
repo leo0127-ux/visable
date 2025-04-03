@@ -20,8 +20,8 @@
     height: 48px;
 
     img {
-      width: 160px;
-      height: 32px;
+      width: 160px; /* 確保圖片寬度為 160px */
+      height: 32px; /* 確保圖片高度為 32px */
     }
   }
 
@@ -34,7 +34,7 @@
     gap: 8px;
     padding: 0 24px;
     background: var(--Greyscale-Surface-Disabled, #F6F9FF);
-    border-radius: 100px;
+    border-radius: var(--radius-full); /* 使用 --radius-full */
 
     .navbar__search-icon {
       width: 24px;
@@ -54,6 +54,7 @@
       background: transparent;
       font-size: 14px;
       color: var(--Greyscale-Text-Caption, #838BB4);
+      border-radius: var(--radius-full); /* Use --radius-full for fully rounded corners */
     }
   }
 
@@ -182,6 +183,6 @@
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: var(--radius-full); /* Use --radius-full for fully rounded corners */
   font-size: 14px;
 }

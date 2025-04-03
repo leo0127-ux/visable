@@ -7,6 +7,9 @@ import "./MainContent.scss";
 import supabase from "../../services/supabase/supabaseClient";
 import FilterButton from "../../components/ui/FilterButton/FilterButton";
 import JobCard from "../../components/jobs/JobCard";
+import HomePage from "../../pages/HomePage/HomePage"; // 確保正確導入 HomePage
+import ExperiencePage from "../../pages/ExperiencePage/ExperiencePage"; // 確保正確導入 ExperiencePage
+import JobsPage from "../../pages/JobsPage/JobsPage"; // 確保正確導入 JobsPage
 
 const MainContent = ({ searchQuery }) => {
   const [content, setContent] = useState([]);
@@ -114,98 +117,9 @@ const MainContent = ({ searchQuery }) => {
     <main className="main-content">
       <Routes>
         <Route path="/" element={<Navigate to="/homepage" />} />
-        <Route path="/homepage" element={<PostList />} />
-        <Route path="/careerinsightpage" element={<CareerInsightPage />} />
-        <Route path="/post/:id" element={<PostDetail />} />
-        <Route
-          path="/jobs"
-          element={
-            <div className="jobs-page">
-              <div className="jobs-page__filters">
-                <FilterButton
-                  label="職缺發布時間"
-                  options={[
-                    { label: "Last 24 hours", value: "Last 24 hours" },
-                    { label: "Last 7 days", value: "Last 7 days" },
-                  ]}
-                  onSelect={(value) => handleFilterChange("postDate", value)}
-                />
-                <FilterButton
-                  label="經驗要求"
-                  options={[
-                    { label: "Entry Level", value: "Entry Level" },
-                    { label: "Mid Level", value: "Mid Level" },
-                  ]}
-                  onSelect={(value) => handleFilterChange("experienceLevel", value)}
-                />
-                <FilterButton
-                  label="職缺類型"
-                  options={[
-                    { label: "Full-Time", value: "Full-Time" },
-                    { label: "Part-Time", value: "Part-Time" },
-                  ]}
-                  onSelect={(value) => handleFilterChange("jobType", value)}
-                />
-                <button className="apply-button" onClick={applyFilters}>
-                  確定
-                </button>
-              </div>
-              <div className="jobs-page__content">
-                <div className="jobs-page__list">
-                  {jobs.map((job) => (
-                    <JobCard
-                      key={job.id}
-                      job={job}
-                      onClick={() => setSelectedJob(job)}
-                    />
-                  ))}
-                </div>
-                <div className="jobs-page__details">
-                  {selectedJob ? (
-                    <div className="job-details">
-                      <h2>{selectedJob.title}</h2>
-                      <p><strong>Company:</strong> {selectedJob.company}</p>
-                      <p><strong>Location:</strong> {selectedJob.location}</p>
-                      {selectedJob.salary_min && selectedJob.salary_max && (
-                        <p>
-                          <strong>Salary:</strong> ${selectedJob.salary_min.toLocaleString()} - ${selectedJob.salary_max.toLocaleString()}
-                        </p>
-                      )}
-                      <div className="job-actions">
-                        <button className="apply-button">Apply</button>
-                        <button className="save-button">Save</button>
-                      </div>
-                      <p><strong>Description:</strong> {selectedJob.description}</p>
-                      <p><strong>H-1B Records:</strong> {selectedJob.h1b_records}</p>
-                      <div className="career-insights-tabs">
-                        <button
-                          className={activeTab === "salary" ? "active" : ""}
-                          onClick={() => setActiveTab("salary")}
-                        >
-                          Salary
-                        </button>
-                        <button
-                          className={activeTab === "interview" ? "active" : ""}
-                          onClick={() => setActiveTab("interview")}
-                        >
-                          Interview
-                        </button>
-                      </div>
-                      <div className="career-insights-content">
-                        {activeTab === "salary" && <p>Salary insights will be displayed here.</p>}
-                        {activeTab === "interview" && <p>Interview insights will be displayed here.</p>}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="job-details-placeholder">
-                      <p>Select a job to view details</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          }
-        />
+        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/experience" element={<ExperiencePage />} />
+        <Route path="/jobs" element={<JobsPage />} />
       </Routes>
     </main>
   );

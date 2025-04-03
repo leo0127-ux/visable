@@ -1,29 +1,50 @@
-import React, { useState } from "react";
-import { Dropdown, Button, Menu } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import React, { useEffect, useRef } from "react";
+import "./FilterButton.scss";
 
-const FilterButton = ({ label, options, onSelect }) => {
-  const [selectedValue, setSelectedValue] = useState(null);
+const FilterButton = ({ label, options, onSelect, isOpen, onToggle }) => {
+  const dropdownRef = useRef(null);
 
-  const handleMenuClick = ({ key }) => {
-    setSelectedValue(key);
-    onSelect(key);
+  const handleOptionClick = (value) => {
+    onSelect(value);
+    onToggle(false); // Close the dropdown after selection
   };
 
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      {options.map((option) => (
-        <Menu.Item key={option.value}>{option.label}</Menu.Item>
-      ))}
-    </Menu>
-  );
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onToggle(false); // Close the dropdown if clicked outside
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onToggle]);
 
   return (
-    <Dropdown overlay={menu} trigger={["click"]}>
-      <Button>
-        {label} <DownOutlined />
-      </Button>
-    </Dropdown>
+    <div ref={dropdownRef}>
+      <button
+        className="filter-button__trigger"
+        onClick={() => onToggle(!isOpen)} // Toggle the dropdown
+      >
+        {label}
+        <span className="dropdown-icon"></span>
+      </button>
+      {isOpen && (
+        <div className="filter-button__dropdown">
+          {options.map((option) => (
+            <div
+              key={option.value}
+              className="filter-button__dropdown-item"
+              onClick={() => handleOptionClick(option.value)}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

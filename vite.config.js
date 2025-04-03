@@ -6,14 +6,11 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'), // Existing alias for src
-      '/src': path.resolve(__dirname, './src'), // Add alias for /src
+      '@': path.resolve(__dirname, './src'), // 確保 @ 別名正確指向 src
     },
   },
-  build: {
-    outDir: 'dist', // Ensure output directory is dist
-    rollupOptions: {
-      input: './index.html', // Ensure entry file is correct
-    },
+  server: {
+    port: 5173, // 確保伺服器綁定在 5173 埠
+    strictPort: true, // 如果埠被占用則報錯
   },
 });

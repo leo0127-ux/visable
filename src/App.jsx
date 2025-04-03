@@ -15,7 +15,7 @@ const App = () => {
         <div className="layout__content">
           <Sidebar />
           <MainContent
-            searchQuery={searchQuery}
+            searchQuery={searchQuery} // 確保正確傳遞 searchQuery
             className={window.location.pathname === "/jobs" ? "jobs-page" : ""}
           /> {/* Add conditional class for jobs page */}
         </div>

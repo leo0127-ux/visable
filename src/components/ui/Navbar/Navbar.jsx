@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import supabase from "../../../services/supabase/supabaseClient";
 import "./Navbar.scss";
-import Logo from "@/assets/Icon-Text-Logo.jpg";
+import Logo from "@/assets/Icon-Text-Logo.jpg"; // 確保路徑正確
 import AvatarImage from "@/assets/uifaces-popular-image.jpg";
 import CreatePostModal from "../../Post/CreatePostModal";
 import AuthPopup from "../../auth/AuthPopup";

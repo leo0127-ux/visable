@@ -1,11 +1,11 @@
 .jobs-page {
-  padding: 16px;
+  padding: var(--space-x4);
   background-color: var(--grey-100);
 
   h1 {
     font-size: 24px;
-    color: var(--primary-600); /* Use primary color */
-    margin-bottom: 16px;
+    color: var(--primary-600);
+    margin-bottom: var(--space-x4);
   }
 
   p {
@@ -13,35 +13,158 @@
     color: var(--grey-700);
   }
 
-  .jobs-list {
-    list-style: none;
-    padding: 0;
+  .jobs-page__filters {
+    display: flex;
+    gap: var(--space-x4);
+    margin-bottom: var(--space-x4);
+    flex-wrap: wrap;
+
+    .filter-button__trigger {
+      height: 40px;
+      padding: 0 var(--space-x4);
+      background: var(--Greyscale-Surface-Disabled);
+      color: var(--grey-800);
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-x2);
+      cursor: pointer;
+
+      &:hover {
+        background: var(--grey-100);
+      }
+
+      .dropdown-icon {
+        width: 12px;
+        height: 12px;
+        border: solid var(--grey-600);
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        margin-left: auto;
+      }
+    }
+
+    .filter-button__dropdown {
+      position: absolute;
+      top: calc(100% + var(--space-x2));
+      left: 0;
+      background: var(--grey-0);
+      border: 1px solid var(--grey-300);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 20;
+      padding: var(--space-x3);
+      min-width: 240px;
+
+      &-item {
+        padding: var(--space-x2);
+        cursor: pointer;
+        font-size: 14px;
+
+        &:hover {
+          background: var(--grey-100);
+        }
+      }
+    }
+  }
+
+  .jobs-page__content {
+    display: flex;
+    gap: var(--space-x4);
+  }
+
+  .jobs-page__list {
+    flex: 1;
+    max-width: 40%;
+    background: var(--grey-0);
+    border-right: 1px solid var(--grey-300);
+    overflow-y: auto;
+    padding: var(--space-x4);
 
     .job-card {
-      padding: 16px;
-      margin-bottom: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: #fff;
+      padding: var(--space-x4);
+      margin-bottom: var(--space-x4);
+      border: 1px solid var(--grey-300);
+      border-radius: var(--radius-md);
+      background: var(--grey-0);
+      cursor: pointer;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        background: var(--primary-100);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      &.active {
+        border-color: var(--primary-600);
+        background: var(--primary-100);
+      }
 
       h3 {
         font-size: 18px;
-        margin-bottom: 8px;
+        margin-bottom: var(--space-x2);
+        color: var(--grey-900);
       }
 
       p {
-        margin: 4px 0;
+        margin: var(--space-x1) 0;
+        font-size: 14px;
+        color: var(--grey-700);
       }
 
       a {
-        color: var(--primary-600); /* Use primary color */
+        color: var(--primary-600);
         text-decoration: none;
 
         &:hover {
-          color: var(--primary-700); /* Use primary hover color */
+          color: var(--primary-700);
           text-decoration: underline;
         }
       }
+    }
+  }
+
+  .jobs-page__details {
+    flex: 2;
+    padding: var(--space-x4);
+    overflow-y: auto;
+
+    .job-details {
+      h2 {
+        font-size: 24px;
+        margin-bottom: var(--space-x4);
+        color: var(--grey-900);
+      }
+
+      p {
+        margin: var(--space-x2) 0;
+        font-size: 16px;
+        color: var(--grey-800);
+      }
+
+      a {
+        display: inline-block;
+        margin-top: var(--space-x4);
+        padding: var(--space-x2) var(--space-x4);
+        background: var(--primary-600);
+        color: #fff;
+        text-decoration: none;
+        border-radius: var(--radius-md);
+
+        &:hover {
+          background: var(--primary-700);
+        }
+      }
+    }
+
+    .job-details-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--grey-600);
+      font-size: 18px;
     }
   }
 }
