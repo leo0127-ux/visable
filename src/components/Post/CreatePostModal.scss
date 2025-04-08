@@ -18,6 +18,33 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative; // Add relative positioning to contain the absolute positioned close button
+  
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: var(--grey-600);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        border-radius: 50%;
+        
+        &:hover {
+          background-color: var(--grey-100);
+          color: var(--grey-800);
+        }
+      }
   
       h2 {
         margin: 0;
@@ -45,6 +72,143 @@
   
         &:last-of-type {
           background: #ccc;
+        }
+      }
+
+      .form-group {
+        margin-bottom: var(--space-x4);
+        
+        label {
+          display: block;
+          margin-bottom: var(--space-x2);
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--grey-700);
+        }
+        
+        .board-select {
+          width: 100%;
+          padding: var(--space-x3);
+          border: 1px solid var(--grey-300);
+          border-radius: var(--radius-md);
+          font-size: 14px;
+          background: white;
+          color: var(--grey-800);
+          
+          &:focus {
+            border-color: var(--primary-400);
+            outline: none;
+          }
+        }
+      }
+
+      .insight-type-selection {
+        .options {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-x4);
+
+          button {
+            position: relative;
+            padding: var(--space-x6) var(--space-x4);
+            text-align: left;
+            
+            div {
+              font-size: 18px;
+              font-weight: 600;
+              margin-bottom: var(--space-x2);
+            }
+            
+            p {
+              font-size: 14px;
+              color: rgba(255, 255, 255, 0.8);
+              margin-bottom: var(--space-x3);
+            }
+            
+            .vpoint-info {
+              font-size: 12px;
+              padding: var(--space-x2) var(--space-x3);
+              border-radius: var(--radius-md);
+              background-color: rgba(255, 255, 255, 0.2);
+              display: inline-block;
+              margin-top: var(--space-x2);
+            }
+          }
+        }
+      }
+
+      .anonymity-section {
+        margin: var(--space-x4) 0;
+        
+        label {
+          display: block;
+          margin-bottom: var(--space-x2);
+          font-weight: 500;
+        }
+        
+        .anonymity-options {
+          display: flex;
+          gap: var(--space-x4);
+          
+          .radio-option {
+            display: flex;
+            align-items: center;
+            padding: var(--space-x2);
+            border: 1px solid var(--grey-300);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            flex: 1;
+            
+            input[type="radio"] {
+              margin-right: var(--space-x2);
+            }
+            
+            .option-content {
+              display: flex;
+              align-items: center;
+              gap: var(--space-x2);
+              
+              .user-avatar-preview {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                object-fit: cover;
+              }
+              
+              .user-initial-avatar {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background-color: var(--primary-500);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 14px;
+              }
+              
+              .anonymous-avatar {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background-color: var(--grey-400);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                
+                svg {
+                  width: 18px;
+                  height: 18px;
+                }
+              }
+            }
+            
+            &:hover {
+              background-color: var(--grey-100);
+            }
+          }
         }
       }
     }

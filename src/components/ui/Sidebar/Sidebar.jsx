@@ -7,6 +7,7 @@ import "./Sidebar.scss";
 const Sidebar = () => {
   const [isCommunityOpen, setIsCommunityOpen] = React.useState(true);
   const [communityItems, setCommunityItems] = React.useState([]);
+  const [error, setError] = React.useState(null);
 
   const toggleCommunity = () => {
     setIsCommunityOpen((prev) => !prev);
@@ -14,29 +15,17 @@ const Sidebar = () => {
 
   React.useEffect(() => {
     const fetchBoards = async () => {
-      const { data, error } = await supabase.from("boards").select("*");
-      if (error) {
-        console.error("Error fetching boards:", error);
-      } else {
-        const formattedBoards = data.map((board) => ({
-          path: `/board/${board.id}`,
-          label: board.name,
-          icon: (
-            <div className="icon-container">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="icon"
-              >
-                <circle cx="12" cy="12" r="9" />
-              </svg>
-            </div>
-          ),
-        }));
-        setCommunityItems(formattedBoards);
+      try {
+        const { data, error } = await supabase.from("boards").select("*");
+        if (error) {
+          console.error("Error fetching boards:", error);
+          setError("Failed to fetch boards. Please check your API key or permissions.");
+          return;
+        }
+        setCommunityItems(data);
+      } catch (err) {
+        console.error("Unexpected error:", err);
+        setError("An unexpected error occurred.");
       }
     };
 
@@ -170,14 +159,29 @@ const Sidebar = () => {
             <div className="sidebar__community-list">
               {communityItems.map((item) => (
                 <NavLink
-                  key={item.path}
-                  to={item.path}
+                  key={item.id}
+                  to={`/board/${item.id}`}
                   className={({ isActive }) =>
                     `sidebar__link ${isActive ? "active" : ""}`
                   }
                 >
-                  {item.icon}
-                  <span>{item.label}</span>
+                  <div className="icon-container">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="icon"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                      />
+                    </svg>
+                  </div>
+                  <span>{item.name}</span>
                 </NavLink>
               ))}
             </div>

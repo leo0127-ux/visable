@@ -1,206 +1,325 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // 用於跳轉
-import supabase from "../../services/supabase/supabaseClient"; // 引入 Supabase 客戶端
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import supabase from "../../services/supabase/supabaseClient";
 import "./CreatePostModal.scss";
 
-const CreatePostModal = ({ onClose, userId }) => {
-  const [postType, setPostType] = useState("post"); // 默認為一般文章
-  const [subType, setSubType] = useState(""); // Career Insights 的子類型
+const CreatePostModal = ({ onClose }) => {
+  const [step, setStep] = useState(1);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null); // 獲取用戶 ID
   const [title, setTitle] = useState("");
+  const [postType, setPostType] = useState("general"); // "general" or "careerInsight"
+  const [careerInsightType, setCareerInsightType] = useState("interview"); // "interview" or "salary"
   const [content, setContent] = useState("");
-  const [boardId, setBoardId] = useState(""); // 選擇的板塊 ID
-  const [boards, setBoards] = useState([]); // 存儲板塊列表
-  const [careerData, setCareerData] = useState({}); // Career Insights 專屬資料
-  const navigate = useNavigate(); // 初始化跳轉功能
+  const [companyName, setCompanyName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [location, setLocation] = useState("");
+  const [baseSalary, setBaseSalary] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState("No"); // "Yes" or "No"
+  const [loading, setLoading] = useState(false);
+  const [boardId, setBoardId] = useState(null); // Add state for board_id
+  const [boards, setBoards] = useState([]); // Add state for boards
+  const [userAvatar, setUserAvatar] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+  const navigate = useNavigate();
 
-  // 從 Supabase 獲取板塊列表
   useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
+        alert('You need to log in to create a post.');
+        navigate('/login'); // Redirect to login page
+        return;
+      }
+
+      setIsLoggedIn(true);
+      setUserId(user.id);
+      setUserEmail(user.email);
+      setUserAvatar(user.user_metadata?.avatar_url || null);
+
+      // 確保用戶存在於 users 表中
+      const { data: existingUser, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!existingUser && !userError) {
+        const { error: insertError } = await supabase.from("users").insert([
+          { id: user.id, email: user.email, created_at: new Date().toISOString() },
+        ]);
+        if (insertError) {
+          console.error("Error inserting user into users table:", insertError);
+        }
+      }
+    };
+
+    checkUser();
+
+    // Fetch boards from database
     const fetchBoards = async () => {
       const { data, error } = await supabase.from("boards").select("*");
       if (error) {
         console.error("Error fetching boards:", error);
       } else {
-        setBoards(data); // 將板塊列表存儲到狀態中
+        setBoards(data || []);
+        // Set default board if available
+        if (data && data.length > 0) {
+          setBoardId(data[0].id);
+        }
       }
     };
 
     fetchBoards();
-  }, []);
+  }, [navigate]);
 
-  const handleCareerDataChange = (field, value) => {
-    setCareerData((prev) => ({ ...prev, [field]: value }));
+  const isFormValid = () => {
+    // Don't require boardId for career insights
+    if (postType === "general" && (!title.trim() || !content.trim() || !boardId)) return false;
+    if (postType === "careerInsight" && (!title.trim() || !content.trim() || !companyName.trim() || !jobTitle.trim())) return false;
+    return true;
   };
 
   const handleSubmit = async () => {
-    if (postType === "post") {
-      if (!boardId) {
-        console.error("Board ID is required.");
-        alert("Please select a board before submitting.");
+    if (!isFormValid()) return;
+
+    setLoading(true);
+
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        alert("You must be logged in to create a post.");
         return;
       }
 
-      const { data, error } = await supabase.from("posts").insert([
-        {
-          title,
-          content,
-          board_id: boardId,
-          user_id: userId,
-          is_anonymous: false, // 默認不匿名
-        },
-      ]);
+      // Get the board name from the selected board only for general posts
+      let boardName = null;
+      if (postType === "general" && boardId) {
+        const selectedBoard = boards.find(board => board.id === boardId);
+        boardName = selectedBoard ? selectedBoard.name : null;
+      }
+
+      // 確保插入前獲取到了有效的 user.id
+      console.log("Current user:", user);
+      
+      if (!user.id) {
+        alert("Could not retrieve your user ID. Please log out and try again.");
+        return;
+      }
+      
+      // Create post object with common fields
+      const postData = {
+        user_id: user.id,
+        title,
+        content,
+        is_anonymous: isAnonymous === "Yes",
+        created_at: new Date().toISOString(),
+      };
+
+      // Add board fields only for general posts
+      if (postType === "general") {
+        postData.board_id = boardId;
+        postData.board_name = boardName;
+      } 
+      // Add career insight specific fields
+      else if (postType === "careerInsight") {
+        postData.category = "career";
+        postData.company_name = companyName;
+        postData.job_title = jobTitle;
+        postData.location = location;
+        if (careerInsightType === "salary" && baseSalary) {
+          postData.base_salary = baseSalary;
+        }
+      }
+
+      const { error } = await supabase.from("posts").insert([postData]);
 
       if (error) {
         console.error("Error creating post:", error);
+        alert(`Failed to create post: ${error.message}`);
         return;
       }
 
-      if (data && data.length > 0) {
-        const newPost = data[0];
-        console.log("Post created:", newPost);
-
-        // 跳轉到該文章的詳細內容頁面
-        navigate(`/post/${newPost.id}`);
-      }
-    } else if (postType === "career_insight") {
-      // 插入經驗分享到 career_insights 表
-      const { data, error } = await supabase.from("career_insights").insert([
-        {
-          user_id: userId,
-          type: subType,
-          company_name: careerData.company_name,
-          job_title: careerData.job_title,
-          location: careerData.location,
-          base_salary: careerData.base_salary || null,
-          additional_compensation: careerData.additional_compensation || null,
-          bonus: careerData.bonus || null,
-          stock_rsu: careerData.stock_rsu || null,
-          signing_bonus: careerData.signing_bonus || null,
-          job_type: careerData.job_type || null,
-          visa_sponsorship: careerData.visa_sponsorship || null,
-          work_hours_per_week: careerData.work_hours_per_week || null,
-          overtime_frequency: careerData.overtime_frequency || null,
-          benefits: careerData.benefits || null,
-          job_satisfaction: careerData.job_satisfaction || null,
-          interview_date: careerData.interview_date || null,
-          interview_outcome: careerData.interview_outcome || null,
-          interview_difficulty: careerData.interview_difficulty || null,
-          number_of_rounds: careerData.number_of_rounds || null,
-          interview_process: careerData.interview_process || null,
-          technical_interview: careerData.technical_interview || null,
-          behavioral_interview: careerData.behavioral_interview || null,
-          case_study: careerData.case_study || null,
-          interview_experience: careerData.interview_experience || null,
-          visa_sponsorship_asked: careerData.visa_sponsorship_asked || null,
-          advice: careerData.advice || null,
-        },
-      ]);
-
-      if (error) {
-        console.error("Error creating career insight:", error);
-        return;
-      }
-
-      if (data && data.length > 0) {
-        const newInsight = data[0];
-        console.log("Career Insight created:", newInsight);
-
-        // 跳轉到經驗分享頁面
-        navigate(`/career_insights/${newInsight.id}`);
-      }
+      alert("Post created successfully!");
+      onClose();
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert(`An unexpected error occurred: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    onClose(); // 關閉彈窗
+  const handlePostTypeSelect = (type) => {
+    setPostType(type);
+    if (type === "careerInsight") {
+      setStep(2); // Go to career insight type selection
+    } else {
+      setStep(3); // Skip to the form for general posts
+    }
+  };
+
+  const handleInsightTypeSelect = (type) => {
+    setCareerInsightType(type);
+    setStep(3); // Move to form step
   };
 
   return (
-    <div className="create-post-modal">
-      <div className="modal-content">
-        <h2>Create Post</h2>
-        <select value={postType} onChange={(e) => setPostType(e.target.value)}>
-          <option value="post">Post</option>
-          <option value="career_insight">Career Insights</option>
-        </select>
-
-        {postType === "post" && (
-          <>
-            <select value={boardId} onChange={(e) => setBoardId(e.target.value)}>
-              <option value="">Select Board</option>
-              {boards.map((board) => (
-                <option key={board.id} value={board.id}>
-                  {board.name}
-                </option>
-              ))}
-            </select>
+    <div className="create-post-modal" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}> {/* 防止點擊內容區域關閉 */}
+        <button className="close-btn" onClick={onClose}>×</button>
+        {step === 1 && (
+          <div className="step-1">
+            <h2>Select Post Type</h2>
+            <div className="options">
+              <button className="btn btn-primary" onClick={() => handlePostTypeSelect("general")}>
+                <div>Post</div>
+                <p>Ask or Share in the Community</p>
+              </button>
+              <button className="btn btn-primary" onClick={() => handlePostTypeSelect("careerInsight")}>
+                <div>Career Insights</div>
+                <p>Share Career Insights</p>
+              </button>
+            </div>
+          </div>
+        )}
+        {step === 2 && (
+          <div className="step-2 insight-type-selection">
+            <h2>Select Insight Type</h2>
+            <div className="options">
+              <button className="btn btn-primary" onClick={() => handleInsightTypeSelect("salary")}>
+                <div>Salary</div>
+                <p>Share salary information</p>
+                <span className="vpoint-info">Post to earn 1 VPoint—get 5 bonus VPoints if your post is featured!</span>
+              </button>
+              <button className="btn btn-primary" onClick={() => handleInsightTypeSelect("interview")}>
+                <div>Interview</div>
+                <p>Share interview experience</p>
+                <span className="vpoint-info">Post to earn 1 VPoint—get 5 bonus VPoints if your post is featured!</span>
+              </button>
+            </div>
+          </div>
+        )}
+        {step === 3 && (
+          <div className="step-3">
+            <h2>Create Post</h2>
+            
+            {/* Only show board selection for general posts */}
+            {postType === "general" && (
+              <div className="form-group">
+                <label htmlFor="board-selection">Select Board</label>
+                <select 
+                  id="board-selection" 
+                  value={boardId || ""} 
+                  onChange={(e) => setBoardId(e.target.value)}
+                  className="board-select"
+                  required
+                >
+                  <option value="" disabled>Select a board</option>
+                  {boards.map(board => (
+                    <option key={board.id} value={board.id}>
+                      {board.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
             <input
               type="text"
               placeholder="Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <textarea
-              placeholder="Content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </>
-        )}
-
-        {postType === "career_insight" && (
-          <>
-            <select value={subType} onChange={(e) => setSubType(e.target.value)}>
-              <option value="">Select Subtype</option>
-              <option value="interview">Interview</option>
-              <option value="salary">Salary</option>
-            </select>
-            <input
-              type="text"
-              placeholder="Company Name"
-              onChange={(e) => handleCareerDataChange("company_name", e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Job Title"
-              onChange={(e) => handleCareerDataChange("job_title", e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Location"
-              onChange={(e) => handleCareerDataChange("location", e.target.value)}
-            />
-            {subType === "salary" && (
+            {postType === "careerInsight" && (
               <>
                 <input
-                  type="number"
-                  placeholder="Base Salary"
-                  onChange={(e) => handleCareerDataChange("base_salary", e.target.value)}
+                  type="text"
+                  placeholder="Company Name"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
                 />
                 <input
                   type="text"
-                  placeholder="Additional Compensation"
-                  onChange={(e) =>
-                    handleCareerDataChange("additional_compensation", e.target.value)
-                  }
+                  placeholder="Job Title"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
                 />
-              </>
-            )}
-            {subType === "interview" && (
-              <>
                 <input
-                  type="date"
-                  placeholder="Interview Date"
-                  onChange={(e) => handleCareerDataChange("interview_date", e.target.value)}
+                  type="text"
+                  placeholder="Location (e.g., San Francisco, CA)"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
                 />
-                <textarea
-                  placeholder="Interview Process"
-                  onChange={(e) => handleCareerDataChange("interview_process", e.target.value)}
-                />
+                {careerInsightType === "salary" && (
+                  <input
+                    type="text"
+                    placeholder="Base Salary"
+                    value={baseSalary}
+                    onChange={(e) => setBaseSalary(e.target.value)}
+                  />
+                )}
               </>
             )}
-          </>
+            <textarea
+              placeholder="Say Something"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <div className="anonymity-section">
+              <label>Post as:</label>
+              <div className="anonymity-options">
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="anonymity"
+                    value="No"
+                    checked={isAnonymous === "No"}
+                    onChange={() => setIsAnonymous("No")}
+                  />
+                  <div className="option-content">
+                    <span>Use my username</span>
+                    {isAnonymous === "No" && userAvatar && (
+                      <img src={userAvatar} alt="Your avatar" className="user-avatar-preview" />
+                    )}
+                    {isAnonymous === "No" && !userAvatar && userEmail && (
+                      <div className="user-initial-avatar">
+                        {userEmail.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </label>
+                
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="anonymity"
+                    value="Yes"
+                    checked={isAnonymous === "Yes"}
+                    onChange={() => setIsAnonymous("Yes")}
+                  />
+                  <div className="option-content">
+                    <span>Anonymous</span>
+                    {isAnonymous === "Yes" && (
+                      <div className="anonymous-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                </label>
+              </div>
+            </div>
+            <button
+              className={`btn btn-primary ${!isFormValid() ? "disabled" : ""}`}
+              onClick={handleSubmit}
+              disabled={!isFormValid() || loading}
+            >
+              {loading ? "Posting..." : "Post"}
+            </button>
+          </div>
         )}
-
-        <button onClick={handleSubmit}>Submit</button>
-        <button onClick={onClose}>Cancel</button>
       </div>
     </div>
   );

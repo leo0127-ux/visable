@@ -1,24 +1,62 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/ui/Navbar/Navbar";
 import Sidebar from "./components/ui/Sidebar/Sidebar";
-import MainContent from "./layout/MainContent/MainContent"; // 確保正確導入 MainContent
+import MainContent from "./layout/MainContent/MainContent";
+import AccountPage from "./pages/AccountPage/AccountPage";
+import AuthPopup from "./components/auth/AuthPopup";
+import supabase from "./services/supabase/supabaseClient";
 import './styles/global.scss';
 
 const App = () => {
-  const [searchQuery, setSearchQuery] = useState(""); // 新增搜尋狀態
+  const [isAuthPopupVisible, setIsAuthPopupVisible] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    };
+
+    checkAuth();
+
+    const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      if (subscription && typeof subscription.unsubscribe === "function") {
+        subscription.unsubscribe();
+      }
+    };
+  }, []);
+
+  const handleLoginRequired = () => {
+    if (!user) {
+      setIsAuthPopupVisible(true); // 顯示登入彈窗
+    }
+  };
 
   return (
     <Router>
-      <div className="layout" style={{ overflow: "visible" }}> {/* Ensure dropdown is not clipped */}
-        <Navbar onSearch={setSearchQuery} /> {/* 傳遞 setSearchQuery */}
+      <div className="layout" style={{ overflow: "visible" }}>
+        <Navbar onLoginClick={handleLoginRequired} />
         <div className="layout__content">
           <Sidebar />
-          <MainContent
-            searchQuery={searchQuery} // 確保正確傳遞 searchQuery
-            className={window.location.pathname === "/jobs" ? "jobs-page" : ""}
-          /> {/* Add conditional class for jobs page */}
+          <MainContent onLoginRequired={handleLoginRequired} />
         </div>
+        <AuthPopup
+          visible={isAuthPopupVisible}
+          onClose={() => setIsAuthPopupVisible(false)}
+        />
       </div>
     </Router>
   );

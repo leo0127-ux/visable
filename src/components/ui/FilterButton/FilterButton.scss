@@ -1,17 +1,23 @@
+.filter-button {
+  position: relative;
+  display: inline-block;
+  z-index: 30; // 確保較高的 z-index
+}
+
 .filter-button__trigger {
-  height: 36px; /* Set fixed height */
-  padding: 0 16px; /* Adjust padding to fit height */
-  background: var(--Greyscale-Surface-Disabled); /* Use disabled surface color */
+  height: 40px; /* 設置固定高度為 40px */
+  padding: 0 16px; /* 調整內邊距以適應高度 */
+  background: var(--Greyscale-Surface-Disabled); /* 使用禁用表面顏色 */
   color: var(--grey-800);
-  border-radius: var(--radius-full); /* Keep maximum border radius */
+  border-radius: var(--radius-full); /* 保持最大邊框半徑 */
   cursor: pointer;
   font-size: 14px;
   display: flex;
   align-items: center;
-  gap: var(--space-x2); /* Ensure text and arrow icon are separated by --space-x2 */
+  gap: var(--space-x2); /* 確保文字和箭頭圖標之間有間距 */
 
   &:hover {
-    background: var(--grey-100); /* Use hover background color */
+    background: var(--grey-100); /* 使用懸停背景顏色 */
   }
 
   .dropdown-icon {
@@ -25,16 +31,17 @@
 
 .filter-button__dropdown {
   position: absolute;
-  top: calc(100% + 4px); /* Position directly below the button */
+  top: 100%; /* 確保在觸發按鈕正下方 */
   left: 0;
+  margin-top: 4px; /* 添加間距 */
   background: var(--grey-0);
   border: 1px solid var(--grey-300);
   border-radius: var(--radius-md); /* Keep dropdown border radius */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 20;
+  z-index: 31; // 確保下拉選單的 z-index 高於按鈕
   padding: 8px;
-  min-width: 200px; /* Set a fixed minimum width */
-  max-width: 240px; /* Restrict the maximum width */
+  min-width: 160px; /* Set a fixed minimum width */
+  max-width: 200px; /* Restrict the maximum width */
   width: auto; /* Ensure the width adjusts to content */
 
   &-item {

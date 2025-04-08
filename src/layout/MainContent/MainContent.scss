@@ -1,25 +1,39 @@
 .main-content {
-  flex: 1; /* 占據剩餘空間 */
+  flex: 1; 
   display: flex;
-  flex-direction: column;
-  gap: 16px; /* 卡片之間的間距 */
-  background: var(--grey-0); /* Set background color to white */
-  overflow-y: auto; /* 如果內容超出，允許滾動 */
-  width: calc(100vw - 240px); /* 計算寬度，減去 Sidebar 的寬度 */
-  box-sizing: border-box; /* 包括內邊距和邊框 */
+  background: var(--grey-0);
+  overflow-y: auto;
+  width: calc(100vw - 240px);
+  box-sizing: border-box;
+
+  &.jobs-page,
+  &.account-page {
+    .content-area {
+      width: 100%;
+    }
+  }
+
+  .content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-x4);
+    display: flex;
+    flex-direction: column;
+    min-width: 0; // Prevent content from overflowing
+  }
 
   &.jobs-page {
-    padding: 0; /* Remove padding for jobs page */
+    padding: 0;
   }
 
   &:not(.jobs-page) {
-    padding: 16px; /* Keep padding for other pages */
+    // No need for additional padding here since we're using content-area
   }
 
   .card {
-    width: 100%; /* 卡片寬度佔滿父容器 */
-    max-width: 100%; /* 確保不超出父容器 */
-    box-sizing: border-box; /* 包括內邊距和邊框 */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
 
@@ -123,7 +137,7 @@
     border-right: 1px solid var(--grey-300);
     overflow-y: auto;
     padding: 16px;
-    border-radius: var(--radius-x3); /* Use --radius-x3 */
+    // border-radius: var(--radius-x3); /* Use --radius-x3 */
 
     .job-card {
       border-radius: 0.75rem;

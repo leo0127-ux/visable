@@ -1,12 +1,6 @@
 .jobs-page {
-  padding: var(--space-x4);
-  background-color: var(--grey-100);
-
-  h1 {
-    font-size: 24px;
-    color: var(--primary-600);
-    margin-bottom: var(--space-x4);
-  }
+  background-color: var(--grey-0); // 設置背景色為白色
+  padding: 0;
 
   p {
     font-size: 1rem;
@@ -14,10 +8,18 @@
   }
 
   .jobs-page__filters {
+    position: fixed;
+    top: 72px; // Position right below navbar
+    left: 240px; // Position right of sidebar
+    width: calc(100vw - 240px);
+    z-index: 10;
     display: flex;
-    gap: var(--space-x4);
-    margin-bottom: var(--space-x4);
-    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    background: var(--grey-0);
+    border-bottom: 1px solid var(--grey-300);
+    height: 56px; // Fixed height for filters section
+    box-sizing: border-box;
 
     .filter-button__trigger {
       height: 40px;
@@ -70,7 +72,11 @@
   }
 
   .jobs-page__content {
-    display: flex;
+    display: flex; // Arrange job list and details side by side
+    flex: 1;
+    height: calc(100vh - 72px - 56px); // Height minus navbar and filters
+    margin-top: 56px; // Height of the filters section
+    overflow: hidden; // Prevent scrollbar at this level
     gap: var(--space-x4);
   }
 
@@ -79,17 +85,54 @@
     max-width: 40%;
     background: var(--grey-0);
     border-right: 1px solid var(--grey-300);
-    overflow-y: auto;
+    overflow-y: auto; // Enable vertical scrolling
+    height: 100%; // Take full height of the container
     padding: var(--space-x4);
+    position: relative; // Establish stacking context
 
     .job-card {
+      list-style: none; // 移除點點樣式
       padding: var(--space-x4);
       margin-bottom: var(--space-x4);
       border: 1px solid var(--grey-300);
-      border-radius: var(--radius-md);
-      background: var(--grey-0);
+      background: var(--grey-0); // 保留背景色
       cursor: pointer;
       transition: background 0.2s ease, box-shadow 0.2s ease;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .job-card__content {
+        flex: 1;
+      }
+
+      .job-card__actions {
+        display: flex;
+        gap: var (--space-x2);
+
+        .icon-button {
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+
+          &:hover {
+            background: var(--grey-100);
+            border-radius: var(--radius-full);
+          }
+
+          .icon {
+            width: 16px;
+            height: 16px;
+            color: var(--grey-600);
+          }
+        }
+      }
 
       &:hover {
         background: var(--primary-100);
@@ -110,7 +153,7 @@
       p {
         margin: var(--space-x1) 0;
         font-size: 14px;
-        color: var(--grey-700);
+        color: var (--grey-700);
       }
 
       a {
@@ -123,37 +166,265 @@
         }
       }
     }
+
+    .loader {
+      text-align: center;
+      padding: var(--space-x4);
+      color: var(--grey-600);
+      font-size: 14px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   .jobs-page__details {
     flex: 2;
+    height: 100%; // Take full height of the container
+    overflow-y: auto; // Enable vertical scrolling
     padding: var(--space-x4);
-    overflow-y: auto;
+    position: relative; // Establish stacking context
 
     .job-details {
+      display: flex;
+      flex-direction: column;
+
+      .job-details__header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-x4); /* 增加 Logo 和公司名稱之間的間距 */
+        margin-bottom: var(--space-x4);
+
+        &__logo {
+          width: 40px; /* 設置寬度為 40px */
+          height: 40px; /* 設置高度為 40px */
+          object-fit: contain;
+          border-radius: var(--radius-md); /* 添加圓角 */
+          background: var(--grey-200); /* 預設背景色 */
+        }
+
+        &__company-name {
+          font-size: 16px;
+          font-weight: bold;
+          color: var(--grey-900);
+        }
+      }
+
       h2 {
         font-size: 24px;
-        margin-bottom: var(--space-x4);
+        font-weight: bold;
+        margin-bottom: 16px;
         color: var(--grey-900);
       }
 
       p {
-        margin: var(--space-x2) 0;
+        margin: 8px 0;
         font-size: 16px;
         color: var(--grey-800);
       }
 
-      a {
-        display: inline-block;
+      .job-actions {
+        display: flex;
+        gap: var(--space-x4);
         margin-top: var(--space-x4);
-        padding: var(--space-x2) var(--space-x4);
-        background: var(--primary-600);
-        color: #fff;
-        text-decoration: none;
-        border-radius: var(--radius-md);
+        margin-bottom: var(--space-x4); /* 添加底部邊距與 additional-info 隔開 */
 
-        &:hover {
-          background: var(--primary-700);
+        .apply-button,
+        .save-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: var(--space-x2);
+          width: 120px; /* 確保按鈕寬度相同 */
+          height: 40px; /* 確保按鈕高度相同 */
+          font-size: 14px;
+          font-weight: bold;
+          border-radius: var(--radius-md);
+          cursor: pointer;
+        }
+
+        .apply-button {
+          background: var(--primary-600);
+          color: #fff;
+          border: none;
+
+          &:hover {
+            background: var(--primary-700);
+          }
+
+          .icon {
+            width: 16px;
+            height: 16px;
+          }
+        }
+
+        .save-button {
+          background: transparent;
+          color: var(--primary-600);
+          border: 2px solid var(--primary-600);
+
+          &:hover {
+            background: var(--primary-100);
+          }
+
+          .icon {
+            width: 16px;
+            height: 16px;
+          }
+        }
+      }
+
+      &__additional-info {
+        margin-top: var(--space-x2); /* 減少上邊距，因為已有 job-actions 的底部邊距 */
+        border-top: 1px solid var(--grey-200);
+        padding-top: var(--space-x4);
+      }
+
+      &__section {
+        margin-bottom: var(--space-x6);
+
+        h3 {
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--grey-800);
+          margin-bottom: var(--space-x4);
+        }
+        
+        &__about, &__employer {
+          p {
+            margin-bottom: var(--space-x3);
+            line-height: 1.6;
+            color: var(--grey-700);
+          }
+        }
+      
+        .employer-info {
+          .employer-stats {
+            display: flex;
+            gap: var(--space-x6);
+            margin-bottom: var(--space-x4);
+            
+            .stat-item {
+              display: flex;
+              flex-direction: column;
+              gap: var (--space-x1);
+      
+              .label {
+                font-size: 14px;
+                color: var(--grey-600);
+              }
+      
+              .value {
+                font-size: 16px;
+                font-weight: 500;
+                color: var(--grey-800);
+              }
+            }
+          }
+        }
+      }
+
+      &__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-x4);
+
+        &-item {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-x1);
+
+          .label {
+            font-size: 14px;
+            color: var(--grey-600);
+          }
+
+          .value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--grey-800);
+          }
+        }
+      }
+
+      &__visa-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        
+        li {
+          position: relative;
+          padding: var(--space-x2) 0;
+          font-size: 16px;
+          color: var(--grey-800);
+          display: flex;
+          align-items: center;
+          
+          &::before {
+            content: "•";
+            margin-right: var(--space-x2);
+            color: var(--primary-600);
+          }
+        }
+      }
+
+      .job-requirements {
+        padding-left: var(--space-x4);
+        
+        li {
+          margin-bottom: var(--space-x2);
+          color: var(--grey-700);
+          font-size: 15px;
+
+          &::marker {
+            color: var(--primary-600);
+          }
+        }
+      }
+
+      &__glance-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--space-x6) 0;
+        
+        li {
+          display: flex;
+          align-items: center;
+          gap: var(--space-x3);
+          margin-bottom: var(--space-x3);
+          
+          .icon-wrapper {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-100);
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+            
+            .list-icon {
+              font-size: 16px;
+              color: var(--primary-600);
+            }
+          }
+          
+          div {
+            display: flex;
+            flex-direction: column;
+            
+            .label {
+              font-size: 14px;
+              color: var(--grey-600);
+            }
+            
+            .value {
+              font-size: 16px;
+              font-weight: 500;
+              color: var(--grey-800);
+            }
+          }
         }
       }
     }
@@ -166,5 +437,15 @@
       color: var(--grey-600);
       font-size: 18px;
     }
+  }
+}
+
+// Ensure MainContent doesn't add its own scrollbars when on jobs page
+.main-content.jobs-page {
+  overflow: hidden;
+
+  .content-area {
+    padding: 0;
+    overflow: hidden;
   }
 }

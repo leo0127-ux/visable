@@ -25,6 +25,42 @@
     }
   }
 
+  &__search {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 24px;
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--grey-500);
+      font-size: 18px;
+    }
+
+    &-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 16px 0 40px;
+      background: var(--grey-50);
+      border: 1px solid var(--grey-200);
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      color: var(--grey-700);
+
+      &::placeholder {
+        color: var(--grey-500);
+      }
+
+      &:focus {
+        border-color: var(--primary-400);
+        background: white;
+      }
+    }
+  }
+
   &__searchbar {
     flex: 1;
     max-width: 731px;
@@ -77,42 +113,34 @@
       cursor: pointer;
 
       &--create {
-        display: inline-flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 8px;
+        height: 40px;
         padding: 0 16px;
-        height: 48px;
-        background: var(--primary-600); /* 使用主色 */
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
+        background-color: rgba(0, 86, 229, 0.10); // Light blue background
+        color: var(--primary-600); // Primary blue text color
+        border-radius: var(--radius-full); // Fully rounded corners
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px; // Ensure proper spacing between icon and text
+        transition: background 0.2s ease;
 
         &:hover {
-          background: var(--primary-700); /* 使用全局變數定義懸停顏色 */
+          background-color: rgba(0, 86, 229, 0.15); // Slightly darker on hover
         }
 
-        .navbar__button-icon {
-          width: 24px;
-          height: 24px;
-          position: relative;
-
-          .navbar__add-icon {
-            width: 18px;
-            height: 18px;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            background: black;
-            border-radius: 50%;
-          }
+        .create-icon {
+          width: 16px;
+          height: 16px;
+          stroke: var(--primary-600); // Match the text color
+          flex-shrink: 0; // Prevent the icon from shrinking
         }
 
         span {
           font-size: 14px;
-          font-weight: 400;
-          color: black;
+          font-weight: 500;
+          color: var(--primary-600); // Match the icon color
         }
       }
 
@@ -124,17 +152,20 @@
     }
 
     .navbar__login {
-      background: var(--primary-600); /* 使用主色 */
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 16px;
+      height: 40px;
+      padding: 0 16px;
+      background: var(--primary-600);
+      color: white;
+      border-radius: var(--radius-md);
       font-size: 14px;
       font-weight: 600;
-      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
 
       &:hover {
-        background: var(--primary-700); /* 使用全局變數定義懸停顏色 */
+        background: var(--primary-700);
       }
     }
 
@@ -142,11 +173,15 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      position: relative;
 
       .navbar__avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 100%;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid var(--grey-200);
+        object-fit: cover;
         overflow: hidden;
 
         img {
@@ -170,7 +205,55 @@
           background: var(--primary-700); /* 使用全局變數定義懸停顏色 */
         }
       }
+
+      .navbar__dropdown {
+        position: absolute;
+        top: calc(100% + var(--space-x2));
+        right: 0;
+        background: var(--grey-0);
+        border: 1px solid var(--grey-300);
+        border-radius: var(--radius-md);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-x2);
+        min-width: 160px; /* Set minimum width */
+
+        button {
+          padding: var(--space-x2) var(--space-x4);
+          background: transparent;
+          border: none;
+          text-align: left;
+          cursor: pointer;
+          font-size: 14px;
+          color: var(--grey-800);
+
+          &:hover {
+            background: var(--grey-100);
+          }
+        }
+      }
     }
+  }
+
+  &__search--responsive {
+    flex: 1;
+    margin: 0 16px;
+
+    .navbar__search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  }
+
+  &__actions--spaced {
+    display: flex;
+    align-items: center;
+    gap: 16px; // Add spacing between buttons
   }
 }
 

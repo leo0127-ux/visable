@@ -1,0 +1,46 @@
+.board-page {
+  width: 100%;
+  padding: var(--space-x4);
+  
+  .board-header {
+    margin-bottom: var(--space-x6);
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--grey-800);
+      margin-bottom: var(--space-x2);
+    }
+    
+    .description {
+      font-size: 16px;
+      color: var(--grey-600);
+    }
+  }
+  
+  .posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-x4);
+    width: 100%;
+    padding-right: var(--space-x4); /* Add padding on right to create space from sidebar */
+  }
+  
+  .no-posts {
+    padding: var(--space-x6);
+    background-color: var(--grey-50);
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--grey-600);
+    font-size: 16px;
+  }
+  
+  &.loading, &.error, &.not-found {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    font-size: 18px;
+    color: var(--grey-600);
+  }
+}

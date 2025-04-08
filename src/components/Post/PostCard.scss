@@ -2,13 +2,14 @@
 .post-card {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 600px; /* 卡片最大寬度 */
+    width: 100%; /* Make card take full width */
+    max-width: 100%; /* Remove fixed width constraint */
     padding: 20px;
     border: none; /* 確保沒有邊框 */
     border-radius: var(--radius-x3); /* Use --radius-x3 */
     background-color: var(--grey-0); /* 背景色 */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 16px; /* Add spacing between cards */
   
     &:hover {
       transform: translateY(-4px); /* 滑鼠懸停時上移 */

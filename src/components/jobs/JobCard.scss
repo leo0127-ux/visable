@@ -1,26 +1,94 @@
 .job-card {
-  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-x4);
+  padding: var(--space-x4);
   border: 1px solid var(--grey-300);
-  border-radius: var(--radius-x3); /* Use --radius-x3 */
+  border-radius: var(--radius-x3);
   background: var(--grey-0);
-  cursor: pointer;
   transition: background 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 
   &:hover {
-    background: var(--primary-100); /* Use primary hover background */
+    background: var(--primary-100);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--grey-900);
-    margin-bottom: 8px;
+  .job-card__logo {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    background: var(--grey-200);
   }
 
-  p {
-    font-size: 14px;
-    color: var(--grey-700);
-    margin: 4px 0;
+  .job-card__content {
+    flex: 1;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--grey-900);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-x2);
+
+      .verified-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--primary-600);
+      }
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--grey-700);
+      margin: var(--space-x1) 0;
+    }
+
+    .job-salary {
+      font-size: 14px;
+      color: var(--primary-600);
+      font-weight: 500;
+    }
+
+    .job-benefits {
+      display: inline-block;
+      margin-top: var(--space-x2);
+      padding: var(--space-x1) var(--space-x2);
+      background: var(--primary-100);
+      color: var(--primary-600);
+      font-size: 12px;
+      border-radius: var(--radius-md);
+    }
+  }
+
+  .job-card__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-x2);
+
+    .icon-button {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--grey-100);
+        border-radius: var(--radius-full);
+      }
+
+      .icon {
+        width: 16px;
+        height: 16px;
+        color: var(--grey-600);
+      }
+    }
   }
 }

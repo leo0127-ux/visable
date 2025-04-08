@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173, // 確保伺服器綁定在 5173 埠
-    strictPort: true, // 如果埠被占用則報錯
+    port: 5173, // Ensure this matches the expected port
+    strictPort: true, // Prevent fallback to a random port
   },
 });

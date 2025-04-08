@@ -11,6 +11,15 @@ const PostList = ({ searchQuery }) => {
   useEffect(() => {
     let isMounted = true; // 防止組件卸載後更新狀態
     const fetchPosts = async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select(`
+          id,
+          title,
+          content,
+          created_at,
+          boards (name)
+        `); // 確保資料表中有 boards 欄位
       try {
         const { data, error } = await supabase
           .from("posts")

@@ -1,20 +1,48 @@
 .home-page {
-  padding: 24px;
+  display: flex;
+  gap: var(--space-x4);
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
 
   h1 {
-    font-size: 2rem;
-    color: var(--primary-600);
-    margin-bottom: 16px;
+    font-size: 1.8rem;
+    margin-bottom: var(--space-x3);
+    color: var(--grey-800);
   }
 
-  p {
+  .intro-text {
     font-size: 1rem;
     color: var(--grey-700);
-    margin-bottom: 24px;
+    margin-bottom: var(--space-x6);
+  }
+
+  .posts-container {
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: var(--space-x4);
+      color: var(--grey-800);
+      padding-bottom: var(--space-x2);
+      border-bottom: 1px solid var(--grey-200);
+    }
+
+    .error-message {
+      color: var(--error-color);
+      padding: var(--space-x3);
+      background-color: rgba(220, 53, 69, 0.1);
+      border-radius: var(--radius-md);
+    }
+
+    width: 100%;
+    text-align: left;
+    padding-right: var(--space-x4); /* Add padding on right to create space from sidebar */
   }
 
   &__section {
     margin-bottom: 32px;
+    text-align: left;
 
     h2 {
       font-size: 1.5rem;
@@ -50,6 +78,82 @@
           color: var(--grey-700);
         }
       }
+    }
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 0; // Prevent flex item from overflowing
+  }
+
+  &__sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    
+    .sidebar-section {
+      background-color: var(--grey-0);
+      border: 1px solid var(--grey-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-x4);
+      margin-bottom: var(--space-x4);
+      
+      .sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--grey-800);
+        margin-bottom: var(--space-x4);
+        padding-bottom: var(--space-x2);
+        border-bottom: 1px solid var(--grey-200);
+      }
+      
+      .recent-posts-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        
+        .recent-post-item {
+          padding: var(--space-x2) 0;
+          border-bottom: 1px solid var(--grey-100);
+          cursor: pointer;
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          &:hover {
+            background-color: var(--grey-50);
+          }
+          
+          .recent-post-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--grey-800);
+            margin: 0 0 var(--space-x1) 0;
+            // Ensure text doesn't overflow and show ellipsis if needed
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          
+          .recent-post-date {
+            font-size: 12px;
+            color: var(--grey-600);
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Media query for responsiveness
+@media (max-width: 768px) {
+  .home-page {
+    flex-direction: column;
+    
+    &__sidebar {
+      width: 100%;
+      margin-top: var(--space-x4);
     }
   }
 }
