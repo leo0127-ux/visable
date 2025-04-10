@@ -1,0 +1,212 @@
+.connections-page {
+  width: 100%;
+  max-width: 1200px;
+  padding: var(--space-x4);
+  margin: 0 auto;
+  
+  .connections-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-x3);
+    margin-bottom: var(--space-x4);
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--grey-800);
+      margin: 0;
+      text-align: left; /* Align title to the left */
+    }
+    
+    .search-container {
+      max-width: 480px;
+      
+      .search-input {
+        height: 48px;
+        font-size: 16px;
+        border-radius: var(--radius-md);
+      }
+    }
+  }
+  
+  .recommended-section {
+    margin-bottom: var(--space-x6);
+    
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--grey-800);
+      margin-bottom: var(--space-x4);
+    }
+    
+    .recommended-users {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-x4);
+      
+      .recommended-user-card {
+        width: 200px;
+        min-height: 120px;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ant-card-meta-title {
+          font-size: 16px;
+          margin-bottom: 4px;
+        }
+        
+        .ant-card-meta-description {
+          font-size: 13px;
+          color: var(--grey-600);
+        }
+      }
+    }
+  }
+  
+  .connections-content {
+    .loading-container, 
+    .error-container,
+    .no-results {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-x8);
+      text-align: center;
+      color: var(--grey-600);
+      
+      p {
+        margin-top: var(--space-x3);
+        font-size: 16px;
+      }
+    }
+    
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-x4);
+      
+      .user-card {
+        height: 100%;
+        transition: all 0.2s ease;
+        border-radius: var(--radius-md);
+        
+        &:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          transform: translateY(-2px);
+        }
+        
+        .user-avatar {
+          width: 100%;
+          height: auto;
+        }
+        
+        .ant-card-meta {
+          .ant-card-meta-title {
+            color: var(--grey-800);
+            font-size: 16px;
+            margin-bottom: var(--space-x2);
+            text-align: left;
+          }
+          
+          .ant-card-meta-description {
+            color: var(--grey-600);
+            text-align: left;
+            
+            .user-email {
+              margin-bottom: var(--space-x1);
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            
+            .user-location {
+              color: var(--grey-500);
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .user-profile {
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: var(--space-x6);
+      
+      h2 {
+        margin: var(--space-x3) 0 var(--space-x1) 0;
+        font-size: 24px;
+        color: var(--grey-800);
+      }
+      
+      .user-email {
+        color: var(--grey-600);
+        margin: 0;
+      }
+    }
+    
+    .profile-section {
+      margin-bottom: var(--space-x4);
+      
+      h3 {
+        font-size: 18px;
+        color: var(--grey-700);
+        margin-bottom: var(--space-x2);
+        padding-bottom: var(--space-x1);
+        border-bottom: 1px solid var(--grey-200);
+      }
+      
+      p {
+        margin: var(--space-x2) 0;
+        color: var(--grey-700);
+        
+        strong {
+          color: var(--grey-800);
+          margin-right: var(--space-x2);
+        }
+        
+        a {
+          color: var(--primary-600);
+          
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .connections-page {
+    .connections-header {
+      .search-container {
+        max-width: 100%;
+      }
+    }
+    
+    .recommended-section {
+      .recommended-users {
+        overflow-x: auto;
+        padding-bottom: var(--space-x2);
+        
+        .recommended-user-card {
+          flex-shrink: 0;
+        }
+      }
+    }
+    
+    .users-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

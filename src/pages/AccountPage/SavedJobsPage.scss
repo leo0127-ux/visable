@@ -1,12 +1,13 @@
 .saved-jobs-page {
   width: 100%;
   padding: var(--space-x4);
+  box-sizing: border-box;
   
   h2 {
     font-size: 24px;
     font-weight: 600;
     color: var(--grey-800);
-    margin-bottom: var(--space-x4);
+    margin-bottom: var(--space-x6);
   }
   
   .no-saved-jobs {
@@ -36,81 +37,206 @@
     }
   }
   
-  .saved-jobs-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-x4);
+  .saved-jobs-table {
+    width: 100%;
+    background-color: var(--grey-0);
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    max-width: none; // Ensure no max-width constraint
+    
+    .table-header {
+      display: flex;
+      padding: var(--space-x3) var(--space-x4);
+      background-color: var(--grey-50);
+      border-bottom: 1px solid var(--grey-200);
+      font-weight: 600;
+      color: var(--grey-700);
+      
+      .col {
+        &.company-col {
+          width: 30%;
+        }
+        
+        &.job-col {
+          width: 30%;
+        }
+        
+        &.location-col {
+          width: 15%;
+        }
+        
+        &.date-col {
+          width: 15%;
+        }
+        
+        &.actions-col {
+          width: 10%;
+          text-align: right;
+        }
+      }
+    }
     
     .saved-job-card {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       padding: var(--space-x4);
-      background-color: var(--grey-0);
-      border: 1px solid var(--grey-200);
-      border-radius: var(--radius-md);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid var(--grey-100);
+      transition: background-color 0.2s ease;
+      cursor: pointer;
       
-      .job-info {
-        flex: 1;
-        
-        h3 {
-          font-size: 18px;
-          font-weight: 600;
-          color: var(--grey-800);
-          margin-bottom: var(--space-x1);
-        }
-        
-        .company-name {
-          font-size: 16px;
-          color: var(--grey-700);
-          margin-bottom: var(--space-x1);
-        }
-        
-        .job-location {
-          font-size: 14px;
-          color: var(--grey-600);
-          margin-bottom: var(--space-x1);
-        }
-        
-        .saved-date {
-          font-size: 12px;
-          color: var(--grey-500);
-        }
+      &:last-child {
+        border-bottom: none;
       }
       
-      .job-actions {
-        display: flex;
-        gap: var(--space-x3);
-        
-        .view-button,
-        .remove-button {
-          padding: var(--space-x2) var(--space-x3);
-          border-radius: var(--radius-md);
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-        }
-        
-        .view-button {
-          background-color: var(--primary-600);
-          color: white;
-          border: none;
+      &:hover {
+        background-color: var(--grey-50);
+      }
+      
+      .col {
+        &.company-col {
+          width: 30%;
+          display: flex;
+          align-items: center;
+          gap: var(--space-x3);
           
-          &:hover {
-            background-color: var(--primary-700);
+          .company-logo-container {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--grey-200);
+            
+            .company-logo {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+            }
+          }
+          
+          .company-name {
+            font-size: 14px;
+            color: var(--grey-700);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
         
-        .remove-button {
-          background-color: transparent;
-          color: var(--grey-600);
-          border: 1px solid var(--grey-300);
+        &.job-col {
+          width: 30%;
           
-          &:hover {
-            background-color: var(--grey-100);
+          h3 {
+            font-size: 16px;
+            font-weight: 600;
             color: var(--grey-800);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
+        }
+        
+        &.location-col {
+          width: 15%;
+          font-size: 14px;
+          color: var(--grey-600);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        &.date-col {
+          width: 15%;
+          font-size: 14px;
+          color: var(--grey-600);
+        }
+        
+        &.actions-col {
+          width: 10%;
+          display: flex;
+          justify-content: flex-end;
+          gap: var(--space-x2);
+          
+          .apply-button {
+            padding: var(--space-x2) var(--space-x3);
+            background-color: var(--primary-600);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            cursor: pointer;
+            
+            &:hover {
+              background-color: var(--primary-700);
+            }
+          }
+          
+          .remove-button {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            color: var(--grey-600);
+            border: 1px solid var(--grey-200);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            
+            &:hover {
+              background-color: var(--grey-100);
+              color: var(--error-color);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-x4);
+    padding: var(--space-x3) 0;
+    
+    .pagination-info {
+      font-size: 14px;
+      color: var(--grey-600);
+    }
+    
+    .pagination {
+      display: flex;
+      gap: var(--space-x1);
+      
+      .pagination-button {
+        min-width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--grey-200);
+        border-radius: var(--radius-md);
+        background-color: var(--grey-0);
+        color: var(--grey-700);
+        cursor: pointer;
+        font-size: 14px;
+        
+        &:hover:not(.disabled) {
+          background-color: var(--grey-100);
+        }
+        
+        &.active {
+          background-color: var(--primary-600);
+          border-color: var(--primary-600);
+          color: white;
+        }
+        
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
       }
     }

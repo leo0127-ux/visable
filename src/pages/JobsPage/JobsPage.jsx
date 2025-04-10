@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import supabase from "../../services/supabase/supabaseClient";
 import fetchAndInsertJobs from "../../services/supabase/fetchAndInsertJobs";
 import FilterButton from "../../components/ui/FilterButton/FilterButton";
@@ -28,6 +29,8 @@ const JobsPage = () => {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef(null);
+  const location = useLocation();
+  const selectedJobIdFromNav = location.state?.selectedJobId;
   
   const ITEMS_PER_PAGE = 10;
 
@@ -47,6 +50,36 @@ const JobsPage = () => {
 
     initializeJobs();
   }, []);
+
+  // Auto-select job if navigated from saved jobs
+  useEffect(() => {
+    if (!selectedJobIdFromNav || loading || jobs.length === 0) return;
+
+    // Find the job in the loaded jobs
+    const jobToSelect = jobs.find(job => job.job_id === selectedJobIdFromNav);
+    
+    if (jobToSelect) {
+      setSelectedJob(jobToSelect);
+    } else {
+      // If job not found in current jobs, fetch it specifically
+      const fetchSpecificJob = async () => {
+        try {
+          const { data, error } = await supabase
+            .from("jobs")
+            .select("*")
+            .eq("job_id", selectedJobIdFromNav)
+            .single();
+            
+          if (error) throw error;
+          if (data) setSelectedJob(data);
+        } catch (err) {
+          console.error("Error fetching specific job:", err);
+        }
+      };
+      
+      fetchSpecificJob();
+    }
+  }, [selectedJobIdFromNav, jobs, loading]);
 
   // Fetch jobs with pagination
   const fetchJobs = async (pageNumber) => {

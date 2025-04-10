@@ -1,46 +1,66 @@
 .board-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 100%;
-  padding: var(--space-x4);
-  
-  .board-header {
-    margin-bottom: var(--space-x6);
-    
-    h1 {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--grey-800);
-      margin-bottom: var(--space-x2);
+  box-sizing: border-box;
+
+  &__content {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    gap: var(--space-x6);
+  }
+
+  &__posts {
+    flex: 1;
+    padding: var(--space-x4);
+    overflow-y: auto;
+
+    .posts-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-x4);
+
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--grey-800);
+        margin: 0;
+      }
     }
-    
-    .description {
-      font-size: 16px;
+
+    .loading-message,
+    .error-message,
+    .no-posts-message {
+      padding: var(--space-x4);
+      background: var(--grey-50);
+      border-radius: var(--radius-md);
+      text-align: center;
       color: var(--grey-600);
     }
+
+    .error-message {
+      color: var(--error-color);
+    }
   }
-  
-  .posts-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-x4);
-    width: 100%;
-    padding-right: var(--space-x4); /* Add padding on right to create space from sidebar */
-  }
-  
-  .no-posts {
-    padding: var(--space-x6);
+
+  // Add proper styling to ensure the sidebar appears
+  .board-sidebar {
+    width: 300px;
+    min-width: 300px;
+    padding: var(--space-x4);
+    border-left: 1px solid var(--grey-200);
     background-color: var(--grey-50);
-    border-radius: var(--radius-md);
-    text-align: center;
-    color: var(--grey-600);
-    font-size: 16px;
+    overflow-y: auto;
+    height: 100%;
   }
-  
-  &.loading, &.error, &.not-found {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 300px;
-    font-size: 18px;
-    color: var(--grey-600);
+}
+
+// Add specific style for the main-content when it has board-page class
+.main-content.board-page {
+  .content-area {
+    width: 100%;
+    max-width: 100%;
   }
 }

@@ -1,78 +1,57 @@
-import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import PostList from "../../components/Post/PostList";
-import CareerInsightPage from "../../pages/CareerInsightPage/CareerInsightPage";
-import PostDetail from "../../components/Post/PostDetail";
-import PostDetailPage from "../../pages/PostDetailPage/PostDetailPage"; // Add the import
-import "./MainContent.scss";
-import supabase from "../../services/supabase/supabaseClient";
+import React from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "../../pages/HomePage/HomePage";
-import ExperiencePage from "../../pages/ExperiencePage/ExperiencePage";
+import BoardPage from "../../pages/BoardPage/BoardPage";
 import JobsPage from "../../pages/JobsPage/JobsPage";
 import AccountPage from "../../pages/AccountPage/AccountPage";
-import BoardPage from "../../pages/BoardPage/BoardPage"; // Add this import
-import SavedJobsPage from "../../pages/AccountPage/SavedJobsPage"; // Add this import
-import DocumentsPage from "../../pages/AccountPage/DocumentsPage"; // Add this import
-import RecentPostsSidebar from "../../components/Sidebar/RecentPostsSidebar";
+import PostDetailPage from "../../pages/PostDetailPage/PostDetailPage";
+import CareerInsightPage from "../../pages/CareerInsightPage/CareerInsightPage";
+import ExperiencePage from "../../pages/ExperiencePage/ExperiencePage";
+import ConnectionsPage from "../../pages/ConnectionsPage/ConnectionsPage";
+import "./MainContent.scss";
 
-const MainContent = ({ searchQuery }) => {
-  const [content, setContent] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const MainContent = ({ searchQuery, searchContext }) => {
   const location = useLocation();
-  const isJobsPage = location.pathname === "/jobs";
-  const isAccountPage = location.pathname.includes("/account");
-  const shouldShowSidebar = !isJobsPage && !isAccountPage;
-
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const { data, error } = await supabase.from("posts").select("*");
-        if (error) {
-          console.error("Error fetching posts:", error);
-          setError("Failed to fetch posts. Please check your API key or permissions.");
-          return;
-        }
-        setContent(data);
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        setError("An unexpected error occurred.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchContent();
-  }, []);
-
-  const filteredContent = searchQuery?.trim()
-    ? content.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : content;
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  
+  // 判斷頁面類型
+  const isJobsPage = location.pathname.includes('/jobs');
+  const isAccountPage = location.pathname.includes('/account');
+  const isBoardPage = location.pathname.includes('/board/');
+  const isPostDetailPage = location.pathname.includes('/post/');
+  const isHomePage = location.pathname === '/' || location.pathname === '/home';
+  const isCareerPage = location.pathname === '/career';
+  const isStandardPage = !isJobsPage && !isAccountPage && !isBoardPage && !isPostDetailPage && !isHomePage && !isCareerPage;
+  
+  // 設定頁面類型的 CSS 類別
+  const pageClass = isJobsPage 
+    ? 'jobs-page' 
+    : isAccountPage 
+      ? 'account-page' 
+      : isBoardPage 
+        ? 'board-page' 
+        : isHomePage
+          ? 'home-page'
+          : isPostDetailPage 
+            ? 'post-detail-page' 
+            : isCareerPage
+              ? 'career-page'
+              : 'standard-page';
 
   return (
-    <main className={`main-content ${isJobsPage ? 'jobs-page' : ''} ${isAccountPage ? 'account-page' : ''}`}>
+    <main className={`main-content ${pageClass}`}>
       <div className="content-area">
         <Routes>
-          <Route path="/" element={<Navigate to="/homepage" replace />} />
-          <Route path="/homepage" element={<HomePage />} />
+          <Route path="/" element={<HomePage searchQuery={searchQuery} />} />
+          <Route path="/home" element={<HomePage searchQuery={searchQuery} />} />
+          <Route path="/board/:id" element={<BoardPage />} />
+          <Route path="/jobs" element={<JobsPage searchQuery={searchQuery} searchContext={searchContext} />} />
+          <Route path="/post/:id" element={<PostDetailPage />} />
+          <Route path="/career" element={<CareerInsightPage />} />
           <Route path="/experience" element={<ExperiencePage />} />
-          <Route path="/jobs" element={<JobsPage searchQuery={searchQuery} />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="/account/saved-jobs" element={<SavedJobsPage />} />
-          <Route path="/account/documents" element={<DocumentsPage />} />
-          <Route path="/career-insights" element={<CareerInsightPage />} />
-          <Route path="/posts" element={<PostList posts={filteredContent} />} />
-          <Route path="/posts/:id" element={<PostDetailPage />} /> {/* Use the new component */}
-          <Route path="/post/:id" element={<PostDetailPage />} /> {/* Add an additional route for post/id pattern */}
-          <Route path="/board/:id" element={<BoardPage />} /> {/* Add this route */}
+          <Route path="/connections" element={<ConnectionsPage />} />
+          <Route path="/account/*" element={<AccountPage />} />
         </Routes>
       </div>
-      {shouldShowSidebar && <RecentPostsSidebar />}
     </main>
   );
 };

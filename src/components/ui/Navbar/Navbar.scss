@@ -3,21 +3,35 @@
   top: 0;
   left: 0;
   width: 100%;
+  height: 72px;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px; /* 確保高度固定 */
   padding: 0 24px;
-  background: white; /* 保留背景色 */
-  border-bottom: 1px solid var(--Greyscale-Border-Disabled, #EDF0FC);
-  
+  background: white;
+  border-bottom: 1px solid var(--grey-200);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    flex: 1; // Take up available space
+  }
+
   &__logo {
     display: flex;
     align-items: center;
+    margin-right: var(--space-x4);
     justify-content: flex-start; /* 靠左對齊 */
     width: 228px;
     height: 48px;
+
+    &-image {
+      height: 36px; /* Adjust height as needed */
+      width: auto;
+      object-fit: contain; /* Keep aspect ratio */
+      display: block;
+    }
 
     img {
       width: 160px; /* 確保圖片寬度為 160px */
@@ -27,9 +41,26 @@
 
   &__search {
     position: relative;
-    flex: 1;
-    max-width: 500px;
+    width: 100%; // Make search take available space
+    max-width: 400px; // Limit maximum width
+    height: 48px; // Set fixed container height to 48px
     margin: 0 24px;
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 16px;
+      background-color: var(--grey-50); /* 確保搜索框有背景色 */
+      border: 1px solid var(--grey-200);
+      border-radius: var(--radius-full); /* 確保完全圓角 */
+      width: 100%;
+
+      &:focus-within {
+        border-color: var(--grey-300);
+        box-shadow: 0 0 0 2px rgba(0, 86, 229, 0.1);
+      }
+    }
 
     .search-icon {
       position: absolute;
@@ -38,59 +69,83 @@
       transform: translateY(-50%);
       color: var(--grey-500);
       font-size: 18px;
+      margin-right: 12px; /* 增加圖標與輸入框之間的距離 */
+      flex-shrink: 0;
+    }
+
+    .search-input-wrapper {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      height: 100%;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 0;
+
+      .search-tag {
+        display: flex;
+        align-items: center;
+        background-color: var(--primary-100);
+        color: var(--primary-600);
+        padding: 4px 8px;
+        border-radius: var(--radius-md);
+
+        span {
+          font-size: 14px;
+          font-weight: 500;
+        }
+
+        .tag-close-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          color: var(--primary-600);
+          cursor: pointer;
+          padding: 2px;
+          margin-left: 4px;
+
+          &:hover {
+            color: var(--primary-800);
+          }
+        }
+      }
     }
 
     &-input {
       width: 100%;
-      height: 40px;
-      padding: 0 16px 0 40px;
-      background: var(--grey-50);
-      border: 1px solid var(--grey-200);
-      border-radius: var(--radius-full);
+      height: 100%;
+      border: none; /* Remove border from search input */
+      background: transparent;
       font-size: 14px;
       color: var(--grey-700);
+      outline: none; /* Remove focus outline as well */
 
       &::placeholder {
         color: var(--grey-500);
       }
+    }
+
+    input {
+      width: 100%;
+      height: 48px; // Set input height to 48px
+      padding: 8px 12px 8px 42px; // Adjusted padding for taller input
+      border-radius: var(--radius-full); // Changed to --radius-full
+      border: 1px solid var(--grey-200);
+      background-color: var(--grey-100);
+      font-size: 14px;
+      box-sizing: border-box; // Ensure padding is included in height
 
       &:focus {
+        outline: none;
         border-color: var(--primary-400);
-        background: white;
+        background-color: var(--grey-0);
       }
-    }
-  }
 
-  &__searchbar {
-    flex: 1;
-    max-width: 731px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 24px;
-    background: var(--Greyscale-Surface-Disabled, #F6F9FF);
-    border-radius: var(--radius-full); /* 使用 --radius-full */
-
-    .navbar__search-icon {
-      width: 24px;
-      height: 24px;
-
-      .icon {
-        width: 100%;
-        height: 100%;
-        color: var(--Greyscale-Text-Body, #5C6183);
+      &::placeholder {
+        color: var(--grey-500);
       }
-    }
-
-    .navbar__search-input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      font-size: 14px;
-      color: var(--Greyscale-Text-Caption, #838BB4);
-      border-radius: var(--radius-full); /* Use --radius-full for fully rounded corners */
     }
   }
 
@@ -99,7 +154,7 @@
     align-items: center;
     gap: 16px; /* 增加按鈕之間的間距 */
     margin-left: auto; /* 確保按鈕區域靠右對齊 */
-    padding-right: 24px; /* 確保按鈕不會被畫面切掉 */
+    padding-right: 8px;
 
     .navbar__button {
       width: 48px;
@@ -107,12 +162,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--Greyscale-Surface-Disabled, #F6F9FF);
-      border-radius: 100%;
+      background-color: var(--grey-50);
+      border-radius: 50%;
       border: none;
       cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: var(--grey-100);
+      }
 
       &--create {
+        width: auto;
         height: 40px;
         padding: 0 16px;
         background-color: rgba(0, 86, 229, 0.10); // Light blue background
@@ -124,7 +185,7 @@
         align-items: center;
         justify-content: center;
         gap: 8px; // Ensure proper spacing between icon and text
-        transition: background 0.2s ease;
+        transition: background-color 0.2s ease;
 
         &:hover {
           background-color: rgba(0, 86, 229, 0.15); // Slightly darker on hover
@@ -133,7 +194,7 @@
         .create-icon {
           width: 16px;
           height: 16px;
-          stroke: var(--primary-600); // Match the text color
+          color: var(--primary-600); // Match the text color
           flex-shrink: 0; // Prevent the icon from shrinking
         }
 
@@ -147,14 +208,14 @@
       .icon {
         width: 24px;
         height: 24px;
-        color: var(--Greyscale-Text-Body, #5C6183);
+        color: var(--grey-700);
       }
     }
 
     .navbar__login {
       height: 40px;
       padding: 0 16px;
-      background: var(--primary-600);
+      background-color: var(--primary-600);
       color: white;
       border-radius: var(--radius-md);
       font-size: 14px;
@@ -162,10 +223,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s ease;
+      transition: background-color 0.2s ease;
+      border: none;
 
       &:hover {
-        background: var(--primary-700);
+        background-color: var(--primary-700);
       }
     }
 
@@ -179,30 +241,23 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
+        background-color: var(--grey-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--grey-700);
         cursor: pointer;
-        border: 2px solid var(--grey-200);
-        object-fit: cover;
-        overflow: hidden;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: var(--grey-300);
+        }
 
         img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-        }
-      }
-
-      .navbar__logout {
-        background: var(--primary-600); /* 使用主色 */
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 16px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-
-        &:hover {
-          background: var(--primary-700); /* 使用全局變數定義懸停顏色 */
+          border-radius: 50%;
         }
       }
 
@@ -210,15 +265,15 @@
         position: absolute;
         top: calc(100% + var(--space-x2));
         right: 0;
-        background: var(--grey-0);
-        border: 1px solid var(--grey-300);
+        background-color: white;
+        border: 1px solid var(--grey-200);
         border-radius: var(--radius-md);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         z-index: 10;
         display: flex;
         flex-direction: column;
         padding: var(--space-x2);
-        min-width: 160px; /* Set minimum width */
+        min-width: 160px;
 
         button {
           padding: var(--space-x2) var(--space-x4);
@@ -236,36 +291,4 @@
       }
     }
   }
-
-  &__search--responsive {
-    flex: 1;
-    margin: 0 16px;
-
-    .navbar__search-input {
-      width: 100%;
-      max-width: 400px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  }
-
-  &__actions--spaced {
-    display: flex;
-    align-items: center;
-    gap: 16px; // Add spacing between buttons
-  }
-}
-
-.navbar__search {
-  flex-grow: 1;
-  margin-left: 16px;
-}
-
-.navbar__search-input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: var(--radius-full); /* Use --radius-full for fully rounded corners */
-  font-size: 14px;
 }

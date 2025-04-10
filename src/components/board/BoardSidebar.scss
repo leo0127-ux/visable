@@ -1,0 +1,136 @@
+.board-sidebar {
+  width: 300px;
+  padding: var(--space-x4);
+  background-color: var(--grey-0);
+  border-left: 1px solid var(--grey-200);
+  border-radius: var(--radius-md);
+  
+  .sidebar-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--grey-800);
+    margin-bottom: var(--space-x4);
+    padding-bottom: var(--space-x2);
+    border-bottom: 1px solid var(--grey-200);
+  }
+  
+  .board-info {
+    margin-bottom: var(--space-x4);
+    
+    .board-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--grey-900);
+      margin-bottom: var(--space-x3);
+    }
+    
+    .board-description {
+      font-size: 14px;
+      color: var(--grey-700);
+      margin-bottom: var(--space-x4);
+      line-height: 1.5;
+    }
+    
+    .board-meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-x3);
+      margin-bottom: var(--space-x4);
+      
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-x2);
+        font-size: 14px;
+        color: var(--grey-600);
+        
+        .meta-icon {
+          font-size: 16px;
+          color: var(--primary-600);
+        }
+      }
+    }
+    
+    .board-stats {
+      background-color: var(--grey-50);
+      border-radius: var(--radius-md);
+      padding: var(--space-x3);
+      margin-bottom: var(--space-x3);
+      
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-x2);
+        font-size: 14px;
+        color: var(--grey-600);
+        margin-bottom: var(--space-x2);
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .stat-icon {
+          font-size: 16px;
+          color: var(--grey-600);
+        }
+        
+        .online-icon {
+          color: var(--success-color);
+        }
+        
+        strong {
+          color: var(--grey-900);
+        }
+      }
+    }
+  }
+  
+  .board-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-x3);
+    
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-x2);
+      height: 40px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &.create-post-button {
+        background-color: var(--primary-600);
+        color: white;
+        border: none;
+        
+        &:hover {
+          background-color: var(--primary-700);
+        }
+      }
+      
+      &.join-chat-button {
+        background-color: var(--grey-100);
+        color: var(--grey-800);
+        border: 1px solid var(--grey-300);
+        
+        &:hover {
+          background-color: var(--grey-200);
+        }
+        
+        &.joined {
+          background-color: var(--primary-100);
+          color: var(--primary-600);
+          border-color: var(--primary-300);
+          
+          &:hover {
+            background-color: var(--primary-200);
+          }
+        }
+      }
+    }
+  }
+}

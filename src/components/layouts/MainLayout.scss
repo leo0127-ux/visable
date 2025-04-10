@@ -32,7 +32,6 @@
 .main-content {
   flex: 1; /* 讓 MainContent 占據剩餘空間 */
   overflow-y: auto; /* 如果內容超出，允許滾動 */
-  padding: 16px; /* 添加內邊距 */
   background: var(--grey-100); /* 保留背景色 */
   margin-left: 240px;
 }

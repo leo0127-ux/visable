@@ -1,147 +1,176 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import supabase from "../../services/supabase/supabaseClient";
 import "./CreatePostModal.scss";
 
-const CreatePostModal = ({ onClose }) => {
-  const [step, setStep] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState(null); // 獲取用戶 ID
+const CreatePostModal = ({ onClose, preselectedBoardId }) => {
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1); // Step 1: Post Type, Step 2: Insight Type, Step 3: Form
+  const [postType, setPostType] = useState(null); // 'regular' or 'careerInsight'
+  const [insightType, setInsightType] = useState(null); // 'salary' or 'interview'
+  const [userId, setUserId] = useState(null);
   const [title, setTitle] = useState("");
-  const [postType, setPostType] = useState("general"); // "general" or "careerInsight"
-  const [careerInsightType, setCareerInsightType] = useState("interview"); // "interview" or "salary"
   const [content, setContent] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [boardId, setBoardId] = useState(preselectedBoardId || null);
+  const [boards, setBoards] = useState([]);
+  
+  // Fields for Career Insights - Salary
   const [companyName, setCompanyName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [baseSalary, setBaseSalary] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState("No"); // "Yes" or "No"
-  const [loading, setLoading] = useState(false);
-  const [boardId, setBoardId] = useState(null); // Add state for board_id
-  const [boards, setBoards] = useState([]); // Add state for boards
-  const [userAvatar, setUserAvatar] = useState(null);
-  const [userEmail, setUserEmail] = useState(null);
-  const navigate = useNavigate();
+  const [jobType, setJobType] = useState("Full-time");
+  const [visaSponsorship, setVisaSponsorship] = useState(false);
+  const [workHours, setWorkHours] = useState("");
+  const [benefits, setBenefits] = useState("");
+  
+  // Fields for Career Insights - Interview
+  const [interviewDate, setInterviewDate] = useState("");
+  const [interviewOutcome, setInterviewOutcome] = useState("");
+  const [interviewDifficulty, setInterviewDifficulty] = useState("");
+  const [numRounds, setNumRounds] = useState("");
+  const [hasTechnicalInterview, setHasTechnicalInterview] = useState(false);
+  const [hasBehavioralInterview, setHasBehavioralInterview] = useState(false);
+  const [hasCaseStudy, setHasCaseStudy] = useState(false);
+  const [advice, setAdvice] = useState("");
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (error || !user) {
         alert('You need to log in to create a post.');
-        navigate('/login'); // Redirect to login page
+        onClose();
         return;
       }
-
-      setIsLoggedIn(true);
       setUserId(user.id);
-      setUserEmail(user.email);
-      setUserAvatar(user.user_metadata?.avatar_url || null);
-
-      // 確保用戶存在於 users 表中
-      const { data: existingUser, error: userError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (!existingUser && !userError) {
-        const { error: insertError } = await supabase.from("users").insert([
-          { id: user.id, email: user.email, created_at: new Date().toISOString() },
-        ]);
-        if (insertError) {
-          console.error("Error inserting user into users table:", insertError);
-        }
-      }
     };
 
-    checkUser();
-
-    // Fetch boards from database
     const fetchBoards = async () => {
       const { data, error } = await supabase.from("boards").select("*");
       if (error) {
         console.error("Error fetching boards:", error);
       } else {
         setBoards(data || []);
-        // Set default board if available
-        if (data && data.length > 0) {
+        
+        // If no board is preselected but boards exist, select the first one
+        if (!preselectedBoardId && data && data.length > 0 && postType === 'regular') {
           setBoardId(data[0].id);
         }
       }
     };
 
+    checkUser();
     fetchBoards();
-  }, [navigate]);
+  }, [preselectedBoardId, postType]);
 
-  const isFormValid = () => {
-    // Don't require boardId for career insights
-    if (postType === "general" && (!title.trim() || !content.trim() || !boardId)) return false;
-    if (postType === "careerInsight" && (!title.trim() || !content.trim() || !companyName.trim() || !jobTitle.trim())) return false;
-    return true;
+  const handlePostTypeSelect = (type) => {
+    setPostType(type);
+    if (type === 'careerInsight') {
+      setStep(2); // Go to insight type selection
+    } else {
+      setStep(3); // Skip to the form for regular posts
+    }
+  };
+
+  const handleInsightTypeSelect = (type) => {
+    setInsightType(type);
+    setStep(3); // Move to form step
+  };
+
+  const handleBack = () => {
+    if (step === 2) {
+      setStep(1); // Go back to post type selection
+      setInsightType(null);
+    } else if (step === 3) {
+      if (postType === 'careerInsight') {
+        setStep(2); // Go back to insight type selection
+      } else {
+        setStep(1); // Go back to post type selection
+        setPostType(null);
+      }
+    }
+  };
+
+  const validateForm = () => {
+    if (postType === 'regular') {
+      return title.trim() && content.trim() && boardId;
+    } else if (insightType === 'salary') {
+      return title.trim() && companyName.trim() && jobTitle.trim();
+    } else if (insightType === 'interview') {
+      return title.trim() && companyName.trim() && jobTitle.trim();
+    }
+    return false;
   };
 
   const handleSubmit = async () => {
-    if (!isFormValid()) return;
-
+    if (!validateForm()) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    
     setLoading(true);
-
+    
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) {
-        alert("You must be logged in to create a post.");
-        return;
-      }
-
-      // Get the board name from the selected board only for general posts
-      let boardName = null;
-      if (postType === "general" && boardId) {
-        const selectedBoard = boards.find(board => board.id === boardId);
-        boardName = selectedBoard ? selectedBoard.name : null;
-      }
-
-      // 確保插入前獲取到了有效的 user.id
-      console.log("Current user:", user);
-      
-      if (!user.id) {
-        alert("Could not retrieve your user ID. Please log out and try again.");
-        return;
-      }
-      
-      // Create post object with common fields
       const postData = {
-        user_id: user.id,
+        user_id: userId,
         title,
         content,
-        is_anonymous: isAnonymous === "Yes",
+        is_anonymous: isAnonymous,
         created_at: new Date().toISOString(),
       };
-
-      // Add board fields only for general posts
-      if (postType === "general") {
+      
+      if (postType === 'regular') {
         postData.board_id = boardId;
-        postData.board_name = boardName;
-      } 
-      // Add career insight specific fields
-      else if (postType === "careerInsight") {
-        postData.category = "career";
+        // Get the board name from the selected board
+        const selectedBoard = boards.find(board => board.id === boardId);
+        if (selectedBoard) {
+          postData.board_name = selectedBoard.name;
+        }
+      } else if (postType === 'careerInsight') {
+        postData.category = 'career';
         postData.company_name = companyName;
         postData.job_title = jobTitle;
         postData.location = location;
-        if (careerInsightType === "salary" && baseSalary) {
-          postData.base_salary = baseSalary;
+        
+        if (insightType === 'salary') {
+          postData.base_salary = baseSalary ? parseFloat(baseSalary) : null;
+          // Don't add additional_compensation field - it doesn't exist in the schema
+          postData.job_type = jobType;
+          postData.visa_sponsorship = visaSponsorship;
+          postData.work_hours_per_week = workHours;
+          postData.benefits = benefits;
+          postData.insight_type = 'salary';
+        } else if (insightType === 'interview') {
+          postData.interview_date = interviewDate;
+          postData.interview_outcome = interviewOutcome;
+          postData.interview_difficulty = interviewDifficulty;
+          postData.number_of_rounds = numRounds;
+          postData.technical_interview = hasTechnicalInterview;
+          postData.behavioral_interview = hasBehavioralInterview;
+          postData.case_study = hasCaseStudy;
+          postData.advice = advice;
+          postData.insight_type = 'interview';
         }
       }
-
+      
       const { error } = await supabase.from("posts").insert([postData]);
-
+      
       if (error) {
         console.error("Error creating post:", error);
         alert(`Failed to create post: ${error.message}`);
         return;
       }
-
+      
       alert("Post created successfully!");
       onClose();
+      
+      // Redirect to career insights page if it was a career insight post
+      if (postType === 'careerInsight') {
+        navigate('/career');
+      }
     } catch (err) {
       console.error("Unexpected error:", err);
       alert(`An unexpected error occurred: ${err.message}`);
@@ -150,176 +179,427 @@ const CreatePostModal = ({ onClose }) => {
     }
   };
 
-  const handlePostTypeSelect = (type) => {
-    setPostType(type);
-    if (type === "careerInsight") {
-      setStep(2); // Go to career insight type selection
-    } else {
-      setStep(3); // Skip to the form for general posts
-    }
-  };
+  // Content for Step 1: Post Type Selection
+  const renderPostTypeSelection = () => (
+    <>
+      <h2 className="modal-title">Choose Post Type</h2>
+      <div className="post-type-options">
+        <div 
+          className="post-type-option" 
+          onClick={() => handlePostTypeSelect('regular')}
+        >
+          <div className="option-content">
+            <h3>Regular Post</h3>
+            <p>Ask questions, share ideas, or start a discussion</p>
+          </div>
+        </div>
+        <div 
+          className="post-type-option"
+          onClick={() => handlePostTypeSelect('careerInsight')}
+        >
+          <div className="option-content">
+            <h3>Career Insight</h3>
+            <p>Share salary information or interview experiences</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
-  const handleInsightTypeSelect = (type) => {
-    setCareerInsightType(type);
-    setStep(3); // Move to form step
-  };
+  // Content for Step 2: Insight Type Selection
+  const renderInsightTypeSelection = () => (
+    <>
+      <div className="modal-header">
+        <button className="back-button" onClick={handleBack}>
+          <ArrowLeftOutlined /> Back
+        </button>
+        <h2 className="modal-title">Choose Insight Type</h2>
+      </div>
+      <div className="post-type-options">
+        <div 
+          className="post-type-option" 
+          onClick={() => handleInsightTypeSelect('salary')}
+        >
+          <div className="option-content">
+            <h3>Salary Information</h3>
+            <p>Share compensation details for your role</p>
+          </div>
+        </div>
+        <div 
+          className="post-type-option"
+          onClick={() => handleInsightTypeSelect('interview')}
+        >
+          <div className="option-content">
+            <h3>Interview Experience</h3>
+            <p>Share your interview process and outcomes</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  // Content for Step 3: Post Form (depends on type)
+  const renderPostForm = () => (
+    <>
+      <div className="modal-header">
+        <button className="back-button" onClick={handleBack}>
+          <ArrowLeftOutlined /> Back
+        </button>
+        <h2 className="modal-title">
+          {postType === 'regular' ? 'Create Post' : 
+           insightType === 'salary' ? 'Share Salary Information' : 'Share Interview Experience'}
+        </h2>
+      </div>
+
+      <div className="form-fields">
+        {/* Common fields */}
+        <div className="form-group">
+          <label htmlFor="post-title">Title</label>
+          <input
+            id="post-title"
+            type="text"
+            placeholder="Enter a title for your post"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="form-input"
+          />
+        </div>
+        
+        {postType === 'regular' && (
+          <>
+            <div className="form-group">
+              <label htmlFor="board-selection">Board</label>
+              <select 
+                id="board-selection" 
+                value={boardId || ""} 
+                onChange={(e) => setBoardId(e.target.value)}
+                className="form-input"
+              >
+                <option value="" disabled>Select a board</option>
+                {boards.map(board => (
+                  <option key={board.id} value={board.id}>
+                    {board.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="post-content">Content</label>
+              <textarea
+                id="post-content"
+                placeholder="Share your thoughts..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="form-input"
+              />
+            </div>
+          </>
+        )}
+        
+        {/* Salary Insight Fields */}
+        {postType === 'careerInsight' && insightType === 'salary' && (
+          <>
+            <div className="form-group">
+              <label htmlFor="company-name">Company Name*</label>
+              <input
+                id="company-name"
+                type="text"
+                placeholder="Enter company name"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="job-title">Job Title*</label>
+              <input
+                id="job-title"
+                type="text"
+                placeholder="Enter job title"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="location">Location</label>
+              <input
+                id="location"
+                type="text"
+                placeholder="E.g., New York, NY"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="base-salary">Base Salary (USD)</label>
+              <input
+                id="base-salary"
+                type="number"
+                placeholder="E.g., 120000"
+                value={baseSalary}
+                onChange={(e) => setBaseSalary(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="job-type">Job Type</label>
+              <select
+                id="job-type"
+                value={jobType}
+                onChange={(e) => setJobType(e.target.value)}
+                className="form-input"
+              >
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Internship">Internship</option>
+                <option value="Contract">Contract</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="visa-sponsorship">Visa Sponsorship</label>
+              <div className="checkbox-group">
+                <input
+                  id="visa-sponsorship"
+                  type="checkbox"
+                  checked={visaSponsorship}
+                  onChange={(e) => setVisaSponsorship(e.target.checked)}
+                />
+                <label htmlFor="visa-sponsorship">Company offers visa sponsorship</label>
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="work-hours">Weekly Hours</label>
+              <input
+                id="work-hours"
+                type="text"
+                placeholder="E.g., 40-45"
+                value={workHours}
+                onChange={(e) => setWorkHours(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="benefits">Benefits</label>
+              <textarea
+                id="benefits"
+                placeholder="Describe the benefits package"
+                value={benefits}
+                onChange={(e) => setBenefits(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="post-content">Additional Comments</label>
+              <textarea
+                id="post-content"
+                placeholder="Share any additional information..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="form-input"
+              />
+            </div>
+          </>
+        )}
+        
+        {/* Interview Insight Fields */}
+        {postType === 'careerInsight' && insightType === 'interview' && (
+          <>
+            <div className="form-group">
+              <label htmlFor="company-name">Company Name*</label>
+              <input
+                id="company-name"
+                type="text"
+                placeholder="Enter company name"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="job-title">Job Title*</label>
+              <input
+                id="job-title"
+                type="text"
+                placeholder="Enter job title"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="interview-date">Interview Date</label>
+              <input
+                id="interview-date"
+                type="date"
+                value={interviewDate}
+                onChange={(e) => setInterviewDate(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="interview-outcome">Outcome</label>
+              <select
+                id="interview-outcome"
+                value={interviewOutcome}
+                onChange={(e) => setInterviewOutcome(e.target.value)}
+                className="form-input"
+              >
+                <option value="">Select an outcome</option>
+                <option value="Accepted">Offer Received</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Pending">Still Waiting</option>
+                <option value="Withdrew">I Withdrew</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="interview-difficulty">Difficulty</label>
+              <select
+                id="interview-difficulty"
+                value={interviewDifficulty}
+                onChange={(e) => setInterviewDifficulty(e.target.value)}
+                className="form-input"
+              >
+                <option value="">Select difficulty level</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+                <option value="Very Hard">Very Hard</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="num-rounds">Number of Rounds</label>
+              <input
+                id="num-rounds"
+                type="text"
+                placeholder="E.g., 3"
+                value={numRounds}
+                onChange={(e) => setNumRounds(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Interview Types</label>
+              <div className="checkbox-group">
+                <div className="checkbox-item">
+                  <input
+                    id="technical-interview"
+                    type="checkbox"
+                    checked={hasTechnicalInterview}
+                    onChange={(e) => setHasTechnicalInterview(e.target.checked)}
+                  />
+                  <label htmlFor="technical-interview">Technical Interview</label>
+                </div>
+                
+                <div className="checkbox-item">
+                  <input
+                    id="behavioral-interview"
+                    type="checkbox"
+                    checked={hasBehavioralInterview}
+                    onChange={(e) => setHasBehavioralInterview(e.target.checked)}
+                  />
+                  <label htmlFor="behavioral-interview">Behavioral Interview</label>
+                </div>
+                
+                <div className="checkbox-item">
+                  <input
+                    id="case-study"
+                    type="checkbox"
+                    checked={hasCaseStudy}
+                    onChange={(e) => setHasCaseStudy(e.target.checked)}
+                  />
+                  <label htmlFor="case-study">Case Study</label>
+                </div>
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="advice">Advice for Others</label>
+              <textarea
+                id="advice"
+                placeholder="Share tips for others interviewing at this company"
+                value={advice}
+                onChange={(e) => setAdvice(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="post-content">Interview Details</label>
+              <textarea
+                id="post-content"
+                placeholder="Describe your interview experience..."
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="form-input"
+              />
+            </div>
+          </>
+        )}
+        
+        {/* Anonymity option for all post types */}
+        <div className="form-group">
+          <label>Post as</label>
+          <div className="radio-group">
+            <div className="radio-item">
+              <input
+                id="not-anonymous"
+                type="radio"
+                checked={!isAnonymous}
+                onChange={() => setIsAnonymous(false)}
+                name="anonymity"
+              />
+              <label htmlFor="not-anonymous">Your Username</label>
+            </div>
+            
+            <div className="radio-item">
+              <input
+                id="anonymous"
+                type="radio"
+                checked={isAnonymous}
+                onChange={() => setIsAnonymous(true)}
+                name="anonymity"
+              />
+              <label htmlFor="anonymous">Anonymous</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button
+        className="submit-button"
+        onClick={handleSubmit}
+        disabled={loading || !validateForm()}
+      >
+        {loading ? "Posting..." : "Post"}
+      </button>
+    </>
+  );
 
   return (
     <div className="create-post-modal" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}> {/* 防止點擊內容區域關閉 */}
-        <button className="close-btn" onClick={onClose}>×</button>
-        {step === 1 && (
-          <div className="step-1">
-            <h2>Select Post Type</h2>
-            <div className="options">
-              <button className="btn btn-primary" onClick={() => handlePostTypeSelect("general")}>
-                <div>Post</div>
-                <p>Ask or Share in the Community</p>
-              </button>
-              <button className="btn btn-primary" onClick={() => handlePostTypeSelect("careerInsight")}>
-                <div>Career Insights</div>
-                <p>Share Career Insights</p>
-              </button>
-            </div>
-          </div>
-        )}
-        {step === 2 && (
-          <div className="step-2 insight-type-selection">
-            <h2>Select Insight Type</h2>
-            <div className="options">
-              <button className="btn btn-primary" onClick={() => handleInsightTypeSelect("salary")}>
-                <div>Salary</div>
-                <p>Share salary information</p>
-                <span className="vpoint-info">Post to earn 1 VPoint—get 5 bonus VPoints if your post is featured!</span>
-              </button>
-              <button className="btn btn-primary" onClick={() => handleInsightTypeSelect("interview")}>
-                <div>Interview</div>
-                <p>Share interview experience</p>
-                <span className="vpoint-info">Post to earn 1 VPoint—get 5 bonus VPoints if your post is featured!</span>
-              </button>
-            </div>
-          </div>
-        )}
-        {step === 3 && (
-          <div className="step-3">
-            <h2>Create Post</h2>
-            
-            {/* Only show board selection for general posts */}
-            {postType === "general" && (
-              <div className="form-group">
-                <label htmlFor="board-selection">Select Board</label>
-                <select 
-                  id="board-selection" 
-                  value={boardId || ""} 
-                  onChange={(e) => setBoardId(e.target.value)}
-                  className="board-select"
-                  required
-                >
-                  <option value="" disabled>Select a board</option>
-                  {boards.map(board => (
-                    <option key={board.id} value={board.id}>
-                      {board.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            
-            <input
-              type="text"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            {postType === "careerInsight" && (
-              <>
-                <input
-                  type="text"
-                  placeholder="Company Name"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Job Title"
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Location (e.g., San Francisco, CA)"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-                {careerInsightType === "salary" && (
-                  <input
-                    type="text"
-                    placeholder="Base Salary"
-                    value={baseSalary}
-                    onChange={(e) => setBaseSalary(e.target.value)}
-                  />
-                )}
-              </>
-            )}
-            <textarea
-              placeholder="Say Something"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-            <div className="anonymity-section">
-              <label>Post as:</label>
-              <div className="anonymity-options">
-                <label className="radio-option">
-                  <input
-                    type="radio"
-                    name="anonymity"
-                    value="No"
-                    checked={isAnonymous === "No"}
-                    onChange={() => setIsAnonymous("No")}
-                  />
-                  <div className="option-content">
-                    <span>Use my username</span>
-                    {isAnonymous === "No" && userAvatar && (
-                      <img src={userAvatar} alt="Your avatar" className="user-avatar-preview" />
-                    )}
-                    {isAnonymous === "No" && !userAvatar && userEmail && (
-                      <div className="user-initial-avatar">
-                        {userEmail.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                </label>
-                
-                <label className="radio-option">
-                  <input
-                    type="radio"
-                    name="anonymity"
-                    value="Yes"
-                    checked={isAnonymous === "Yes"}
-                    onChange={() => setIsAnonymous("Yes")}
-                  />
-                  <div className="option-content">
-                    <span>Anonymous</span>
-                    {isAnonymous === "Yes" && (
-                      <div className="anonymous-avatar">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                </label>
-              </div>
-            </div>
-            <button
-              className={`btn btn-primary ${!isFormValid() ? "disabled" : ""}`}
-              onClick={handleSubmit}
-              disabled={!isFormValid() || loading}
-            >
-              {loading ? "Posting..." : "Post"}
-            </button>
-          </div>
-        )}
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-button" onClick={onClose}>×</button>
+        
+        {step === 1 && renderPostTypeSelection()}
+        {step === 2 && renderInsightTypeSelection()}
+        {step === 3 && renderPostForm()}
       </div>
     </div>
   );

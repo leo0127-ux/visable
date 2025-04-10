@@ -7,15 +7,16 @@
 
 /* Sidebar 樣式 */
 .sidebar {
-  width: 240px; /* 固定 Sidebar 的寬度 */
-  height: calc(100vh - 72px); /* 減去 Navbar 的高度 */
   position: fixed;
+  top: 72px; // Position below navbar
   left: 0;
-  top: 72px; /* 與 Navbar 高度一致 */
+  width: 240px;
+  height: calc(100vh - 72px); // Adjust height to account for navbar
   background: var(--grey-0);
   border-right: 1px solid var(--grey-200);
-  padding: 24px 16px;
-  flex-shrink: 0; /* 防止 Sidebar 縮小 */
+  padding: 16px;
+  overflow-y: auto;
+  z-index: 10;
 
   &__nav {
     display: flex;
@@ -84,7 +85,6 @@
   }
 
   &__community {
-    margin-top: 16px;
 
     &-header {
       display: flex;
@@ -122,12 +122,4 @@
   }
 }
 
-/* 主內容樣式 */
-.main-content {
-  flex-grow: 1; /* 主內容佔據剩餘空間 */
-  margin-left: 240px; /* 避開 Sidebar 的寬度 */
-  margin-top: 72px;
-  padding: 24px; /* 主內容的內邊距 */
-  background: var(--grey-50); /* 主內容背景色 */
-  overflow-y: auto; /* 主內容可滾動 */
-}
+/* 移除重複的 main-content 樣式，已在 MainContent.scss 中定義 */

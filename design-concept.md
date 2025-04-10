@@ -1,223 +1,321 @@
-# Visable 設計概念
+# Visable - Development Documentation
 
-Visable 是一個為美國留學生設計的求職平台，提供以下功能：
-- 尋找 H-1B 工作
-- 交流面試與工作心得
-- 分享社群討論
-- 保存個人文件與求職資料
+## Project Overview
 
-## 技術棧
-- **前端框架**: React
-- **後端架構**: Supabase (PostgreSQL)
-- **樣式**: SCSS
-- **第三方工具**: Ant Design (UI 組件), ScrapingDog API (工作資料)
+Visable is a comprehensive job-seeking platform designed specifically for international students in the US. The platform integrates job listings, community forums, career insights, and document management to create a complete ecosystem for job seekers, with a focus on H-1B visa sponsorship opportunities.
 
-## 數據結構
+## System Architecture
 
-### 主要表格
+### Frontend
+- **Framework**: React with functional components and hooks
+- **State Management**: React Context API and local component state
+- **Routing**: React Router v6
+- **Styling**: SCSS modules with custom variables system
+- **UI Components**: Mix of custom components and Ant Design
+
+### Backend
+- **Database & Auth**: Supabase (PostgreSQL)
+- **Storage**: Supabase Storage
+- **Realtime**: Supabase Realtime for chat and notifications
+- **Functions**: Supabase Edge Functions
+
+### Deployment
+- **Hosting**: Netlify
+- **Database**: Supabase Cloud
+- **CI/CD**: GitHub Actions
+
+## Database Schema
+
+### Core Tables
 
 #### users
-- `id`: uuid (主鍵)
-- `email`: text (唯一)
-- `password_hash`: text (可空，Google 登入不需要密碼)
-- `created_at`: timestamp
-- `updated_at`: timestamp
-- `vpoint`: integer (默認 0)
-- `resume`: text (URL 到存儲的簡歷，可空)
-- `cover_letter`: text (URL 到存儲的求職信，可空)
+- Extended from `auth.users` for public profile data
+- Contains profile information and preferences
+- Key fields: `id`, `email`, `full_name`, `bio`, `website`, `location`, `vpoint`, `resume`, `cover_letter`
 
 #### boards
-- `id`: uuid (主鍵)
-- `name`: character varying(100) (唯一)
-- `description`: text (可空)
-- `created_at`: timestamp
+- Represents discussion boards/communities
+- Key fields: `id`, `name`, `description`, `created_at`, `is_private`, `created_by`
 
 #### posts
-- `id`: uuid (主鍵)
-- `user_id`: uuid (外鍵到 users)
-- `board_id`: uuid (外鍵到 boards，可空)
-- `board_name`: character varying(100) (冗餘欄位，加速查詢)
-- `title`: character varying(200)
-- `content`: text
-- `is_anonymous`: boolean (默認 false)
-- `category`: text (當 "career" 時，表示職業見解帖)
-- `company_name`: text (職業見解相關)
-- `job_title`: text (職業見解相關)
-- `location`: text (職業見解相關)
-- `base_salary`: numeric (職業見解相關)
-- `image_path`: text (可空)
-- `created_at`: timestamp
+- Contains all user posts (regular and career insights)
+- Key fields: `id`, `user_id`, `board_id`, `board_name`, `title`, `content`, `is_anonymous`, `category`, `created_at`, `is_archived`
+- Career insights have additional fields: `company_name`, `job_title`, `location`, `base_salary`
 
 #### comments
-- `id`: uuid (主鍵)
-- `post_id`: uuid (外鍵到 posts)
-- `user_id`: uuid (外鍵到 users)
-- `content`: text
-- `created_at`: timestamp
+- User comments on posts
+- Key fields: `id`, `post_id`, `user_id`, `content`, `created_at`
 
 #### jobs
-- `id`: uuid (主鍵)
-- `job_id`: text (唯一，來自爬蟲)
-- `job_position`: text
-- `job_link`: text
-- `company_name`: text
-- `company_profile`: text (可空)
-- `job_location`: text
-- `job_posting_date`: date (可空)
-- `company_logo_url`: text (可空)
-- `created_at`: timestamp
+- H-1B job listings
+- Key fields: `id`, `job_id`, `job_position`, `company_name`, `job_location`, `job_posting_date`, `job_description`, `company_logo_url`, `company_profile`, `job_link`
 
 #### saved_jobs
-- `id`: uuid (主鍵)
-- `user_id`: uuid (外鍵到 users)
-- `job_id`: text (外鍵到 jobs.job_id)
-- `created_at`: timestamp
+- User bookmarks for jobs
+- Key fields: `id`, `user_id`, `job_id`, `created_at`
 
-### 關聯關係
-- 用戶 (users) -> 帖子 (posts): 一對多
-- 討論版 (boards) -> 帖子 (posts): 一對多
-- 帖子 (posts) -> 評論 (comments): 一對多
-- 用戶 (users) -> 評論 (comments): 一對多
-- 用戶 (users) -> 保存工作 (saved_jobs): 一對多
-- 工作 (jobs) <- 保存工作 (saved_jobs): 一對多
+### Chat System Tables
 
-## 網站結構
+#### chat_rooms
+- Stores different chat room types (direct, group, board)
+- Key fields: `id`, `name`, `type`, `board_id`, `created_at`, `created_by`
 
-### 頁面
-1. **首頁** (HomePage): 顯示最新的社區帖子與最近發布的帖子側邊欄
-2. **社區/討論版** (BoardPage): 按版塊分類的帖子
-   - Visa Discussion
-   - Resume
-   - Career
-   - Interview
-3. **職業見解** (CareerInsightPage): 薪資和面試經驗分享
-4. **工作機會** (JobsPage): H-1B 工作列表與詳情
-5. **帳戶管理** (AccountPage): 個人信息與設置
-   - 個人帳號
-   - 收藏的工作
-   - 文件管理 (簡歷和求職信)
-6. **帖子詳情** (PostDetailPage): 查看單一帖子詳情及評論
+#### chat_participants
+- Links users to chat rooms
+- Key fields: `id`, `chat_room_id`, `user_id`, `user_email`, `role`, `joined_at`, `status`
 
-### 組件結構
-- **MainLayout**: 整體布局
-  - Navbar: 頂部導航欄
-  - Sidebar: 側邊欄導航
-  - MainContent: 主內容區域
-- **Post Components**: 帖子相關組件
-  - PostCard: 帖子預覽卡片
-  - PostDetailPage: 帖子詳細頁面
-  - CreatePostModal: 發帖彈窗
-- **Job Components**: 工作相關組件
-  - JobCard: 工作預覽卡片
-  - FilterButton: 工作過濾按鈕
+#### chat_messages
+- Stores all chat messages
+- Key fields: `id`, `chat_room_id`, `sender_id`, `sender_email`, `message`, `created_at`, `is_system`
 
-## 用戶功能
+### Additional Tables
 
-### 認證系統
-- **Google 登入**: 目前主要支持 Google OAuth 登入
-- **觸發器同步**: 新用戶在 auth.users 創建時自動同步到 public.users
+#### vpoint_transactions
+- Records vpoint earning and spending
+- Key fields: `id`, `user_id`, `amount`, `type`, `description`, `related_id`, `created_at`
 
-### 發帖系統
-- **普通帖子**:
-  - 需要選擇討論版
-  - 支持匿名選項
-- **職業見解帖子**:
-  - 無需選擇討論版，直接歸類為 Career
-  - 需填寫公司名稱、職位名稱等相關信息
-  - 可選填薪資信息
+#### user_preferences
+- Stores user settings including language preferences
+- Key fields: `id`, `user_id`, `language`, `created_at`
 
-### 評論系統
-- 登入用戶可以對帖子進行評論
-- 用戶只能刪除自己的評論
-- 評論支持帖子作者與讀者之間的交流
+## Key Features
 
-### 工作功能
-- **工作搜索**: 支持多種過濾條件
-  - 職缺發布時間
-  - 經驗要求
-  - 職缺類型
-- **工作收藏**: 用戶可以收藏感興趣的工作
-- **工作申請**: 可以點擊申請按鈕前往原工作鏈接
+### Authentication System
+- Google OAuth integration
+- Account creation trigger to sync auth.users to public.users
+- Session management and persistence
 
-### 文件管理
-- **簡歷上傳**: 支持 PDF, DOC, DOCX 格式
-- **求職信上傳**: 支持 PDF, DOC, DOCX 格式
-- 文件存儲在 Supabase Storage 中，與用戶帳戶關聯
+### Discussion Boards
+- Public and private boards
+- Anonymous posting option
+- Post voting and commenting
+- Content archiving functionality
 
-## 安全與權限
+### Job Search
+- H-1B focused job listings
+- Advanced search and filtering
+- Job saving functionality
+- Application tracking
 
-### 行級安全性 (RLS)
-- **用戶數據**: 用戶只能訪問自己的數據
-- **帖子**: 任何人可查看，但僅登入用戶可發布
-- **評論**: 任何人可查看，僅登入用戶可評論，僅作者可刪除自己的評論
-- **討論版**: 所有用戶可查看，僅管理員可創建
+### Career Insights
+- Salary sharing and company reviews
+- Anonymous career insights
+- Searchable by company, position, location
 
-### 資料觸發器
-- **用戶創建觸發器**: 同步 Auth 用戶到 public.users
-- **討論版名稱觸發器**: 自動更新 posts.board_name 當 board_id 變更時
+### Chat System
+- Direct messaging
+- Group chats
+- Board-based community chats
+- Real-time message delivery
+- Participant management
+- Message persistence
 
-## UI 設計原則
+### Document Management
+- Resume storage and management
+- Cover letter storage and management
+- File versioning
 
-### 顏色系統
-- **主色系**: 藍色系 (#0056E5)
-- **輔助色系**: 灰色系
-- **狀態色**:
-  - 成功: #28a745
-  - 錯誤: #dc3545
-  - 警告: #ffc107
+### User Dashboard
+- Saved jobs
+- Post history
+- Career insights
+- Document management
 
-### 組件風格
-- **按鈕**: 圓角，主要使用藍色或灰色背景
-- **卡片**: 白底，輕微陰影，懸浮時微小高度變化
-- **表單**: 簡潔，清晰的標籤與錯誤提示
+## Frontend Structure
 
-### 布局
-- **響應式**: 支持桌面與平板設備
-- **側邊欄**: 固定寬度，顯示主要導航
-- **內容區**: 滑動溢出，適應不同內容大小
+### Page Components
+- **HomePage**: Landing page with post feed and sidebar
+- **BoardPage**: Discussion board view with posts and board details
+- **PostDetailPage**: Single post view with comments
+- **JobsPage**: Job listings with search and filters
+- **CareerInsightPage**: Career insights and salary information
+- **ExperiencePage**: User experiences and testimonials
+- **AccountPage**: Container for user-related subpages
+  - **ProfilePage**: User profile management
+  - **DocumentsPage**: Resume and cover letter management
+  - **SavedJobsPage**: Bookmarked jobs
+  - **UserPostsPage**: User's post history
+  - **UserCareerInsightsPage**: User's career insights
+  - **MessagesPage**: Chat conversations management
 
-## 網站流程
+### Layout Components
+- **MainLayout**: Overall page structure with navbar and sidebar
+- **Navbar**: Top navigation with search, user menu, messaging
+- **Sidebar**: Left navigation with boards and categories
 
-### 用戶註冊/登入流程
-1. 點擊導航欄中的 "Signup/Login"
-2. 選擇使用 Google 帳號登入
-3. 重定向回網站，自動同步用戶數據
+### Feature Components
+- **CreatePostModal**: Modal for creating/editing posts
+- **ChatModal**: Floating chat interface
+- **BoardSidebar**: Board information and actions
+- **PostCard**: Reusable post preview component
+- **JobCard**: Job listing card component
+- **FilterButton**: Search filter UI component
+- **AuthPopup**: Authentication modal
 
-### 發帖流程
-1. 點擊 "Create" 按鈕
-2. 選擇帖子類型 (普通貼文或職業見解)
-3. 根據帖子類型填寫相應表單
-4. 提交發布
+## API Integrations
 
-### 工作搜索流程
-1. 導航至工作頁面
-2. 使用過濾器縮小搜索範圍
-3. 瀏覽工作列表
-4. 點擊工作卡片查看詳情
-5. 可選擇保存或申請工作
+### Job Data API
+- Fetches H-1B job listings
+- Transforms and stores job data in the database
+- Scheduled updates for fresh data
 
-### 討論版交流流程
-1. 從側邊欄選擇討論版
-2. 瀏覽該版塊的帖子
-3. 點擊帖子查看詳情
-4. 閱讀和發表評論
+### Google OAuth
+- Handles user authentication flow
+- Retrieves user profile information
 
-## 未來開發計劃
+### (Optional) Google Translate API
+- Provides translation services for multilingual support
 
-### 功能擴展
-- 個人資料完善 (頭像、個人簡介等)
-- 工作推薦系統
-- 薪資比較工具
-- 直接在平台申請工作
-- 面試準備資源
+## Row-Level Security Policies
 
-### 技術改進
-- 實時通知系統
-- 性能優化
-- 擴展移動端支持
-- 增強搜索功能
-- 集成更多求職相關API
+### Posts Policies
+- Anyone can view public posts
+- Only post authors can edit their own non-archived posts
+- Only post authors can archive their own posts
 
----
+### Comments Policies
+- Anyone can view comments
+- Only comment authors can delete their own comments
+- No comments allowed on archived posts
 
-**最後更新**: 2023年11月
+### Jobs Policies
+- Jobs data is readable by all
+- No insert/update/delete allowed by users
+
+### Saved Jobs Policies
+- Users can only view/add/delete their own saved jobs
+
+### Boards Policies
+- All users can view public boards
+- Only board creators and admins can edit boards
+
+### Chat Policies
+- Board chats visible to all users
+- Direct and group chats visible only to participants
+- Messages visible only to chat participants
+- Non-recursive policies to prevent infinite recursion
+
+## Challenges and Solutions
+
+### Chat System Infinite Recursion
+- **Problem**: RLS policies caused infinite recursion in chat queries
+- **Solution**: Redesigned policies to use non-recursive approaches with IN clauses instead of EXISTS checks
+
+### User Data Preservation
+- **Problem**: Deleted user accounts broke references in chat and posts
+- **Solution**: Added email capture on insert and SET NULL on delete for user references
+
+### Message Delivery
+- **Problem**: Ensuring real-time message delivery
+- **Solution**: Implemented Supabase Realtime subscriptions for immediate updates
+
+## Performance Optimizations
+
+### Database Indexing
+- Added indexes on frequently queried fields: `user_id`, `post_id`, `chat_room_id`
+- Created composite indexes for unique constraints and common query patterns
+
+### Query Optimization
+- Used `select('*')` sparingly, preferring explicit column selection
+- Added caching for frequently accessed static data
+- Implemented pagination for posts and jobs listings
+
+### Frontend Optimizations
+- Lazy loading for routes using React.lazy()
+- Image optimization for job logos and user avatars
+- Virtualization for long lists where appropriate
+
+## Security Considerations
+
+### Row Level Security
+- Comprehensive RLS policies to protect user data
+- SQL injection protection via parameterized queries
+- Proper constraints to maintain data integrity
+
+### Authentication
+- Token-based auth with JWT
+- Secure credential handling via OAuth
+- Protection against CSRF attacks
+
+### Data Validation
+- Input validation on both client and server
+- File upload restrictions (size, type) for documents
+
+## Deployment Process
+
+### Development Environment
+- Local Supabase instance for development
+- Environment variables for API keys and endpoints
+- Hot reload configuration for efficient development
+
+### Production Deployment
+- Netlify deployment connected to GitHub repository
+- Supabase production project for database
+- Environment variable management for sensitive data
+
+## Future Enhancements
+
+### Planned Features
+- Advanced analytics for user engagement
+- Premium membership tiers
+- Mobile application
+- AI-powered job matching
+- Content recommendation engine
+- Language translation for international users
+
+### Technical Improvements
+- Server-side rendering for improved SEO
+- Test automation for critical paths
+- Performance monitoring and alerting
+- Database optimization and sharding for scale
+
+## Maintenance Tips
+
+### Common Issues
+- Chat policy recursion issues - check fix_chat_recursion.sql
+- User permission conflicts - verify RLS policies
+- Real-time subscription disconnects - implement reconnection logic
+
+### Regular Maintenance
+- Database backups and monitoring
+- JWT token rotation
+- Job data refresh mechanism
+- API key rotation
+- Security audits
+
+## Development Workflow
+
+### Local Development
+1. Run Supabase local instance
+2. Start development server with `npm run dev`
+3. Test changes with local database
+4. Commit to feature branch
+
+### Testing
+1. Run unit tests with `npm test`
+2. Perform manual testing on critical paths
+3. Verify mobile responsiveness
+
+### Deployment
+1. Merge feature branch to main
+2. Netlify auto-deploys from main branch
+3. Run database migrations on Supabase
+4. Verify production deployment
+
+## Conclusion
+
+The Visable platform provides a comprehensive solution for international students seeking employment with H-1B sponsorship in the US. Its integrated approach combining job listings, community forums, career insights, and user tools creates a unique ecosystem for job seekers. The modular architecture allows for future expansion and feature enhancements while maintaining performance and security.
+
+This document serves as a reference for understanding the system architecture, database schema, features, and development considerations. It should be updated as the system evolves and new features are implemented.
+
+
+
+post 設計
+create post 要分兩頁 第一頁先選 post type
+如果選 career insight 下一頁 再選 salary or interview (這頁可以返回上一頁選擇 post type)
+
+如果選擇 salary 或者 interview (統稱 career insights ) 希望建立post的地方是在career insights page 的 maincontent
+
+待開發
+聊天功能 (儲存至 supabase)
+job list im

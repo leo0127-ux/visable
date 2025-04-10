@@ -1,45 +1,83 @@
-.auth-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+.auth-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .error-alert {
+    margin-bottom: 0;
+  }
+
+  .login-message {
+    text-align: center;
+    color: var(--grey-700);
+    font-size: 14px;
+    margin: 0 auto;
+    max-width: 320px;
+  }
+
+  .social-auth-buttons {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  
-    &__content {
-      background: #fff;
-      padding: 24px;
-      border-radius: var(--radius-x3); /* Use --radius-x3 */
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-  
-    &__button {
-      background: var(--primary-600); /* Use primary color */
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-x3); /* Use --radius-x3 */
-      padding: 8px 16px;
-      cursor: pointer;
-      margin-top: 16px;
+    flex-direction: column;
+    gap: 12px;
+    margin: 8px 0;
+    
+    .social-button {
+      height: 44px;
       font-size: 16px;
-      &:hover {
-        background: var(--primary-700); /* Use primary hover color */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--grey-300);
+      transition: all 0.2s ease;
+      
+      &.google {
+        background-color: white;
+        color: var(--grey-800);
+        
+        &:hover {
+          background-color: var(--grey-100);
+          border-color: var(--grey-400);
+        }
+        
+        .anticon {
+          font-size: 18px;
+          margin-right: 8px;
+          color: #4285F4;
+        }
       }
     }
+  }
+
+  .terms-notice {
+    text-align: center;
+    font-size: 12px;
+    color: var(--grey-500);
+    margin-top: 8px;
+  }
+}
+
+// Style the auth modal
+.auth-modal {
+  .ant-modal-content {
+    background-color: white;
+    border-radius: 16px;
+    overflow: hidden;
+  }
   
-    &__close-button {
-      background: #ccc;
-      color: #000;
-      border: none;
-      border-radius: var(--radius-x3); /* Use --radius-x3 */
-      padding: 8px 16px;
-      cursor: pointer;
-      margin-top: 16px;
-      font-size: 16px;
+  .ant-modal-body {
+    padding: 24px;
+  }
+  
+  .ant-modal-header {
+    margin-bottom: 16px;
+    background-color: white;
+    border-radius: 16px 16px 0 0;
+    
+    .ant-modal-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
     }
   }
+}

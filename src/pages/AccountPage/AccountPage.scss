@@ -1,6 +1,7 @@
 .account-page {
   width: 100%;
-  padding: var(--space-x4);
+  height: 100%;
+  display: flex;
   box-sizing: border-box;
 
   &__sidebar {
@@ -13,8 +14,7 @@
     border-radius: var(--radius-md);
     padding: var(--space-x6);
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 100%;
     
     h2 {
       font-size: 24px;
@@ -37,5 +37,191 @@
     height: 200px;
     font-size: 18px;
     color: var(--grey-600);
+  }
+
+  .account-tabs {
+    width: 100%;
+    height: 100%;
+    
+    .ant-tabs-nav {
+      min-width: 240px;
+      padding: var(--space-x4) 0;
+      background-color: var(--grey-0);
+      border-right: 1px solid var(--grey-200);
+      
+      .ant-tabs-tab {
+        padding: var(--space-x3) var(--space-x4);
+        margin: 0;
+        
+        .anticon {
+          margin-right: var(--space-x2);
+        }
+        
+        &.ant-tabs-tab-active {
+          background-color: var(--primary-100);
+        }
+        
+        &:hover {
+          background-color: var(--grey-100);
+        }
+      }
+    }
+    
+    .ant-tabs-content-holder {
+      padding: var(--space-x4);
+      overflow-y: auto;
+      
+      .ant-tabs-content {
+        height: 100%;
+      }
+    }
+  }
+  
+  .profile-content {
+    max-width: 600px;
+  }
+
+  .language-settings {
+    margin-top: var(--space-x6);
+    margin-bottom: var(--space-x4);
+    
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--grey-800);
+      margin-bottom: var(--space-x3);
+    }
+    
+    .ant-radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-x2);
+      
+      .ant-radio-button-wrapper {
+        margin-bottom: var(--space-x2);
+      }
+    }
+  }
+  
+  .vpoints-content {
+    max-width: 800px;
+    
+    .vpoints-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-x4);
+      
+      h2 {
+        margin-bottom: 0;
+      }
+      
+      .vpoints-balance {
+        display: flex;
+        align-items: center;
+        gap: var(--space-x2);
+        padding: var(--space-x3) var(--space-x4);
+        background-color: var(--primary-50);
+        border-radius: var(--radius-md);
+        
+        .vpoints-icon {
+          font-size: 20px;
+          color: var(--primary-600);
+        }
+        
+        .vpoints-amount {
+          font-size: 24px;
+          font-weight: 600;
+          color: var(--primary-600);
+        }
+      }
+    }
+    
+    .vpoints-description {
+      margin-bottom: var(--space-x4);
+      padding: var(--space-x3);
+      background-color: var(--grey-50);
+      border-radius: var(--radius-md);
+    }
+    
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: var(--space-x3);
+      padding-bottom: var(--space-x2);
+      border-bottom: 1px solid var(--grey-200);
+    }
+    
+    .vpoints-history {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-x2);
+      margin-bottom: var(--space-x4);
+      
+      .vpoints-transaction {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--space-x3);
+        background-color: var(--grey-0);
+        border: 1px solid var(--grey-200);
+        border-radius: var(--radius-md);
+        
+        .transaction-info {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-x1);
+          
+          .transaction-description {
+            font-size: 14px;
+            color: var(--grey-700);
+          }
+        }
+        
+        .transaction-details {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: var(--space-x1);
+          
+          .transaction-amount {
+            font-weight: 600;
+            
+            &.positive {
+              color: var(--success-color);
+            }
+            
+            &.negative {
+              color: var(--error-color);
+            }
+          }
+          
+          .transaction-date {
+            font-size: 12px;
+            color: var(--grey-500);
+          }
+        }
+      }
+    }
+    
+    .no-transactions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-x6);
+      background-color: var(--grey-50);
+      border-radius: var(--radius-md);
+      
+      .no-data-icon {
+        font-size: 36px;
+        color: var(--grey-400);
+        margin-bottom: var(--space-x3);
+      }
+      
+      p {
+        color: var(--grey-600);
+        margin-bottom: 0;
+      }
+    }
   }
 }

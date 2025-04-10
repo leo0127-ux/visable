@@ -1,0 +1,87 @@
+.career-insight-page {
+  padding: var(--space-x4);
+  max-width: 100%;
+  width: 100%;
+  
+  .career-insight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-x4);
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--grey-800);
+      margin: 0;
+    }
+  }
+  
+  .filter-tabs {
+    display: flex;
+    gap: var(--space-x2);
+    margin-bottom: var(--space-x4);
+    border-bottom: 1px solid var(--grey-200);
+    padding-bottom: var(--space-x2);
+    
+    .filter-tab {
+      padding: var(--space-x2) var(--space-x4);
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--grey-600);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      
+      &:hover {
+        color: var(--primary-600);
+      }
+      
+      &.active {
+        color: var(--primary-600);
+        border-bottom-color: var(--primary-600);
+      }
+    }
+  }
+  
+  .career-insights-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-x4);
+    
+    .loading-message,
+    .error-message,
+    .no-insights-message {
+      padding: var(--space-x6);
+      background-color: var(--grey-50);
+      border-radius: var(--radius-md);
+      text-align: center;
+      
+      p {
+        margin-bottom: var(--space-x4);
+        color: var(--grey-700);
+      }
+    }
+    
+    .error-message {
+      color: var(--error-color);
+      border-left: 4px solid var(--error-color);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .career-insight-page {
+    .career-insight-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-x3);
+    }
+    
+    .filter-tabs {
+      overflow-x: auto;
+      padding-bottom: var(--space-x2);
+    }
+  }
+}

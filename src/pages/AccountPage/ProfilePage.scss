@@ -1,0 +1,43 @@
+.profile-page {
+  max-width: 800px;
+  width: 100%;
+  padding: var(--space-x4);
+  
+  &.loading, &.not-logged-in {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: var(--grey-600);
+    
+    p {
+      margin-top: var(--space-x2);
+    }
+  }
+  
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--space-x6);
+    
+    h2 {
+      margin-top: var(--space-x3);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--grey-800);
+    }
+  }
+  
+  .profile-form {
+    background-color: white;
+    border-radius: var(--radius-md);
+    padding: var(--space-x4);
+    border: 1px solid var(--grey-200);
+    
+    .ant-form-item:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

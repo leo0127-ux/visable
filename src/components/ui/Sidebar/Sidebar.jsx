@@ -7,7 +7,6 @@ import "./Sidebar.scss";
 const Sidebar = () => {
   const [isCommunityOpen, setIsCommunityOpen] = React.useState(true);
   const [communityItems, setCommunityItems] = React.useState([]);
-  const [error, setError] = React.useState(null);
 
   const toggleCommunity = () => {
     setIsCommunityOpen((prev) => !prev);
@@ -15,22 +14,34 @@ const Sidebar = () => {
 
   React.useEffect(() => {
     const fetchBoards = async () => {
-      try {
-        const { data, error } = await supabase.from("boards").select("*");
-        if (error) {
-          console.error("Error fetching boards:", error);
-          setError("Failed to fetch boards. Please check your API key or permissions.");
-          return;
-        }
-        setCommunityItems(data);
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        setError("An unexpected error occurred.");
+      const { data, error } = await supabase.from("boards").select("*");
+      if (error) {
+        console.error("Error fetching boards:", error);
+      } else {
+        const formattedBoards = data.map((board) => ({
+          path: `/board/${board.id}`,
+          label: board.name,
+          icon: (
+            <div className="icon-container">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="icon"
+              >
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+            </div>
+          ),
+        }));
+        setCommunityItems(formattedBoards);
       }
     };
 
     fetchBoards();
-  }, []); // 僅在組件掛載時執行
+  }, []);
 
   const menuItems = [
     {
@@ -83,8 +94,8 @@ const Sidebar = () => {
       ),
     },
     {
-      path: "/experience",
-      label: "經驗分享",
+      path: "/career",
+      label: "職場洞察",
       icon: (
         <div className="icon-container">
           <svg
@@ -98,12 +109,29 @@ const Sidebar = () => {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M12 20.25c4.97 0 9-4.03 9-9s-4.03-9-9-9-9 4.03-9 9 4.03 9 9 9z"
+              d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"
             />
+          </svg>
+        </div>
+      ),
+    },
+    {
+      path: "/connections",
+      label: "人脈",
+      icon: (
+        <div className="icon-container">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="icon"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M12 7.5v5.25l3 1.5"
+              d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
             />
           </svg>
         </div>
@@ -159,29 +187,14 @@ const Sidebar = () => {
             <div className="sidebar__community-list">
               {communityItems.map((item) => (
                 <NavLink
-                  key={item.id}
-                  to={`/board/${item.id}`}
+                  key={item.path}
+                  to={item.path}
                   className={({ isActive }) =>
                     `sidebar__link ${isActive ? "active" : ""}`
                   }
                 >
-                  <div className="icon-container">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="icon"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                      />
-                    </svg>
-                  </div>
-                  <span>{item.name}</span>
+                  {item.icon}
+                  <span>{item.label}</span>
                 </NavLink>
               ))}
             </div>
