@@ -1,0 +1,6 @@
+{
+  "name": "fetch-uscis-h1b-data",
+  "version": "1.0.0",
+  "description": "Edge function to fetch H1B data from USCIS",
+  "main": "index.ts"
+}

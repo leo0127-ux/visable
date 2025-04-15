@@ -1,0 +1,117 @@
+.h1b-insights {
+  margin-bottom: var(--space-x6);
+  
+  .insights-description {
+    display: block;
+    margin-bottom: var(--space-x4);
+    color: var(--grey-600);
+  }
+  
+  .summary-cards {
+    margin-bottom: var(--space-x4);
+    
+    .ant-card {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+      }
+      
+      .ant-statistic-title {
+        color: var(--grey-600);
+        font-size: 14px;
+      }
+      
+      .ant-statistic-content {
+        color: var(--grey-900);
+        font-size: 22px;
+      }
+    }
+  }
+  
+  .insights-card {
+    margin-bottom: var(--space-x4);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    
+    .ant-card-head-title {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 600;
+      
+      .anticon {
+        margin-right: var(--space-x2);
+      }
+    }
+    
+    .ant-table-thead > tr > th {
+      background-color: var(--grey-50);
+    }
+    
+    .ant-list-item {
+      padding: var(--space-x2) 0;
+    }
+    
+    .industry-item, .geography-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      
+      .industry-name, .state-name {
+        font-weight: 500;
+      }
+      
+      .industry-stats {
+        display: flex;
+        align-items: center;
+        gap: var(--space-x2);
+      }
+      
+      .industry-count, .state-count {
+        color: var(--grey-700);
+      }
+    }
+    
+    .salary-text {
+      color: var(--success-color);
+      font-weight: 500;
+    }
+  }
+  
+  .data-note {
+    margin-top: var(--space-x4);
+    padding: var(--space-x3);
+    background-color: var(--grey-50);
+    border-radius: var(--radius-md);
+  }
+  
+  .h1b-insights-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-x6);
+    
+    p {
+      margin-top: var(--space-x3);
+      color: var(--grey-600);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .h1b-insights {
+    .industry-item, .geography-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-x1);
+      
+      .industry-stats, .state-count {
+        margin-top: var(--space-x1);
+      }
+    }
+  }
+}

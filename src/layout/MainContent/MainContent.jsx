@@ -8,6 +8,7 @@ import PostDetailPage from "../../pages/PostDetailPage/PostDetailPage";
 import CareerInsightPage from "../../pages/CareerInsightPage/CareerInsightPage";
 import ExperiencePage from "../../pages/ExperiencePage/ExperiencePage";
 import ConnectionsPage from "../../pages/ConnectionsPage/ConnectionsPage";
+import VisaReportPage from "../../pages/VisaReportPage/VisaReportPage";
 import "./MainContent.scss";
 
 const MainContent = ({ searchQuery, searchContext }) => {
@@ -50,6 +51,7 @@ const MainContent = ({ searchQuery, searchContext }) => {
           <Route path="/experience" element={<ExperiencePage />} />
           <Route path="/connections" element={<ConnectionsPage />} />
           <Route path="/account/*" element={<AccountPage />} />
+          <Route path="/visa-report" element={<VisaReportPage />} />
         </Routes>
       </div>
     </main>

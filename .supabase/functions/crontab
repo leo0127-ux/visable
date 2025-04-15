@@ -1,0 +1,4 @@
+# 每周三凌晨3点运行签证数据抓取
+0 3 * * 3 /functions/visa-data-fetcher
+# 每月1日凌晨4点运行旧数据清理
+0 4 1 * * /functions/visa-data-fetcher?action=cleanup

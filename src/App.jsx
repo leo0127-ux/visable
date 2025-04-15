@@ -5,6 +5,7 @@ import Sidebar from './components/ui/Sidebar/Sidebar';
 import MainContent from './layout/MainContent/MainContent';
 import AuthPopup from './components/auth/AuthPopup';
 import supabase from './services/supabase/supabaseClient';
+import { LanguageProvider } from './context/LanguageContext'; // 導入語言提供者
 import './styles/global.scss';
 
 function App() {
@@ -36,10 +37,18 @@ function App() {
       }
     );
 
+    // Add event listener for auth popup trigger
+    const authPopupListener = () => {
+      setIsAuthPopupOpen(true);
+    };
+    
+    window.addEventListener('showAuthPopup', authPopupListener);
+
     return () => {
       if (authListener?.subscription) {
         authListener.subscription.unsubscribe();
       }
+      window.removeEventListener('showAuthPopup', authPopupListener);
     };
   }, []);
 
@@ -56,29 +65,31 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="app">
-        <Navbar 
-          onSearchChange={handleSearch}
-          searchQuery={searchQuery}
-          onLoginRequired={handleLoginRequired}
-        />
-        <div className="layout">
-          <Sidebar />
-          <MainContent 
+    <LanguageProvider> {/* 添加語言提供者 */}
+      <Router>
+        <div className="app">
+          <Navbar 
+            onSearchChange={handleSearch}
             searchQuery={searchQuery}
-            searchContext={searchContext}
             onLoginRequired={handleLoginRequired}
-            user={user}
+          />
+          <div className="layout">
+            <Sidebar />
+            <MainContent 
+              searchQuery={searchQuery}
+              searchContext={searchContext}
+              onLoginRequired={handleLoginRequired}
+              user={user}
+            />
+          </div>
+          
+          <AuthPopup 
+            isOpen={isAuthPopupOpen}
+            onClose={handleCloseAuthPopup}
           />
         </div>
-        
-        <AuthPopup 
-          isOpen={isAuthPopupOpen}
-          onClose={handleCloseAuthPopup}
-        />
-      </div>
-    </Router>
+      </Router>
+    </LanguageProvider>
   );
 }
 

@@ -1,137 +1,170 @@
 import React, { useState, useEffect } from 'react';
-import { Button, message } from 'antd';
-import { MessageOutlined } from '@ant-design/icons';
+import { Card, Button, message } from 'antd';
+import { TeamOutlined } from '@ant-design/icons';
 import supabase from '../../../services/supabase/supabaseClient';
 import ChatModal from '../../chat/ChatModal';
+import './JoinChatBlock.scss';
 
-/**
- * Block component for joining a board chat
- */
-const JoinChatBlock = ({ boardId, boardName, className = '' }) => {
-  const [showChatModal, setShowChatModal] = useState(false);
-  const [chatRoomId, setChatRoomId] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+const JoinChatBlock = ({ boardId, boardName }) => {
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+  const [chatRoomId, setChatRoomId] = useState(null);
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [isCheckingRoom, setIsCheckingRoom] = useState(true);
+
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUser(user);
-    };
+    if (!boardId) return;
     
-    const fetchChatRoom = async () => {
-      if (boardId) {
-        const { data: chatRoom } = await supabase
-          .from('chat_rooms')
-          .select('id')
-          .eq('board_id', boardId)
-          .single();
+    const fetchData = async () => {
+      try {
+        setIsCheckingRoom(true);
+        // Get current user
+        const { data } = await supabase.auth.getUser();
+        if (data?.user) {
+          setUser(data.user);
           
-        if (chatRoom) {
-          setChatRoomId(chatRoom.id);
+          // Find chat room for this board - ensure we're using board_id as the key identifier
+          const { data: rooms, error } = await supabase
+            .from('chat_rooms')
+            .select('id, participants')
+            .eq('board_id', boardId)
+            .eq('type', 'board')
+            .single();
+            
+          if (!error && rooms) {
+            console.log(`Found existing chat room for board ${boardId}:`, rooms.id);
+            setChatRoomId(rooms.id);
+          } else {
+            console.log(`No existing chat room found for board ${boardId}, will create if needed`);
+          }
         }
+      } catch (err) {
+        console.error("Error fetching chat data:", err);
+      } finally {
+        setIsCheckingRoom(false);
       }
     };
     
-    fetchCurrentUser();
-    fetchChatRoom();
+    fetchData();
   }, [boardId]);
-  
+
   const handleJoinChat = async () => {
-    if (!currentUser) {
+    if (!user) {
       message.error('Please log in to join the chat');
       return;
     }
     
-    setLoading(true);
-    
     try {
-      if (!chatRoomId) {
-        // Create new chat room if none exists
-        const { data: newRoom, error: roomError } = await supabase
+      setLoading(true);
+      
+      // Double-check if a room already exists for this board (in case it was created since we loaded)
+      const { data: existingRoom, error: lookupError } = await supabase
+        .from('chat_rooms')
+        .select('id, participants')
+        .eq('board_id', boardId)
+        .eq('type', 'board')
+        .single();
+        
+      let roomId;
+      
+      if (!lookupError && existingRoom) {
+        // Room exists, use it
+        roomId = existingRoom.id;
+        console.log(`Using existing chat room ${roomId} for board ${boardId}`);
+        
+        // Make sure user is in participants array
+        if (!existingRoom.participants?.includes(user.id)) {
+          await supabase
+            .from('chat_rooms')
+            .update({
+              participants: [...(existingRoom.participants || []), user.id]
+            })
+            .eq('id', roomId);
+            
+          console.log(`Added user ${user.id} to participants array of room ${roomId}`);
+          message.success('You have joined the group chat!');
+        }
+      } else {
+        // No room exists, create a new one
+        console.log(`Creating new chat room for board ${boardId}`);
+        const { data: newRoom, error: createError } = await supabase
           .from('chat_rooms')
           .insert({
-            name: `${boardName || 'Board'} Chat`,
+            name: boardName || 'Board Chat',
             type: 'board',
             board_id: boardId,
-            created_by: currentUser.id,
-            participants: [currentUser.id]
+            created_by: user.id,
+            participants: [user.id]
           })
           .select('id')
           .single();
           
-        if (roomError) throw roomError;
+        if (createError) {
+          throw new Error(`Failed to create chat room: ${createError.message}`);
+        }
         
-        setChatRoomId(newRoom.id);
+        roomId = newRoom.id;
+        console.log(`Created new chat room ${roomId} for board ${boardId}`);
         
-        // Add user as participant
-        const { error: participantError } = await supabase
-          .from('chat_participants')
-          .insert({
-            chat_room_id: newRoom.id,
-            user_id: currentUser.id,
-            user_email: currentUser.email,
-            role: 'member'
-          });
-          
-        if (participantError) throw participantError;
-      } else {
-        // Check if user is already a participant
-        const { data: existingParticipant, error } = await supabase
-          .from('chat_participants')
-          .select('*')
-          .eq('chat_room_id', chatRoomId)
-          .eq('user_id', currentUser.id)
-          .single();
-          
-        if (error && error.code !== 'PGRST116') {
-          // Add user as participant if not already
-          const { error: participantError } = await supabase
+        // Try to add participant record 
+        try {
+          await supabase
             .from('chat_participants')
             .insert({
-              chat_room_id: chatRoomId,
-              user_id: currentUser.id,
-              user_email: currentUser.email,
+              chat_room_id: roomId,
+              user_id: user.id,
+              user_email: user.email,
               role: 'member'
             });
-            
-          if (participantError) throw participantError;
+          console.log(`Added user ${user.id} to chat_participants for room ${roomId}`);
+        } catch (participantError) {
+          console.warn('Could not create chat participant record, but continuing with participants array', participantError);
         }
+        
+        message.success('Group chat created and joined successfully!');
       }
       
-      // Show chat modal
+      // Update state with the room ID (whether existing or new)
+      setChatRoomId(roomId);
       setShowChatModal(true);
       
     } catch (error) {
-      console.error("Error joining chat:", error);
-      message.error("Failed to join chat. Please try again.");
+      console.error('Error joining chat:', error);
+      message.error(`Failed to join chat: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
-  
+
+  if (!boardId) return null;
+
   return (
-    <div className={`sidebar-block join-chat-block ${className}`}>
-      <Button 
-        icon={<MessageOutlined />}
-        onClick={handleJoinChat}
-        loading={loading}
-        className="join-chat-button"
-      >
-        Join Chat
-      </Button>
+    <>
+      <Card className="board-action-card join-chat-block">
+        <TeamOutlined className="card-icon" />
+        <h3>Board Discussion</h3>
+        <p>Join the community chat to connect with other members of this board</p>
+        <Button 
+          type="primary" 
+          onClick={handleJoinChat} 
+          loading={loading || isCheckingRoom}
+          disabled={isCheckingRoom}
+        >
+          {chatRoomId ? 'Enter Group Chat' : 'Join Group Chat'}
+        </Button>
+      </Card>
       
       {showChatModal && (
         <ChatModal
           isOpen={showChatModal}
           onClose={() => setShowChatModal(false)}
           chatRoomId={chatRoomId}
-          userId={currentUser?.id}
+          userId={user?.id}
           isBoardChat={true}
           boardName={boardName}
         />
       )}
-    </div>
+    </>
   );
 };
 

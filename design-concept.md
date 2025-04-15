@@ -319,3 +319,22 @@ create post 要分兩頁 第一頁先選 post type
 待開發
 聊天功能 (儲存至 supabase)
 job list im
+
+
+<!-- chat modal 
+chat modal 左邊可以選擇已已加入 的 group chat 或者 single chat 
+流程是這樣 
+
+找使用者 > 點 私信 > 觸發 modal 打開 > 可開始一對一傳訊息
+找 board > 點 joint group chat > 觸發 modal 打開 > 可開始group chat
+這些已經開啟的聊天室 都會出現在 chat modal 左邊 -->
+
+
+<!-- 屬於論壇的文章現在 右邊有
+About the Board
+結構如下
+About the Board
+board infomation
+group 總人數 | 在線人數
+Create post button (按了直接開啟 create post)
+Join group chat (目前功能) -->

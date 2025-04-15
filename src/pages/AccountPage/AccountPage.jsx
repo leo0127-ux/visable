@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Modal, Radio, Tabs, Badge } from "antd";
 import { UserOutlined, MessageOutlined, BookOutlined, FileOutlined, TrophyOutlined, HistoryOutlined } from '@ant-design/icons';
 import supabase from "../../services/supabase/supabaseClient";
+import { useLanguage } from "../../context/LanguageContext"; // 引入語言上下文
 import MessagesPage from './MessagesPage';
 import SavedJobsPage from './SavedJobsPage';
 import DocumentsPage from './DocumentsPage';
@@ -19,6 +20,7 @@ const AccountPage = ({ onLoginRequired }) => {
   const [language, setLanguage] = useState("en");
   const [vpoints, setVpoints] = useState(0);
   const [vpointHistory, setVpointHistory] = useState([]);
+  const { t, changeLanguage } = useLanguage(); // 使用語言上下文
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -108,24 +110,9 @@ const AccountPage = ({ onLoginRequired }) => {
     setLanguage(newLanguage);
 
     try {
-      const { data } = await supabase
-        .from("user_preferences")
-        .select("id")
-        .eq("user_id", user.id)
-        .single();
-
-      if (data) {
-        await supabase
-          .from("user_preferences")
-          .update({ language: newLanguage })
-          .eq("user_id", user.id);
-      } else {
-        await supabase
-          .from("user_preferences")
-          .insert({ user_id: user.id, language: newLanguage });
-      }
-
-      alert("Language preference updated!");
+      // 使用語言上下文的 changeLanguage 方法
+      // 這會同時更新存儲和重新整理頁面
+      changeLanguage(newLanguage, user.id);
     } catch (err) {
       console.error("Error updating language preference:", err);
     }
@@ -134,10 +121,10 @@ const AccountPage = ({ onLoginRequired }) => {
   const renderProfileContent = () => {
     return (
       <div className="profile-content">
-        <h2>Personal Profile</h2>
-        <p>Email: {user?.email}</p>
+        <h2>{t("personalProfile")}</h2>
+        <p>{t("email")}: {user?.email}</p>
         <Input
-          placeholder="Set your username"
+          placeholder={t("setUsername")}
           defaultValue={user?.user_metadata?.full_name || userData?.username || ""}
           onBlur={async (e) => {
             const { error } = await supabase
@@ -149,7 +136,7 @@ const AccountPage = ({ onLoginRequired }) => {
         />
 
         <div className="language-settings">
-          <h3>Language Preference</h3>
+          <h3>{t("languagePreference")}</h3>
           <Radio.Group value={language} onChange={handleLanguageChange}>
             <Radio.Button value="en">English</Radio.Button>
             <Radio.Button value="zh_TW">繁體中文</Radio.Button>
@@ -166,7 +153,7 @@ const AccountPage = ({ onLoginRequired }) => {
           style={{ marginTop: "16px" }}
           onClick={() => setIsDeleteModalVisible(true)}
         >
-          Delete Account
+          {t("deleteAccount")}
         </Button>
       </div>
     );
@@ -226,8 +213,8 @@ const AccountPage = ({ onLoginRequired }) => {
     );
   };
 
-  if (loading) return <div className="account-page loading">Loading...</div>;
-  if (authChecked && !user) return <div className="account-page not-logged-in">Please log in to view your account</div>;
+  if (loading) return <div className="account-page loading">{t("loading")}</div>;
+  if (authChecked && !user) return <div className="account-page not-logged-in">{t("pleaseLogin")}</div>;
 
   const items = [
     {
@@ -235,7 +222,7 @@ const AccountPage = ({ onLoginRequired }) => {
       label: (
         <span>
           <UserOutlined />
-          Profile
+          {t("profile")}
         </span>
       ),
       children: renderProfileContent()
@@ -245,7 +232,7 @@ const AccountPage = ({ onLoginRequired }) => {
       label: (
         <span>
           <TrophyOutlined />
-          VPoints
+          {t("vpoints")}
         </span>
       ),
       children: renderVPointsContent()
@@ -255,7 +242,7 @@ const AccountPage = ({ onLoginRequired }) => {
       label: (
         <span>
           <MessageOutlined />
-          Messages
+          {t("messages")}
         </span>
       ),
       children: <MessagesPage onLoginRequired={onLoginRequired} />
@@ -265,7 +252,7 @@ const AccountPage = ({ onLoginRequired }) => {
       label: (
         <span>
           <BookOutlined />
-          Saved Jobs
+          {t("savedJobs")}
         </span>
       ),
       children: <SavedJobsPage onLoginRequired={onLoginRequired} />
@@ -275,7 +262,7 @@ const AccountPage = ({ onLoginRequired }) => {
       label: (
         <span>
           <FileOutlined />
-          Documents
+          {t("documents")}
         </span>
       ),
       children: <DocumentsPage onLoginRequired={onLoginRequired} />
@@ -285,7 +272,7 @@ const AccountPage = ({ onLoginRequired }) => {
       label: (
         <span>
           <FileOutlined />
-          My Posts
+          {t("myPosts")}
         </span>
       ),
       children: <UserPostsPage userId={user?.id} />
@@ -295,7 +282,7 @@ const AccountPage = ({ onLoginRequired }) => {
       label: (
         <span>
           <FileOutlined />
-          Career Insights
+          {t("myCareerInsights")}
         </span>
       ),
       children: <UserCareerInsightsPage userId={user?.id} />
@@ -312,15 +299,15 @@ const AccountPage = ({ onLoginRequired }) => {
       />
 
       <Modal
-        title="Delete Account"
+        title={t("deleteAccount")}
         open={isDeleteModalVisible}
         onOk={handleDeleteAccount}
         onCancel={() => setIsDeleteModalVisible(false)}
-        okText="Delete"
+        okText={t("delete")}
         okButtonProps={{ danger: true }}
-        cancelText="Cancel"
+        cancelText={t("cancel")}
       >
-        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+        <p>{t("confirmDeleteAccount")}</p>
       </Modal>
     </div>
   );

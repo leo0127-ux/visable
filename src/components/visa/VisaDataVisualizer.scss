@@ -1,0 +1,231 @@
+.visa-data-visualizer {
+  margin-bottom: var(--space-x6);
+  
+  .data-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-x3);
+  }
+  
+  .summary-cards {
+    margin-bottom: var(--space-x4);
+    
+    .ant-card {
+      height: 100%;
+      
+      .ant-statistic-title {
+        font-size: 14px;
+        color: var(--grey-600);
+      }
+      
+      .ant-statistic-content {
+        font-size: 24px;
+      }
+    }
+  }
+  
+  .chart-card {
+    margin-bottom: var(--space-x4);
+    
+    .yearly-chart {
+      height: 280px;
+      
+      .chart-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: var(--space-x3);
+        color: var(--grey-700);
+        text-align: center;
+      }
+      
+      .bar-chart-container {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        height: 180px;
+        
+        .year-group {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          
+          .year-label {
+            margin-top: var(--space-x2);
+            font-size: 12px;
+            color: var(--grey-600);
+          }
+          
+          .bar-group {
+            display: flex;
+            gap: 4px;
+            align-items: flex-end;
+            height: 150px;
+          }
+          
+          .bar {
+            width: 20px;
+            min-height: 2px;
+            border-radius: 2px 2px 0 0;
+            
+            &.approvals-bar {
+              background-color: var(--primary-500);
+            }
+            
+            &.denials-bar {
+              background-color: var(--error-400);
+            }
+          }
+          
+          .rate-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--grey-700);
+            margin-top: var(--space-x1);
+          }
+        }
+      }
+      
+      .chart-legend {
+        display: flex;
+        justify-content: center;
+        gap: var(--space-x3);
+        margin-top: var(--space-x4);
+        
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: var(--space-x1);
+          font-size: 12px;
+          color: var(--grey-700);
+          
+          .color-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            
+            &.approvals-color {
+              background-color: var(--primary-500);
+            }
+            
+            &.denials-color {
+              background-color: var(--error-400);
+            }
+          }
+        }
+      }
+    }
+    
+    .employer-chart {
+      height: 280px;
+      
+      .chart-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: var(--space-x3);
+        color: var(--grey-700);
+        text-align: center;
+      }
+      
+      .employer-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-x2);
+        margin-top: var(--space-x3);
+        
+        .employer-item {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-x1);
+          
+          .employer-name {
+            font-size: 13px;
+            color: var(--grey-700);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          
+          .employer-bar-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-x2);
+            height: 16px;
+            
+            .employer-bar {
+              height: 16px;
+              background-color: var(--primary-500);
+              border-radius: 2px;
+              transition: width 0.3s ease;
+            }
+            
+            .employer-value {
+              font-size: 12px;
+              color: var(--grey-600);
+              min-width: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .chart-container {
+    height: 400px;
+    width: 100%;
+  }
+  
+  .data-viz-tabs {
+    .ant-tabs-nav {
+      margin-bottom: var(--space-x4);
+    }
+  }
+  
+  .employers-table-card {
+    margin-top: var(--space-x4);
+  }
+  
+  .visa-data-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-x8);
+    
+    p {
+      margin-top: var(--space-x3);
+      color: var(--grey-600);
+    }
+  }
+  
+  .data-source-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-x4);
+    padding-top: var(--space-x2);
+    font-size: 12px;
+    color: var(--grey-500);
+    border-top: 1px solid var(--grey-100);
+  }
+}
+
+@media (max-width: 768px) {
+  .visa-data-visualizer {
+    .yearly-chart {
+      .bar-chart-container {
+        .year-group {
+          .bar {
+            width: 14px;
+          }
+          
+          .year-label {
+            font-size: 10px;
+          }
+          
+          .rate-label {
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+}

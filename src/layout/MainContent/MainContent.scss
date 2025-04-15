@@ -24,8 +24,7 @@
 
   /* 標準頁面布局 */
   &.standard-page .content-area {
-    max-width: 900px;
-    margin: 0 auto;
+    width: 100%;
     padding: var(--space-x4); /* Keep padding for standard pages */
   }
 

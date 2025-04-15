@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button, Spin, Card, Avatar, Modal, message } from 'antd';
-import { SearchOutlined, UserOutlined, MessageOutlined } from '@ant-design/icons';
+import { Input, Button, Spin, Avatar, message, Modal } from 'antd';
+import { SearchOutlined, UserOutlined, MessageOutlined, EnvironmentOutlined, LinkOutlined } from '@ant-design/icons';
 import supabase from '../../services/supabase/supabaseClient';
-import ChatModal from '../../components/chat/ChatModal'; // Updated path to include 'chat' directory
+import ChatModal from '../../components/chat/ChatModal';
 import './ConnectionsPage.scss';
 
 const ConnectionsPage = () => {
@@ -12,11 +12,11 @@ const ConnectionsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [chatPartnerId, setChatPartnerId] = useState(null);
   const [chatRoomId, setChatRoomId] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -33,10 +33,8 @@ const ConnectionsPage = () => {
       try {
         setLoading(true);
 
-        // Get current user first
         await fetchCurrentUser();
 
-        // Safely query just the columns that are likely to exist
         const { data, error } = await supabase
           .from('users')
           .select('id, email, full_name, bio, website, location, avatar_url')
@@ -44,12 +42,10 @@ const ConnectionsPage = () => {
 
         if (error) throw error;
 
-        // Get current user to filter them out
         const { data: { user } } = await supabase.auth.getUser();
 
-        // Filter out current user and process the data
         const processedUsers = (data || [])
-          .filter(u => u.id !== user?.id) // Filter out current user
+          .filter(u => u.id !== user?.id)
           .map(u => ({
             id: u.id,
             email: u.email,
@@ -93,14 +89,26 @@ const ConnectionsPage = () => {
     setSearchQuery(e.target.value);
   };
 
-  const viewProfile = (user) => {
+  const handleUserClick = (user) => {
     setSelectedUser(user);
     setIsProfileModalVisible(true);
   };
 
+  const handleMessageClick = (user, e) => {
+    e.stopPropagation();
+
+    if (!currentUser) {
+      const authEvent = new CustomEvent('showAuthPopup');
+      window.dispatchEvent(authEvent);
+      message.info('請先登入以發送訊息');
+      return;
+    }
+
+    startChat(user);
+  };
+
   const startChat = async (user) => {
     if (!currentUser) {
-      message.error('Please log in to start a conversation');
       return;
     }
 
@@ -110,35 +118,24 @@ const ConnectionsPage = () => {
     }
 
     try {
-      // First check if chat room already exists
-      let { data: chatParticipations, error: participationsError } = await supabase
-        .from('chat_participants')
-        .select('chat_room_id')
-        .eq('user_id', currentUser.id);
+      const { data: chatRooms } = await supabase
+        .from('chat_rooms')
+        .select('*')
+        .eq('type', 'direct');
 
-      if (participationsError) throw participationsError;
+      const existingRoom = chatRooms?.find(room =>
+        room.participants &&
+        room.participants.includes(currentUser.id) &&
+        room.participants.includes(user.id)
+      );
 
-      // Get all room IDs where both users participate
-      if (chatParticipations?.length > 0) {
-        const roomIds = chatParticipations.map(p => p.chat_room_id);
-
-        const { data: otherParticipation, error: otherError } = await supabase
-          .from('chat_participants')
-          .select('chat_room_id')
-          .eq('user_id', user.id)
-          .in('chat_room_id', roomIds)
-          .single();
-
-        if (!otherError && otherParticipation) {
-          // Found existing chat room
-          setChatRoomId(otherParticipation.chat_room_id);
-          setChatPartnerId(user.id);
-          setShowChatModal(true);
-          return;
-        }
+      if (existingRoom) {
+        setChatRoomId(existingRoom.id);
+        setChatPartnerId(user.id);
+        setShowChatModal(true);
+        return;
       }
 
-      // Create new chat room if none exists
       const { data: newRoom, error: createError } = await supabase
         .from('chat_rooms')
         .insert({
@@ -150,34 +147,42 @@ const ConnectionsPage = () => {
         .select('id')
         .single();
 
-      if (createError) throw createError;
+      if (createError) {
+        console.error('Error creating chat room:', createError);
+        throw createError;
+      }
 
-      const chatRoomId = newRoom.id;
+      try {
+        await supabase
+          .from('chat_participants')
+          .insert([
+            {
+              chat_room_id: newRoom.id,
+              user_id: currentUser.id,
+              user_email: currentUser.email,
+              role: 'member'
+            }
+          ]);
+      } catch (err) {
+        console.warn('Could not add current user to chat_participants table, continuing with participants array');
+      }
 
-      // Add participants to chat_participants table
-      const participantsToAdd = [
-        {
-          chat_room_id: chatRoomId,
-          user_id: currentUser.id,
-          user_email: currentUser.email,
-          role: 'member'
-        },
-        {
-          chat_room_id: chatRoomId,
-          user_id: user.id,
-          user_email: user.email,
-          role: 'member'
-        }
-      ];
+      try {
+        await supabase
+          .from('chat_participants')
+          .insert([
+            {
+              chat_room_id: newRoom.id,
+              user_id: user.id,
+              user_email: user.email,
+              role: 'member'
+            }
+          ]);
+      } catch (err) {
+        console.warn('Could not add other user to chat_participants table, continuing with participants array');
+      }
 
-      const { error: participantError } = await supabase
-        .from('chat_participants')
-        .insert(participantsToAdd);
-
-      if (participantError) throw participantError;
-
-      // Open the chat modal with this new room
-      setChatRoomId(chatRoomId);
+      setChatRoomId(newRoom.id);
       setChatPartnerId(user.id);
       setShowChatModal(true);
 
@@ -191,7 +196,6 @@ const ConnectionsPage = () => {
     setError(null);
     setLoading(true);
 
-    // Fetch users again
     const fetchUsers = async () => {
       try {
         const { data, error } = await supabase
@@ -246,40 +250,36 @@ const ConnectionsPage = () => {
               <p>找不到符合條件的使用者</p>
             </div>
           ) : (
-            <div className="users-grid">
+            <div className="users-list">
               {filteredUsers.map(user => (
-                <Card
-                  key={user.id}
-                  className="user-card"
-                  actions={[
-                    <Button 
-                      icon={<UserOutlined />} 
-                      onClick={() => viewProfile(user)}
-                      type="text"
-                    >
-                      查看資料
-                    </Button>,
-                    <Button 
-                      icon={<MessageOutlined />} 
-                      onClick={() => startChat(user)}
-                      type="text"
-                      disabled={currentUser && user.id === currentUser.id}
+                <div 
+                  key={user.id} 
+                  className="user-list-item"
+                  onClick={() => handleUserClick(user)}
+                >
+                  <div className="user-info">
+                    <Avatar 
+                      src={user.avatar_url} 
+                      icon={!user.avatar_url && <UserOutlined />} 
+                      size={48} 
+                      className="user-avatar" 
+                    />
+                    <div className="user-details">
+                      <h3 className="user-name">{user.full_name || user.email}</h3>
+                      <p className="user-email">{user.email}</p>
+                      {user.location && <p className="user-location">{user.location}</p>}
+                    </div>
+                  </div>
+                  <div className="user-actions">
+                    <Button
+                      icon={<MessageOutlined />}
+                      onClick={(e) => handleMessageClick(user, e)}
+                      className="message-button"
                     >
                       私信
                     </Button>
-                  ]}
-                >
-                  <Card.Meta
-                    avatar={<Avatar src={user.avatar_url} icon={!user.avatar_url && <UserOutlined />} size={64} className="user-avatar" />}
-                    title={user.full_name || user.email}
-                    description={
-                      <div>
-                        <p className="user-email">{user.email}</p>
-                        {user.location && <p className="user-location">{user.location}</p>}
-                      </div>
-                    }
-                  />
-                </Card>
+                  </div>
+                </div>
               ))}
             </div>
           )}
@@ -287,7 +287,7 @@ const ConnectionsPage = () => {
       )}
 
       <Modal
-        title="使用者資料"
+        title="使用者詳細資料"
         open={isProfileModalVisible}
         footer={[
           <Button key="close" onClick={() => setIsProfileModalVisible(false)}>
@@ -296,50 +296,53 @@ const ConnectionsPage = () => {
           <Button 
             key="message" 
             type="primary" 
+            icon={<MessageOutlined />}
             onClick={() => {
-              startChat(selectedUser);
               setIsProfileModalVisible(false);
+              handleMessageClick(selectedUser, { stopPropagation: () => {} });
             }}
-            disabled={currentUser && selectedUser && currentUser.id === selectedUser.id}
+            disabled={!currentUser}
           >
-            發送私信
+            發送訊息
           </Button>
         ]}
         onCancel={() => setIsProfileModalVisible(false)}
-        width={600}
       >
         {selectedUser && (
-          <div className="user-profile">
+          <div className="user-profile-detail">
             <div className="profile-header">
               <Avatar 
-                icon={<UserOutlined />}
-                size={100}
+                src={selectedUser.avatar_url} 
+                icon={!selectedUser.avatar_url && <UserOutlined />} 
+                size={80} 
               />
               <h2>{selectedUser.full_name || selectedUser.email}</h2>
               <p className="user-email">{selectedUser.email}</p>
             </div>
-
+            
             {selectedUser.bio && (
               <div className="profile-section">
-                <h3>關於我</h3>
+                <h3>關於</h3>
                 <p>{selectedUser.bio}</p>
               </div>
             )}
-
-            {(selectedUser.website || selectedUser.location) && (
-              <div className="profile-section">
-                <h3>聯絡資訊</h3>
-                {selectedUser.location && <p><strong>地區:</strong> {selectedUser.location}</p>}
-                {selectedUser.website && (
-                  <p>
-                    <strong>網站:</strong> 
-                    <a href={selectedUser.website} target="_blank" rel="noopener noreferrer">
-                      {selectedUser.website}
-                    </a>
-                  </p>
-                )}
-              </div>
-            )}
+            
+            <div className="profile-section">
+              <h3>聯絡資訊</h3>
+              {selectedUser.location && (
+                <p>
+                  <EnvironmentOutlined /> {selectedUser.location}
+                </p>
+              )}
+              {selectedUser.website && (
+                <p>
+                  <LinkOutlined /> 
+                  <a href={selectedUser.website} target="_blank" rel="noopener noreferrer">
+                    {selectedUser.website}
+                  </a>
+                </p>
+              )}
+            </div>
           </div>
         )}
       </Modal>

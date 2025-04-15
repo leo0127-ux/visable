@@ -1,5 +1,6 @@
 .board-sidebar {
-  width: 300px;
+  width: 325px;
+  flex-shrink: 0; // Prevent the sidebar from shrinking
   padding: var(--space-x4);
   background-color: var(--grey-0);
   border-left: 1px solid var(--grey-200);
@@ -14,123 +15,111 @@
     border-bottom: 1px solid var(--grey-200);
   }
   
-  .board-info {
+  .board-info-card {
+    width: 100%;
     margin-bottom: var(--space-x4);
+    border-radius: var(--radius-md);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     
-    .board-name {
-      font-size: 20px;
+    h2 {
+      font-size: 18px;
       font-weight: 600;
-      color: var(--grey-900);
       margin-bottom: var(--space-x3);
+      color: var(--grey-800);
     }
     
     .board-description {
-      font-size: 14px;
       color: var(--grey-700);
       margin-bottom: var(--space-x4);
+      font-size: 14px;
       line-height: 1.5;
     }
     
-    .board-meta {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-x3);
-      margin-bottom: var(--space-x4);
-      
-      .meta-item {
-        display: flex;
-        align-items: center;
-        gap: var(--space-x2);
-        font-size: 14px;
-        color: var(--grey-600);
-        
-        .meta-icon {
-          font-size: 16px;
-          color: var(--primary-600);
-        }
-      }
-    }
-    
     .board-stats {
-      background-color: var(--grey-50);
-      border-radius: var(--radius-md);
-      padding: var(--space-x3);
       margin-bottom: var(--space-x3);
       
-      .stat-item {
+      .stat-row {
         display: flex;
-        align-items: center;
-        gap: var(--space-x2);
-        font-size: 14px;
-        color: var(--grey-600);
+        justify-content: space-between;
         margin-bottom: var(--space-x2);
         
         &:last-child {
           margin-bottom: 0;
         }
+      }
+      
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: var(--space-x1);
+        color: var(--grey-700);
         
-        .stat-icon {
+        .anticon {
           font-size: 16px;
-          color: var(--grey-600);
+          color: var(--grey-500);
         }
         
-        .online-icon {
-          color: var(--success-color);
+        .number {
+          font-weight: 600;
+          color: var(--grey-800);
+          
+          &.online {
+            color: var(--success-color);
+          }
+        }
+      }
+      
+      .posts-count {
+        display: flex;
+        align-items: center;
+        gap: var(--space-x1);
+        color: var(--grey-700);
+        
+        .number {
+          font-weight: 600;
+          color: var(--grey-800);
         }
         
-        strong {
-          color: var(--grey-900);
+        .label {
+          font-size: 14px;
+        }
+      }
+    }
+    
+    .board-actions {
+      margin-bottom: var(--space-x4);
+      
+      .create-post-button {
+        height: 40px;
+        font-weight: 500;
+      }
+    }
+    
+    .chat-block-container {
+      .board-action-card {
+        margin-top: 0;
+        border: none;
+        padding: 0;
+        box-shadow: none;
+        
+        .card-icon {
+          display: none;
+        }
+        
+        h3 {
+          margin-top: 0;
+          font-size: 16px;
         }
       }
     }
   }
-  
-  .board-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-x3);
-    
-    button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-x2);
-      height: 40px;
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      
-      &.create-post-button {
-        background-color: var(--primary-600);
-        color: white;
-        border: none;
-        
-        &:hover {
-          background-color: var(--primary-700);
-        }
-      }
-      
-      &.join-chat-button {
-        background-color: var(--grey-100);
-        color: var(--grey-800);
-        border: 1px solid var(--grey-300);
-        
-        &:hover {
-          background-color: var(--grey-200);
-        }
-        
-        &.joined {
-          background-color: var(--primary-100);
-          color: var(--primary-600);
-          border-color: var(--primary-300);
-          
-          &:hover {
-            background-color: var(--primary-200);
-          }
-        }
-      }
-    }
+}
+
+// Add media queries to ensure proper display on smaller screens
+@media (max-width: 768px) {
+  .board-sidebar {
+    width: 100%; // On smaller screens, allow full width
+    max-width: 325px; // But still cap the maximum width
+    margin: 0 auto var(--space-x4);
   }
 }

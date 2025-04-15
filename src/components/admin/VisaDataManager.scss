@@ -1,0 +1,97 @@
+.visa-data-manager {
+  margin-bottom: var(--space-x4);
+  
+  .admin-actions {
+    display: flex;
+    gap: var(--space-x2);
+    margin-bottom: var(--space-x4);
+  }
+  
+  .visa-data-section {
+    margin: var(--space-x4) 0;
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-x3);
+      
+      h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+    
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: var(--space-x6);
+      gap: var(--space-x2);
+    }
+    
+    .visa-data-table {
+      .ant-table-expanded-row-fixed {
+        margin: 0 !important;
+        padding: var(--space-x3) var(--space-x4);
+        background-color: var(--grey-50);
+      }
+      
+      .expanded-row-content {
+        p {
+          margin: var(--space-x1) 0;
+          line-height: 1.5;
+        }
+      }
+      
+      .ant-table-row:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  
+  .progress-update {
+    margin: var(--space-x4) 0;
+    
+    .ant-progress {
+      margin-top: var(--space-x2);
+    }
+  }
+  
+  .drawer-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    gap: var(--space-x2);
+  }
+}
+
+.logs-drawer {
+  .log-entry {
+    margin-bottom: var(--space-x2);
+    padding: var(--space-x2);
+    border-radius: var(--radius-md);
+    
+    &.error {
+      background-color: #fff2f0;
+      border: 1px solid #ffccc7;
+    }
+    
+    &.success {
+      background-color: #f6ffed;
+      border: 1px solid #b7eb8f;
+    }
+    
+    .timestamp {
+      font-size: 12px;
+      color: var(--grey-600);
+    }
+    
+    .message {
+      font-size: 14px;
+      margin-top: var(--space-x1);
+    }
+  }
+}

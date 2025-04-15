@@ -1,0 +1,69 @@
+.uscis-fetcher-card {
+  margin-bottom: var(--space-x6);
+  background-color: #f9fafb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-x3);
+    
+    .form-item-year {
+      flex: 0 0 180px;
+    }
+    
+    .form-item-industry {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    .form-item-state {
+      flex: 0 0 180px;
+    }
+    
+    .form-item-city {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .form-item-zip {
+      flex: 0 0 150px;
+    }
+  }
+  
+  .submit-button {
+    min-width: 160px;
+    margin-top: 8px;
+  }
+  
+  .progress-container {
+    margin: var(--space-x4) 0;
+    
+    .status-message {
+      margin-top: var(--space-x2);
+      color: #1677ff;
+      text-align: center;
+      font-weight: 500;
+    }
+  }
+  
+  .result-actions {
+    margin-top: var(--space-x4);
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .uscis-fetcher-card {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+      
+      .ant-form-item {
+        width: 100%;
+        margin-bottom: 12px;
+      }
+    }
+  }
+}

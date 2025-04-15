@@ -7,17 +7,30 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "fetch-visa-data": "node src/services/visa-data/fetchVisaData.js",
+    "deploy:functions": "node deploy-functions.js",
+    "deploy:functions:cjs": "node deploy-functions.cjs",
+    "deploy:functions:nocker": "node deploy-function-without-docker.js",
+    "trigger:visa-update": "curl -X GET \"$SUPABASE_URL/functions/v1/visa-data-fetcher?manual=true\" -H \"Authorization: Bearer $SUPABASE_ANON_KEY\"",
+    "cleanup:old-data": "curl -X GET \"$SUPABASE_URL/functions/v1/visa-data-fetcher?action=cleanup\" -H \"Authorization: Bearer $SUPABASE_ANON_KEY\"",
+    "deploy:uscis-function": "npx supabase functions deploy fetch-uscis-h1b-data --no-verify-jwt",
+    "test:function": "node test-edge-function.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.2",
+    "@supabase/supabase-js": "^2.39.3",
     "antd": "^5.24.6",
-    "axios": "^1.8.4",
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.4.7",
+    "echarts": "^5.6.0",
+    "papaparse": "^5.4.1",
     "postgres": "^3.4.5",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "^7.4.0"
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "^7.4.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -29,6 +42,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "sass-embedded": "^1.86.0",
+    "supabase": "^1.75.3",
     "vite": "^6.2.0"
   }
 }

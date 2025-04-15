@@ -1,0 +1,268 @@
+.visa-report-page {
+  padding: var(--space-x4);
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  .page-header {
+    margin-bottom: var(--space-x6);
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--grey-800);
+      margin-bottom: var(--space-x2);
+    }
+    
+    .description {
+      color: var(--grey-700);
+      max-width: 800px;
+    }
+  }
+  
+  .summary-cards {
+    margin-bottom: var(--space-x6);
+    
+    .ant-card {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-radius: var(--radius-md);
+      
+      .ant-statistic-title {
+        color: var(--grey-700);
+      }
+      
+      .ant-statistic-content {
+        color: var(--grey-900);
+      }
+    }
+  }
+  
+  .data-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-x4);
+    
+    .last-updated {
+      color: var(--grey-600);
+      font-size: 14px;
+    }
+    
+    .controls-right {
+      display: flex;
+      gap: var(--space-x2);
+    }
+    
+    .update-button {
+      margin-left: var(--space-x2);
+    }
+  }
+  
+  .update-status {
+    margin-bottom: var(--space-x4);
+  }
+  
+  .ant-tabs-nav {
+    margin-bottom: var(--space-x4);
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-x8);
+    background-color: var(--grey-50);
+    border-radius: var(--radius-md);
+    
+    p {
+      margin-top: var(--space-x3);
+      color: var(--grey-600);
+    }
+  }
+  
+  .filter-card {
+    margin-bottom: var(--space-x4);
+    
+    .ant-form-item {
+      margin-bottom: var(--space-x3);
+    }
+    
+    .ant-select {
+      width: 100%;
+    }
+  }
+  
+  .tableau-container {
+    margin-bottom: var(--space-x6);
+    width: 100%;
+    overflow: hidden;
+    
+    tableau-viz {
+      display: block;
+      width: 100%;
+      min-height: 800px;
+      border: none;
+    }
+  }
+  
+  .fallback-visualization {
+    padding: var(--space-x6);
+    text-align: center;
+    
+    h2 {
+      font-size: 22px;
+      color: var(--grey-800);
+      margin-bottom: var(--space-x4);
+    }
+    
+    p {
+      color: var(--grey-600);
+      margin-bottom: var(--space-x6);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .summary-stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-x6);
+      margin-top: var(--space-x6);
+      
+      .stat-item {
+        background: var(--grey-50);
+        border-radius: var(--radius-md);
+        padding: var(--space-x4);
+        min-width: 180px;
+        
+        h3 {
+          font-size: 16px;
+          color: var(--grey-600);
+          margin-bottom: var(--space-x2);
+        }
+        
+        .stat-value {
+          font-size: 28px;
+          font-weight: 600;
+          color: var(--primary-600);
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  .data-disclaimer {
+    margin-top: var(--space-x6);
+    padding: var(--space-x3) var(--space-x4);
+    background-color: var(--grey-50);
+    border-radius: var(--radius-md);
+    color: var(--grey-600);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-x2);
+    
+    .anticon {
+      margin-right: var(--space-x2);
+    }
+  }
+  
+  // 设置表格样式
+  .ant-table-wrapper {
+    margin-bottom: var(--space-x4);
+    
+    .ant-table {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: white;
+      
+      .ant-table-thead > tr > th {
+        background: var(--grey-50);
+        color: var(--grey-800);
+        font-weight: 600;
+      }
+      
+      th.ant-table-cell {
+        background-color: var(--grey-50);
+        font-weight: 600;
+      }
+      
+      .ant-table-tbody > tr:hover > td {
+        background: var(--primary-50);
+      }
+      
+      .ant-table-row:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  
+  // 数据格式化样式
+  .salary-text {
+    font-weight: 600;
+    color: var(--primary-600);
+    
+    small {
+      font-weight: normal;
+      color: var(--grey-600);
+      margin-left: 3px;
+    }
+  }
+  
+  .truncate-text {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+  }
+  
+  .table-text-bold {
+    font-weight: 600;
+  }
+  
+  // 日志记录组件
+  .logs-drawer {
+    .log-entry {
+      margin-bottom: var(--space-x2);
+      padding: var(--space-x2);
+      border-radius: var(--radius-md);
+      
+      &.error {
+        background-color: #fff2f0;
+        border: 1px solid #ffccc7;
+      }
+      
+      &.success {
+        background-color: #f6ffed;
+        border: 1px solid #b7eb8f;
+      }
+      
+      .timestamp {
+        font-size: 12px;
+        color: var(--grey-600);
+      }
+      
+      .message {
+        font-size: 14px;
+        margin-top: var(--space-x1);
+      }
+    }
+  }
+  
+  // 进度条样式
+  .progress-update {
+    margin: var(--space-x4) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .visa-report-page {
+    .tableau-container {
+      tableau-viz {
+        height: 600px;
+      }
+    }
+  }
+}

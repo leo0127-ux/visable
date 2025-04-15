@@ -1,0 +1,17 @@
+.tableau-embed-container {
+  width: 100%;
+  
+  .tableau-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    padding: var(--space-x6);
+    
+    p {
+      margin-top: var(--space-x3);
+      color: var(--grey-600);
+    }
+  }
+}
