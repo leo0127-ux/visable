@@ -116,29 +116,42 @@
     }
     
     .employer-chart {
-      height: 280px;
+      height: 350px !important; // 增加高度以显示更多企业
+      overflow-y: auto; // 添加滚动条以显示所有数据
       
       .chart-title {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 600;
         margin-bottom: var(--space-x3);
         color: var(--grey-700);
         text-align: center;
+        position: sticky;
+        top: 0;
+        background: white;
+        padding: var(--space-x2) 0;
+        z-index: 2;
+      }
+      
+      .no-data-message {
+        text-align: center;
+        color: var(--grey-500);
+        margin-top: var(--space-x6);
       }
       
       .employer-list {
         display: flex;
         flex-direction: column;
-        gap: var(--space-x2);
-        margin-top: var(--space-x3);
+        gap: var(--space-x3);
+        padding: var(--space-x2);
         
         .employer-item {
           display: flex;
           flex-direction: column;
-          gap: var(--space-x1);
+          gap: var(--space-x2);
           
           .employer-name {
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 500;
             color: var(--grey-700);
             white-space: nowrap;
             overflow: hidden;
@@ -149,19 +162,21 @@
             display: flex;
             align-items: center;
             gap: var(--space-x2);
-            height: 16px;
+            height: 20px;
             
             .employer-bar {
               height: 16px;
               background-color: var(--primary-500);
-              border-radius: 2px;
-              transition: width 0.3s ease;
+              border-radius: 4px;
+              min-width: 4px; // 确保最小宽度，使小值也能看到
+              transition: width 0.5s ease; // 添加过渡效果
             }
             
             .employer-value {
-              font-size: 12px;
-              color: var(--grey-600);
-              min-width: 40px;
+              min-width: 60px;
+              font-size: 14px;
+              color: var(--grey-700);
+              font-weight: 500;
             }
           }
         }

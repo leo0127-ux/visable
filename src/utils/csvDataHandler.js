@@ -263,64 +263,55 @@ function calculateYearlyStats(approvals, denials) {
  * @returns {Object} - 後備數據
  */
 export function generateFallbackData() {
-  // 設置真實公司名稱
+  // 使用真实公司名称
   const realCompanies = [
-    {employerName: 'Google LLC', totalApprovals: 9600, approvalRate: 97, medianSalary: 150000, states: ['CA', 'NY', 'WA']},
-    {employerName: 'Microsoft Corporation', totalApprovals: 9200, approvalRate: 96, medianSalary: 145000, states: ['WA', 'CA', 'TX']},
-    {employerName: 'Amazon.com Services LLC', totalApprovals: 8800, approvalRate: 95, medianSalary: 140000, states: ['WA', 'CA', 'TX', 'NY']},
-    {employerName: 'Facebook Inc.', totalApprovals: 8400, approvalRate: 98, medianSalary: 160000, states: ['CA', 'WA', 'NY']},
-    {employerName: 'Apple Inc.', totalApprovals: 8000, approvalRate: 96, medianSalary: 155000, states: ['CA', 'TX', 'WA']},
-    {employerName: 'Intel Corporation', totalApprovals: 7600, approvalRate: 94, medianSalary: 135000, states: ['CA', 'OR', 'AZ']},
-    {employerName: 'Tata Consultancy Services', totalApprovals: 7200, approvalRate: 92, medianSalary: 95000, states: ['NY', 'NJ', 'TX', 'CA']},
-    {employerName: 'Infosys Limited', totalApprovals: 6800, approvalRate: 91, medianSalary: 93000, states: ['TX', 'CA', 'NY']},
-    {employerName: 'Cognizant Technology Solutions', totalApprovals: 6400, approvalRate: 90, medianSalary: 94000, states: ['NJ', 'TX', 'CA']},
-    {employerName: 'IBM Corporation', totalApprovals: 6000, approvalRate: 93, medianSalary: 125000, states: ['NY', 'CA', 'TX']},
-    {employerName: 'Wipro Limited', totalApprovals: 5600, approvalRate: 89, medianSalary: 92000, states: ['TX', 'CA', 'GA']},
-    {employerName: 'Accenture LLP', totalApprovals: 5200, approvalRate: 92, medianSalary: 120000, states: ['IL', 'CA', 'NY']},
-    {employerName: 'Deloitte Consulting LLP', totalApprovals: 4800, approvalRate: 94, medianSalary: 130000, states: ['NY', 'CA', 'TX']},
-    {employerName: 'HCL America Inc.', totalApprovals: 4400, approvalRate: 88, medianSalary: 91000, states: ['CA', 'TX', 'MI']},
-    {employerName: 'Capgemini America Inc.', totalApprovals: 4000, approvalRate: 87, medianSalary: 90000, states: ['NY', 'TX', 'CA']},
-    {employerName: 'Salesforce.com Inc.', totalApprovals: 3600, approvalRate: 95, medianSalary: 145000, states: ['CA', 'NY', 'IN']},
-    {employerName: 'Oracle America Inc.', totalApprovals: 3200, approvalRate: 93, medianSalary: 140000, states: ['CA', 'TX', 'MA']},
-    {employerName: 'JP Morgan Chase & Co.', totalApprovals: 2800, approvalRate: 92, medianSalary: 135000, states: ['NY', 'TX', 'OH']},
-    {employerName: 'Goldman Sachs & Co.', totalApprovals: 2400, approvalRate: 95, medianSalary: 150000, states: ['NY', 'TX', 'UT']},
-    {employerName: 'Uber Technologies Inc.', totalApprovals: 2000, approvalRate: 96, medianSalary: 155000, states: ['CA', 'WA', 'NY']}
+    {employerName: 'Google LLC', totalApprovals: 9600, approvalRate: 97, medianSalary: 150000, key: 'google-llc'},
+    {employerName: 'Microsoft Corporation', totalApprovals: 9200, approvalRate: 96, medianSalary: 145000, key: 'microsoft-corp'},
+    {employerName: 'Amazon.com Services LLC', totalApprovals: 8800, approvalRate: 95, medianSalary: 140000, key: 'amazon-services'},
+    {employerName: 'Facebook Inc.', totalApprovals: 8400, approvalRate: 98, medianSalary: 160000, key: 'facebook'},
+    {employerName: 'Apple Inc.', totalApprovals: 8000, approvalRate: 96, medianSalary: 155000, key: 'apple'},
+    {employerName: 'Intel Corporation', totalApprovals: 7600, approvalRate: 94, medianSalary: 135000, key: 'intel'},
+    {employerName: 'Tata Consultancy Services', totalApprovals: 7200, approvalRate: 92, medianSalary: 95000, key: 'tcs'},
+    {employerName: 'Infosys Limited', totalApprovals: 6800, approvalRate: 91, medianSalary: 93000, key: 'infosys'},
+    {employerName: 'Cognizant Technology Solutions', totalApprovals: 6400, approvalRate: 90, medianSalary: 94000, key: 'cognizant'},
+    {employerName: 'IBM Corporation', totalApprovals: 6000, approvalRate: 93, medianSalary: 125000, key: 'ibm'},
+    {employerName: 'Wipro Limited', totalApprovals: 5600, approvalRate: 89, medianSalary: 92000, key: 'wipro'},
+    {employerName: 'Accenture LLP', totalApprovals: 5200, approvalRate: 92, medianSalary: 120000, key: 'accenture'},
+    {employerName: 'Deloitte Consulting LLP', totalApprovals: 4800, approvalRate: 94, medianSalary: 130000, key: 'deloitte'},
+    {employerName: 'HCL America Inc.', totalApprovals: 4400, approvalRate: 88, medianSalary: 91000, key: 'hcl'},
+    {employerName: 'Capgemini America Inc.', totalApprovals: 4000, approvalRate: 87, medianSalary: 90000, key: 'capgemini'},
+    {employerName: 'Salesforce.com Inc.', totalApprovals: 3600, approvalRate: 95, medianSalary: 145000, key: 'salesforce'},
+    {employerName: 'Oracle America Inc.', totalApprovals: 3200, approvalRate: 93, medianSalary: 140000, key: 'oracle'},
+    {employerName: 'JP Morgan Chase & Co.', totalApprovals: 2800, approvalRate: 92, medianSalary: 135000, key: 'jpmorgan'},
+    {employerName: 'Goldman Sachs & Co.', totalApprovals: 2400, approvalRate: 95, medianSalary: 150000, key: 'goldman'},
+    {employerName: 'Uber Technologies Inc.', totalApprovals: 2000, approvalRate: 96, medianSalary: 155000, key: 'uber'}
   ];
 
-  // 創建後備數據
   return {
     approvals: Array.from({ length: 50 }, (_, i) => ({
       employerName: `Company ${i + 1}`,
-      jobTitle: `Software Engineer`,
+      jobTitle: 'Software Engineer',
       worksite: `City ${i % 10}, State ${i % 5}`,
       state: `State ${i % 5}`,
       fiscalYear: '2023',
-      totalApprovals: Math.floor(Math.random() * 500) + 10,
-      status: 'Approved'
+      totalApprovals: Math.floor(Math.random() * 500) + 10
     })),
     denials: Array.from({ length: 20 }, (_, i) => ({
-      employerName: `Company ${i + 51}`,
-      jobTitle: `Software Engineer`,
+      employerName: `Company ${i + 1}`,
+      jobTitle: 'Software Engineer',
       worksite: `City ${i % 10}, State ${i % 5}`,
       state: `State ${i % 5}`,
       fiscalYear: '2023',
-      denialReason: 'Insufficient documentation',
-      status: 'Denied'
+      denialReason: 'Insufficient documentation'
     })),
     summary: {
       totalApprovals: 485000,
       totalDenials: 92000,
       approvalRate: 84.1,
       uniqueEmployers: 30000,
-      latestYear: 2023,
-      medianSalary: 118000 // 添加平均薪资
+      medianSalary: 118000
     },
-    employerStats: realCompanies, // 使用真實公司數據
-    stateStats: Array.from({ length: 10 }, (_, i) => ({
-      state: `State ${i}`,
-      totalApprovals: 50000 - (i * 5000),
-      employers: 1000 - (i * 100)
-    })),
+    employerStats: realCompanies, // 使用真实公司名称
     yearlyStats: [
       { year: '2023', approvals: 485000, denials: 92000, rate: 84.1 },
       { year: '2022', approvals: 465000, denials: 90000, rate: 83.8 },
