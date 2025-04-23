@@ -15,6 +15,18 @@ const VisaDataVisualizer = ({ data, loading, onRefresh, filterValues }) => {
     }
   }, [loading, data]);
 
+  // 在组件渲染前先检查数据
+  useEffect(() => {
+    if (!loading && data) {
+      console.log('Visa Data:', data);
+      if (data.employerStats) {
+        console.log('Top 5 Employers:', data.employerStats.slice(0, 5));
+      } else {
+        console.warn('No employer stats found in data');
+      }
+    }
+  }, [loading, data]);
+
   // 渲染年度趋势图表（简单实现）
   const renderYearlyChart = () => {
     if (!data?.yearlyStats || !yearlyChartRef.current) return;
@@ -104,12 +116,12 @@ const VisaDataVisualizer = ({ data, loading, onRefresh, filterValues }) => {
     container.appendChild(legend);
   };
 
-  // 渲染雇主图表（简单实现）
+  // 修复雇主图表渲染函数
   const renderEmployersChart = () => {
     if (!data?.employerStats || !employersChartRef.current) return;
     
     const container = employersChartRef.current;
-    container.innerHTML = '';
+    container.innerHTML = ''; // 清空容器
     
     // 图表标题
     const title = document.createElement('h3');
@@ -117,10 +129,23 @@ const VisaDataVisualizer = ({ data, loading, onRefresh, filterValues }) => {
     title.className = 'chart-title';
     container.appendChild(title);
     
-    // 获取前10名雇主
-    const topEmployers = data.employerStats.slice(0, 10);
+    // 获取前10名雇主并确保排序
+    const topEmployers = [...data.employerStats]
+      .sort((a, b) => b.totalApprovals - a.totalApprovals)
+      .slice(0, 10);
     
-    // 创建雇主列表
+    // 确保有数据可以显示
+    if (topEmployers.length === 0) {
+      const noDataMsg = document.createElement('p');
+      noDataMsg.textContent = '无雇主数据可显示';
+      noDataMsg.className = 'no-data-message';
+      container.appendChild(noDataMsg);
+      return;
+    }
+    
+    console.log('渲染顶尖雇主数据:', topEmployers); // 调试用
+    
+    // 创建雇主列表容器
     const employerList = document.createElement('div');
     employerList.className = 'employer-list';
     
@@ -128,20 +153,21 @@ const VisaDataVisualizer = ({ data, loading, onRefresh, filterValues }) => {
     const maxApprovals = Math.max(...topEmployers.map(e => e.totalApprovals));
     
     // 为每个雇主创建条目
-    topEmployers.forEach(employer => {
+    topEmployers.forEach((employer, index) => {
       const employerItem = document.createElement('div');
       employerItem.className = 'employer-item';
       
       const nameLabel = document.createElement('div');
       nameLabel.className = 'employer-name';
-      nameLabel.textContent = employer.employerName;
+      nameLabel.textContent = employer.employerName || `雇主 ${index + 1}`;
       
       const barContainer = document.createElement('div');
       barContainer.className = 'employer-bar-container';
       
       const bar = document.createElement('div');
       bar.className = 'employer-bar';
-      bar.style.width = `${(employer.totalApprovals / maxApprovals) * 100}%`;
+      const percentage = (employer.totalApprovals / maxApprovals) * 100;
+      bar.style.width = `${percentage}%`;
       
       const valueLabel = document.createElement('div');
       valueLabel.className = 'employer-value';
@@ -264,7 +290,7 @@ const VisaDataVisualizer = ({ data, loading, onRefresh, filterValues }) => {
                 <Card className="employers-table-card">
                   <Table
                     dataSource={data.employerStats || []}
-                    rowKey="key"
+                    rowKey="key" // 使用 key 字段作为行的唯一标识
                     pagination={{ pageSize: 10 }}
                     columns={[
                       {
@@ -297,19 +323,19 @@ const VisaDataVisualizer = ({ data, loading, onRefresh, filterValues }) => {
                         render: value => value ? `$${value.toLocaleString()}` : '-'
                       }
                     ]}
-                  />
-                </Card>
-              </>
-            )
-          }
-        ]}
-      />
-      
-      <div className="data-source-info">
-        数据来源: {data.source === 'USCIS' ? 'USCIS 官方数据' : '本地数据'}
-        <span className="last-updated">
-          上次更新: {new Date(data.lastUpdated).toLocaleString()}
-        </span>
+
+
+
+
+
+
+
+
+
+
+
+
+          上次更新: {new Date(data.lastUpdated).toLocaleString()}        <span className="last-updated">        数据来源: {data.source === 'USCIS' ? 'USCIS 官方数据' : '本地数据'}      <div className="data-source-info">            />        ]}          }            )              </>                </Card>                  />        </span>
       </div>
     </div>
   );
