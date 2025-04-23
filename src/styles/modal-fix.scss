@@ -1,0 +1,55 @@
+/* Critical fixes for modal display issues */
+
+/* Ensure modals are always on top and visible */
+.ant-modal-root,
+.ant-modal-mask,
+.ant-modal-wrap {
+  z-index: 9999 !important;
+}
+
+.ant-modal {
+  z-index: 10000 !important; 
+}
+
+/* Make sure modals remain interactive */
+.ant-modal-root,
+.ant-modal-mask,
+.ant-modal-wrap,
+.ant-modal,
+.ant-modal-content {
+  pointer-events: auto !important;
+}
+
+/* Fix modal visibility when body has modal-open class */
+body.modal-open {
+  overflow: hidden;
+  
+  .ant-modal-mask {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 0.45 !important;
+    background-color: rgba(0, 0, 0, 0.45) !important;
+  }
+  
+  .ant-modal-wrap {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Override any force-display.scss that might interfere with modals */
+.login-modal {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Prevent other elements from appearing above modals */
+.ant-modal-mask {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}

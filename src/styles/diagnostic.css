@@ -1,0 +1,82 @@
+/* 诊断样式 - 用于调试UI问题 */
+
+.app-error {
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 800px;
+  background-color: #fff8f8;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.app-error h1 {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.error-details {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.error-details p {
+  margin-bottom: 1rem;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.app-error button {
+  background-color: #0056E5;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.app-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 86, 229, 0.2);
+  border-radius: 50%;
+  border-top-color: #0056E5;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 调试辅助工具 */
+.debug-overlay {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 9999;
+  max-width: 300px;
+  max-height: 200px;
+  overflow: auto;
+}
+
+/* 突出显示DOM结构 */
+.debug-highlight * {
+  outline: 1px dashed rgba(255, 0, 0, 0.5) !important;
+}

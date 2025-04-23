@@ -1,0 +1,274 @@
+.login-modal {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  .ant-modal-content {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+  }
+  
+  .ant-modal-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px 24px;
+    
+    .ant-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  
+  .ant-modal-body {
+    padding: 24px;
+  }
+  
+  .ant-form-item {
+    margin-bottom: 24px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .ant-input-affix-wrapper {
+    padding: 12px 16px;
+    height: 48px;
+    
+    .ant-input {
+      font-size: 16px;
+    }
+    
+    .ant-input-prefix {
+      margin-right: 10px;
+      color: #bfbfbf;
+    }
+  }
+  
+  .ant-btn {
+    height: 48px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .login-form {
+    padding: 16px 0;
+    
+    .ant-form-item {
+      margin-bottom: 24px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    .ant-input-affix-wrapper {
+      padding: 12px 16px;
+      height: 48px;
+      
+      .ant-input-prefix {
+        color: #bfbfbf;
+        margin-right: 10px;
+      }
+    }
+    
+    .form-actions {
+      margin-top: 10px;
+    }
+    
+    .login-form-button {
+      height: 48px;
+      font-size: 16px;
+    }
+  }
+
+  /* Critical fix to ensure modal is visible */
+  &.ant-modal, 
+  .ant-modal-content,
+  .ant-modal-header,
+  .ant-modal-body,
+  .ant-modal-footer {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+.login-modal-content {
+  padding: 16px 0;
+  
+  .login-title {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  
+  .login-subtitle {
+    display: block;
+    text-align: center;
+    color: var(--grey-600);
+    margin-bottom: 24px;
+  }
+  
+  .social-login-buttons {
+    margin-bottom: 24px;
+    
+    .google-login-button {
+      height: 48px;
+      border-radius: 8px;
+      font-weight: 500;
+      
+      .anticon {
+        font-size: 18px;
+        margin-right: 8px;
+      }
+    }
+  }
+  
+  .login-divider {
+    margin: 16px 0;
+    color: var(--grey-500);
+  }
+  
+  .terms-text {
+    display: block;
+    font-size: 12px;
+    text-align: center;
+    color: var(--grey-600);
+    
+    a {
+      color: var(--primary-600);
+      margin: 0 4px;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* Critical fixes to ensure modal displays properly */
+.login-modal-visible {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10001 !important;
+}
+
+.login-modal-mask {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 0.45 !important;
+  z-index: 10000 !important;
+}
+
+/* Override force-display.scss exclusions */
+.ant-modal.login-modal,
+.ant-modal-mask.login-modal-mask,
+.ant-modal-wrap {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Override emergency-fix.css if needed */
+body .ant-modal-root,
+body .ant-modal-mask {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Override any CSS that might hide modals */
+.ant-modal-root,
+.ant-modal-mask,
+.ant-modal-wrap,
+.login-modal,
+.ant-modal-content {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 2000 !important;
+}
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  opacity: 1 !important;
+}
+
+/* Critical fix to ensure modals display properly */
+.ant-modal-root, 
+.ant-modal-wrap, 
+.ant-modal, 
+.ant-modal-mask {
+  z-index: 1050 !important;
+  pointer-events: auto !important;
+}
+
+/* Fix for modal masks and positioning */
+.ant-modal-root,
+.ant-modal-wrap,
+.ant-modal-mask {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1000 !important;
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.ant-modal-mask {
+  opacity: 0.45 !important;
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Override any global CSS that might hide modals */
+body .ant-modal-mask,
+body .ant-modal-wrap {
+  position: fixed;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+body .ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Force display of modal components */
+.ant-modal-root,
+.ant-modal-mask,
+.ant-modal-wrap {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 2000 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.ant-modal.login-modal {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 2001 !important;
+  position: relative !important;
+  top: 100px !important;
+  margin: 0 auto !important;
+  padding-bottom: 0 !important;
+}
+
+.ant-modal-content {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.modal-open {
+  overflow: hidden !important;
+}

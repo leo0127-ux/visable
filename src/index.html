@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visable - 職業發展社區</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <meta name="description" content="Visable - 連接專業人士的職業發展社區">
+  
+  <!-- 預加載關鍵資源 -->
+  <link rel="preload" href="/assets/IconText Logo.jpg" as="image">
+  
+  <!-- 增加連接超時處理的腳本 -->
+  <script>
+    // 全局連接超時處理
+    window.connectionTimeout = setTimeout(function() {
+      console.log("全局連接超時觸發");
+      // 如果頁面還在顯示加載中，強制移除加載界面
+      var loadingEl = document.querySelector('.loading-container');
+      if (loadingEl) {
+        loadingEl.style.display = 'none';
+        
+        // 顯示錯誤信息
+        var appEl = document.getElementById('root');
+        if (appEl) {
+          appEl.innerHTML = `
+            <div style="text-align:center; padding:40px; font-family:sans-serif;">
+              <h2>連接超時</h2>
+              <p>無法連接到服務器，請檢查網絡連接後重試。</p>
+              <button onclick="window.location.reload()" style="padding:8px 16px; background:#0056E5; color:white; border:none; border-radius:4px; cursor:pointer; margin-top:20px;">
+                重新加載
+              </button>
+            </div>
+          `;
+        }
+      }
+    }, 10000); // 10秒全局超時
+    
+    // 頁面加載完成後清除超時
+    window.addEventListener('load', function() {
+      clearTimeout(window.connectionTimeout);
+    });
+  </script>
+  
+  <style>
+    /* 全局載入動畫樣式 */
+    .app-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      z-index: 9999;
+    }
+    
+    .app-loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(0, 98, 255, 0.2);
+      border-radius: 50%;
+      border-top-color: #0056E5;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 初始載入動畫 -->
+  <div class="app-loading" id="app-loading">
+    <div class="app-loading-spinner"></div>
+    <p style="margin-top: 20px; color: #666;">加載中...</p>
+  </div>
+  
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  
+  <!-- 移除初始載入動畫的腳本 -->
+  <script>
+    // 頁面渲染開始後移除全局載入動畫
+    document.addEventListener('DOMContentLoaded', function() {
+      // 在短暫延遲後移除載入動畫，確保React已開始渲染
+      setTimeout(function() {
+        var loadingEl = document.getElementById('app-loading');
+        if (loadingEl) {
+          loadingEl.style.opacity = '0';
+          loadingEl.style.transition = 'opacity 0.5s';
+          setTimeout(function() {
+            loadingEl.style.display = 'none';
+          }, 500);
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>

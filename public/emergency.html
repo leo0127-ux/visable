@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>緊急修復工具</title>
+  <style>
+    body { font-family: 'Microsoft JhengHei', sans-serif; line-height: 1.6; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    button { padding: 10px 15px; background: #1890ff; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+    .error { background: #fff1f0; border: 1px solid #ffa39e; padding: 10px; margin: 10px 0; }
+    .success { background: #f6ffed; border: 1px solid #b7eb8f; padding: 10px; margin: 10px 0; }
+    pre { background: #f0f0f0; padding: 10px; overflow: auto; }
+    h1 { color: #1890ff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Visable 網站緊急修復工具</h1>
+    <p>這個頁面可以幫助診斷和修復白屏問題。</p>
+    
+    <div id="results"></div>
+    
+    <div style="margin: 20px 0;">
+      <button onclick="clearCache()">清除網站緩存</button>
+      <button onclick="disableModules()">禁用問題模組</button>
+      <button onclick="resetToMinimal()">重置到最小版本</button>
+      <button onclick="diagnoseErrors()">診斷錯誤</button>
+    </div>
+
+    <h2>問題可能的原因：</h2>
+    <ol>
+      <li>React 渲染錯誤</li>
+      <li>JavaScript 模組加載問題</li>
+      <li>最近添加的組件或功能衝突</li>
+      <li>CSS 或樣式問題導致內容不可見</li>
+    </ol>
+
+    <h2>操作說明：</h2>
+    <ol>
+      <li>點擊"清除網站緩存"按鈕清除所有本地存儲</li>
+      <li>點擊"禁用問題模組"按鈕暫時禁用可能導致問題的功能</li>
+      <li>點擊"重置到最小版本"以獲得一個可工作的最小界面</li>
+      <li>點擊"診斷錯誤"查看更多技術細節</li>
+    </ol>
+  </div>
+
+  <script>
+    function log(message, type) {
+      const results = document.getElementById('results');
+      const div = document.createElement('div');
+      div.className = type || '';
+      div.textContent = message;
+      results.appendChild(div);
+    }
+
+    // 清除網站緩存
+    function clearCache() {
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // 清除所有cookie
+        document.cookie.split(';').forEach(function(c) {
+          document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
+        });
+        
+        log('網站緩存已清除。請嘗試刷新頁面。', 'success');
+      } catch (e) {
+        log('清除緩存時出錯: ' + e.message, 'error');
+      }
+    }
+
+    // 禁用問題模組
+    function disableModules() {
+      try {
+        localStorage.setItem('disable_problematic_modules', 'true');
+        localStorage.setItem('disable_animations', 'true');
+        localStorage.setItem('use_minimal_ui', 'true');
+        log('已禁用可能有問題的模組。請刷新網站首頁檢查效果。', 'success');
+      } catch (e) {
+        log('禁用模組時出錯: ' + e.message, 'error');
+      }
+    }
+
+    // 重置到最小版本
+    function resetToMinimal() {
+      try {
+        // 創建一個最小的頁面內容
+        const minimalHtml = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Visable - 最小恢復模式</title>
+            <style>
+              body { font-family: sans-serif; margin: 0; padding: 20px; }
+              .header { background: #1890ff; color: white; padding: 10px 20px; }
+              .content { padding: 20px; }
+              .btn { padding: 8px 16px; background: #1890ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1>Visable</h1>
+              <p>最小恢復模式</p>
+            </div>
+            <div class="content">
+              <h2>網站已進入安全模式</h2>
+              <p>這是一個最小功能版本，用於恢復網站基本功能。</p>
+              <button class="btn" onclick="window.location.reload(true)">重新載入正常版本</button>
+            </div>
+          </body>
+          </html>
+        `;
+
+        // 將最小版本HTML保存到localStorage
+        localStorage.setItem('minimal_recovery_html', minimalHtml);
+        localStorage.setItem('use_minimal_recovery', 'true');
+        
+        log('已設置最小恢復模式。請返回首頁查看。', 'success');
+        
+        // 提供一個直接鏈接
+        const link = document.createElement('a');
+        link.href = '/';
+        link.textContent = '點擊這裡返回首頁';
+        link.style.display = 'block';
+        link.style.margin = '10px 0';
+        document.getElementById('results').appendChild(link);
+        
+      } catch (e) {
+        log('設置最小恢復模式時出錯: ' + e.message, 'error');
+      }
+    }
+
+    // 診斷錯誤
+    function diagnoseErrors() {
+      try {
+        log('正在收集診斷信息...', 'success');
+        
+        // 檢查環境
+        const diagnostics = {
+          userAgent: navigator.userAgent,
+          screenWidth: window.innerWidth,
+          localStorage: !!window.localStorage,
+          sessionStorage: !!window.sessionStorage,
+          cookies: navigator.cookieEnabled,
+          time: new Date().toISOString()
+        };
+        
+        // 創建診斷報告
+        const report = document.createElement('pre');
+        report.textContent = JSON.stringify(diagnostics, null, 2);
+        document.getElementById('results').appendChild(report);
+        
+        // 檢查控制台錯誤
+        console.log('診斷模式已啟動，請查看控制台輸出');
+        
+        // 添加指導
+        log('請打開瀏覽器開發者工具(F12)，查看控制台中是否有錯誤訊息', 'success');
+        
+      } catch (e) {
+        log('診斷過程中出錯: ' + e.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

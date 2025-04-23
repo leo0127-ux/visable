@@ -1,0 +1,17 @@
+.fetch-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-x4);
+  margin: var(--space-x4) 0;
+  
+  .ant-alert {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: var(--space-x4);
+  }
+  
+  .error-actions {
+    margin-top: var(--space-x2);
+  }
+}

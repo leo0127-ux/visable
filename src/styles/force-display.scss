@@ -1,0 +1,98 @@
+/* 强制确保页面内容显示 */
+body, html {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.app, .main-content, .content-area {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 确保内容区不被隐藏 */
+.main-content {
+  overflow: auto !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* 强制移除黑色蒙层 - 但排除登录模态框 */
+.el-overlay:not(.login-modal-mask):not(.ant-modal-mask), 
+.el-overlay-dialog:not(.login-modal):not(.ant-modal), 
+div[role="dialog"][aria-modal="true"]:not(.login-modal):not(.ant-modal),
+.ant-modal-mask:not(.login-modal-mask), 
+.ant-modal-wrap:not(.login-modal-wrap),
+div[class*="overlay"]:not(.login-modal-mask):not(.ant-modal-mask),
+div[class*="mask"]:not(.login-modal-mask):not(.ant-modal-mask) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+
+/* Add specific exception for login modal */
+.login-modal, 
+.login-modal-mask, 
+.login-modal-wrap, 
+.ant-modal.login-modal, 
+.ant-modal-mask.login-modal-mask, 
+.ant-modal-wrap.login-modal-wrap {
+  display: block !important; 
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1001 !important;
+  pointer-events: auto !important;
+}
+
+/* 确保页面可滚动，但不影响打开登录模态框的情况 */
+body.el-popup-parent--hidden:not(.login-active),
+body.ant-modal-open:not(.login-active) {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}
+
+/* 特别处理登录模态框 */
+.login-modal,
+.login-modal-mask,
+.ant-modal.login-modal,
+.ant-modal-wrap.login-modal,
+.ant-modal-mask.login-modal-mask {
+  display: block !important;
+  visibility: visible !important;
+  z-index: 1000 !important;
+  pointer-events: auto !important;
+}
+
+/* Special handling for modals - DO NOT HIDE THESE */
+.ant-modal-root,
+.ant-modal-wrap,
+.ant-modal,
+.ant-modal-content,
+.ant-modal-body,
+.login-modal {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Fix for modal masks */
+.ant-modal-mask {
+  opacity: 0.45 !important;
+  display: block !important;
+  visibility: visible !important;
+}

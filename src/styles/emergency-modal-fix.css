@@ -1,0 +1,26 @@
+/* Emergency CSS to ensure modals are always visible */
+.ant-modal,
+.ant-modal-root,
+.ant-modal-wrap,
+.ant-modal-mask {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 2000 !important;
+}
+
+.login-modal .ant-modal-content {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Make sure body scrolling isn't blocked */
+body.ant-modal-open {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}

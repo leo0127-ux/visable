@@ -15,7 +15,8 @@
     "trigger:visa-update": "curl -X GET \"$SUPABASE_URL/functions/v1/visa-data-fetcher?manual=true\" -H \"Authorization: Bearer $SUPABASE_ANON_KEY\"",
     "cleanup:old-data": "curl -X GET \"$SUPABASE_URL/functions/v1/visa-data-fetcher?action=cleanup\" -H \"Authorization: Bearer $SUPABASE_ANON_KEY\"",
     "deploy:uscis-function": "npx supabase functions deploy fetch-uscis-h1b-data --no-verify-jwt",
-    "test:function": "node test-edge-function.js"
+    "test:function": "node test-edge-function.js",
+    "postbuild": "cp public/_redirects dist/"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",

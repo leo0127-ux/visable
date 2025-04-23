@@ -1,0 +1,11 @@
+[build]
+  # 確保這指向您的 package.json 所在目錄（如果在子目錄中）
+  base = "/"
+  command = "npm run build"
+  publish = "dist"
+
+# 此設定可確保 SPA 路由正常運作
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

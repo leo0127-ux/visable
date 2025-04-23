@@ -1,0 +1,82 @@
+/* 重要：这个CSS文件包含关键的样式重置，以确保UI能够正常显示 */
+
+/* 确保根元素和基本容器是可见的 */
+html, body, #root, .app, .app-content, .main-content {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 基本布局修复 */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+}
+
+.app-content {
+  display: flex !important;
+  flex: 1 !important;
+  height: auto !important;
+}
+
+.main-content {
+  margin-left: 240px !important;
+  padding-top: 72px !important;
+  flex: 1 !important;
+  overflow: auto !important;
+  min-height: calc(100vh - 72px) !important;
+}
+
+/* 移动设备适配 */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* 导航栏修复 */
+.navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 72px !important;
+  z-index: 1000 !important;
+  background-color: white !important;
+}
+
+/* 侧边栏修复 */
+.sidebar {
+  position: fixed !important;
+  top: 72px !important;
+  left: 0 !important;
+  width: 240px !important;
+  height: calc(100vh - 72px) !important;
+  overflow-y: auto !important;
+  background-color: white !important;
+  z-index: 999 !important;
+}
+
+/* 修复任何隐藏的内容 */
+.hidden, [hidden], [style*="display: none"], [style*="visibility: hidden"], [style*="opacity: 0"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 修复加载指示器，使其在加载完成后消失 */
+#initial-loader, .loading-container {
+  display: none !important;
+}
