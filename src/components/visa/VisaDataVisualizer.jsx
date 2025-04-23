@@ -1,341 +1,95 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Card, Row, Col, Statistic, Table, Spin, Empty, Tabs, Button } from "antd";
-import { ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, ReloadOutlined } from "@ant-design/icons";
-import "./VisaDataVisualizer.scss";
+import React, { useState, useEffect } from 'react';
+import { Card, Empty, Row, Col, Spin, Statistic, Alert, Button } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
+import './VisaDataVisualizer.scss';
 
-const VisaDataVisualizer = ({ data, loading, onRefresh, filterValues }) => {
-  const yearlyChartRef = useRef(null);
-  const employersChartRef = useRef(null);
+const VisaDataVisualizer = ({ data, loading, filterValues, onRefresh }) => {
+  const [chartData, setChartData] = useState(null);
   
-  // 初始化图表
   useEffect(() => {
-    if (!loading && data) {
-      renderYearlyChart();
-      renderEmployersChart();
+    if (data && !loading) {
+      prepareChartData();
     }
-  }, [loading, data]);
-
-  // 在组件渲染前先检查数据
-  useEffect(() => {
-    if (!loading && data) {
-      console.log('Visa Data:', data);
-      if (data.employerStats) {
-        console.log('Top 5 Employers:', data.employerStats.slice(0, 5));
-      } else {
-        console.warn('No employer stats found in data');
-      }
-    }
-  }, [loading, data]);
-
-  // 渲染年度趋势图表（简单实现）
-  const renderYearlyChart = () => {
-    if (!data?.yearlyStats || !yearlyChartRef.current) return;
-    
-    const container = yearlyChartRef.current;
-    container.innerHTML = '';
-    
-    // 图表标题
-    const title = document.createElement('h3');
-    title.textContent = '年度 H1B 申请趋势';
-    title.className = 'chart-title';
-    container.appendChild(title);
-    
-    // 创建柱状图容器
-    const chartContainer = document.createElement('div');
-    chartContainer.className = 'bar-chart-container';
-    container.appendChild(chartContainer);
-    
-    // 找出最大值以设置比例
-    const maxValue = Math.max(...data.yearlyStats.map(item => Math.max(item.approvals, item.denials)));
-    
-    // 按年份排序（从旧到新）
-    const sortedStats = [...data.yearlyStats].sort((a, b) => a.year - b.year);
-    
-    // 为每年创建柱状图
-    sortedStats.forEach(yearData => {
-      const yearGroup = document.createElement('div');
-      yearGroup.className = 'year-group';
-      
-      // 年份标签
-      const yearLabel = document.createElement('div');
-      yearLabel.textContent = yearData.year;
-      yearLabel.className = 'year-label';
-      yearGroup.appendChild(yearLabel);
-      
-      // 创建柱状图组
-      const barGroup = document.createElement('div');
-      barGroup.className = 'bar-group';
-      
-      // 创建批准柱
-      const approvalsBar = document.createElement('div');
-      approvalsBar.className = 'bar approvals-bar';
-      approvalsBar.style.height = `${(yearData.approvals / maxValue) * 150}px`;
-      approvalsBar.setAttribute('title', `批准: ${yearData.approvals.toLocaleString()}`);
-      
-      // 创建拒绝柱
-      const denialsBar = document.createElement('div');
-      denialsBar.className = 'bar denials-bar';
-      denialsBar.style.height = `${(yearData.denials / maxValue) * 150}px`;
-      denialsBar.setAttribute('title', `拒绝: ${yearData.denials.toLocaleString()}`);
-      
-      // 批准率标签
-      const rateLabel = document.createElement('div');
-      rateLabel.textContent = `${yearData.rate}%`;
-      rateLabel.className = 'rate-label';
-      
-      barGroup.appendChild(approvalsBar);
-      barGroup.appendChild(denialsBar);
-      
-      yearGroup.appendChild(barGroup);
-      yearGroup.appendChild(rateLabel);
-      
-      chartContainer.appendChild(yearGroup);
+  }, [data, loading, filterValues]);
+  
+  const prepareChartData = () => {
+    // Prepare data for charts
+    setChartData({
+      employers: data?.topEmployers || [],
+      geography: data?.stateData || [],
+      industry: data?.industryData || []
     });
-    
-    // 创建图例
-    const legend = document.createElement('div');
-    legend.className = 'chart-legend';
-    
-    const approvalsLegend = document.createElement('div');
-    approvalsLegend.className = 'legend-item';
-    const approvalsColor = document.createElement('span');
-    approvalsColor.className = 'color-box approvals-color';
-    approvalsLegend.appendChild(approvalsColor);
-    approvalsLegend.appendChild(document.createTextNode('批准'));
-    
-    const denialsLegend = document.createElement('div');
-    denialsLegend.className = 'legend-item';
-    const denialsColor = document.createElement('span');
-    denialsColor.className = 'color-box denials-color';
-    denialsLegend.appendChild(denialsColor);
-    denialsLegend.appendChild(document.createTextNode('拒绝'));
-    
-    legend.appendChild(approvalsLegend);
-    legend.appendChild(denialsLegend);
-    
-    container.appendChild(legend);
   };
-
-  // 修复雇主图表渲染函数
-  const renderEmployersChart = () => {
-    if (!data?.employerStats || !employersChartRef.current) return;
-    
-    const container = employersChartRef.current;
-    container.innerHTML = ''; // 清空容器
-    
-    // 图表标题
-    const title = document.createElement('h3');
-    title.textContent = '前10大H1B雇主';
-    title.className = 'chart-title';
-    container.appendChild(title);
-    
-    // 获取前10名雇主并确保排序
-    const topEmployers = [...data.employerStats]
-      .sort((a, b) => b.totalApprovals - a.totalApprovals)
-      .slice(0, 10);
-    
-    // 确保有数据可以显示
-    if (topEmployers.length === 0) {
-      const noDataMsg = document.createElement('p');
-      noDataMsg.textContent = '无雇主数据可显示';
-      noDataMsg.className = 'no-data-message';
-      container.appendChild(noDataMsg);
-      return;
-    }
-    
-    console.log('渲染顶尖雇主数据:', topEmployers); // 调试用
-    
-    // 创建雇主列表容器
-    const employerList = document.createElement('div');
-    employerList.className = 'employer-list';
-    
-    // 找出最大批准数量以设置比例
-    const maxApprovals = Math.max(...topEmployers.map(e => e.totalApprovals));
-    
-    // 为每个雇主创建条目
-    topEmployers.forEach((employer, index) => {
-      const employerItem = document.createElement('div');
-      employerItem.className = 'employer-item';
-      
-      const nameLabel = document.createElement('div');
-      nameLabel.className = 'employer-name';
-      nameLabel.textContent = employer.employerName || `雇主 ${index + 1}`;
-      
-      const barContainer = document.createElement('div');
-      barContainer.className = 'employer-bar-container';
-      
-      const bar = document.createElement('div');
-      bar.className = 'employer-bar';
-      const percentage = (employer.totalApprovals / maxApprovals) * 100;
-      bar.style.width = `${percentage}%`;
-      
-      const valueLabel = document.createElement('div');
-      valueLabel.className = 'employer-value';
-      valueLabel.textContent = employer.totalApprovals.toLocaleString();
-      
-      barContainer.appendChild(bar);
-      barContainer.appendChild(valueLabel);
-      
-      employerItem.appendChild(nameLabel);
-      employerItem.appendChild(barContainer);
-      
-      employerList.appendChild(employerItem);
-    });
-    
-    container.appendChild(employerList);
-  };
-
-  // 加载状态
+  
   if (loading) {
     return (
-      <div className="visa-data-loading">
+      <div className="loading-container">
         <Spin size="large" />
-        <p>正在加载 H1B 签证数据...</p>
+        <p>Loading visa data visualization...</p>
       </div>
     );
   }
   
-  // 数据为空状态
-  if (!data || !data.summary) {
+  if (!data) {
     return (
-      <Empty 
-        description="无法加载签证数据" 
-        image={Empty.PRESENTED_IMAGE_SIMPLE} 
+      <Empty
+        description={
+          <span>
+            No visa data available. 
+            <Button type="link" onClick={onRefresh}>
+              Click to refresh
+            </Button>
+          </span>
+        }
       />
     );
   }
-  
-  // 提取摘要信息
-  const { summary, employerStats } = data;
-  
+
   return (
     <div className="visa-data-visualizer">
-      <div className="data-actions">
-        <Button 
-          icon={<ReloadOutlined />} 
-          onClick={onRefresh}
-        >
-          刷新数据
-        </Button>
-      </div>
-      
-      {/* 摘要数据卡片 */}
-      <Row gutter={[16, 16]} className="summary-cards">
-        <Col xs={24} sm={12} md={6}>
-          <Card>
-            <Statistic
-              title="总批准数量"
-              value={summary.totalApprovals}
-              valueStyle={{ color: '#3f8600' }}
-              prefix={<ArrowUpOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card>
-            <Statistic
-              title="总拒绝数量"
-              value={summary.totalDenials}
-              valueStyle={{ color: '#cf1322' }}
-              prefix={<ArrowDownOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card>
-            <Statistic
-              title="批准率"
-              value={summary.approvalRate}
-              precision={1}
-              valueStyle={{ color: '#1890ff' }}
-              suffix="%"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card>
-            <Statistic
-              title="雇主数量"
-              value={summary.uniqueEmployers || 0}
-              valueStyle={{ color: '#722ed1' }}
-            />
+      <Row gutter={[24, 24]}>
+        <Col xs={24}>
+          <Card className="summary-card">
+            <Row gutter={[16, 16]}>
+              <Col xs={12} sm={6}>
+                <Statistic 
+                  title="Total H1B Approvals" 
+                  value={data?.summary?.totalApprovals || 0}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Statistic 
+                  title="Approval Rate" 
+                  value={data?.summary?.approvalRate || 0} 
+                  suffix="%" 
+                  precision={1}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Statistic 
+                  title="Average Salary" 
+                  value={data?.summary?.averageSalary || 0} 
+                  formatter={value => `$${value}`.replace(/\$\$/, '$')}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Statistic 
+                  title="Total Employers" 
+                  value={data?.summary?.totalEmployers || 0}
+                />
+              </Col>
+            </Row>
           </Card>
         </Col>
       </Row>
-      
-      {/* 简化的图表区域 */}
-      <Tabs 
-        defaultActiveKey="yearly" 
-        className="data-viz-tabs"
-        items={[
-          {
-            key: 'yearly',
-            label: '年度趋势',
-            children: (
-              <Card className="chart-card">
-                <div ref={yearlyChartRef} className="yearly-chart"></div>
-              </Card>
-            )
-          },
-          {
-            key: 'employers',
-            label: '顶尖雇主',
-            children: (
-              <>
-                <Card className="chart-card">
-                  <div ref={employersChartRef} className="employer-chart"></div>
-                </Card>
-                
-                {/* 雇主表格 */}
-                <Card className="employers-table-card">
-                  <Table
-                    dataSource={data.employerStats || []}
-                    rowKey="key" // 使用 key 字段作为行的唯一标识
-                    pagination={{ pageSize: 10 }}
-                    columns={[
-                      {
-                        title: '雇主名称',
-                        dataIndex: 'employerName',
-                        key: 'employerName',
-                        ellipsis: true,
-                        sorter: (a, b) => a.employerName.localeCompare(b.employerName)
-                      },
-                      {
-                        title: '批准数量',
-                        dataIndex: 'totalApprovals',
-                        key: 'totalApprovals',
-                        sorter: (a, b) => a.totalApprovals - b.totalApprovals,
-                        defaultSortOrder: 'descend',
-                        render: value => value?.toLocaleString() || 0
-                      },
-                      {
-                        title: '批准率',
-                        dataIndex: 'approvalRate',
-                        key: 'approvalRate',
-                        sorter: (a, b) => a.approvalRate - b.approvalRate,
-                        render: value => `${value || 0}%`
-                      },
-                      {
-                        title: '平均薪资',
-                        dataIndex: 'medianSalary',
-                        key: 'medianSalary',
-                        sorter: (a, b) => a.medianSalary - b.medianSalary,
-                        render: value => value ? `$${value.toLocaleString()}` : '-'
-                      }
-                    ]}
 
-
-
-
-
-
-
-
-
-
-
-
-          上次更新: {new Date(data.lastUpdated).toLocaleString()}        <span className="last-updated">        数据来源: {data.source === 'USCIS' ? 'USCIS 官方数据' : '本地数据'}      <div className="data-source-info">            />        ]}          }            )              </>                </Card>                  />        </span>
+      <div className="visualization-footer">
+        <Alert
+          message="Data Source"
+          description="Data is sourced from the U.S. Citizenship and Immigration Services (USCIS) and Department of Labor (DOL)."
+          type="info"
+          showIcon
+        />
       </div>
     </div>
   );
