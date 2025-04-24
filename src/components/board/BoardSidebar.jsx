@@ -4,7 +4,7 @@ import { Card, Skeleton, Button, Tag, Tooltip, Divider } from 'antd';
 import { PlusOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import supabase from '../../services/supabase/supabaseClient';
 import CreatePostModal from '../Post/CreatePostModal';
-import JoinChatBlock from '../Sidebar/blocks/JoinChatBlock.jsx';
+import JoinChatBlock from "../Sidebar/blocks/JoinChatBlock";
 import { useLanguage } from '../../context/LanguageContext';
 import './BoardSidebar.scss';
 
