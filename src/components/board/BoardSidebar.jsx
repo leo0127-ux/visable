@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Skeleton, Button, Tag, Tooltip, Divider } from 'antd';
+import { Card, Skeleton, Button, Tag, Tooltip, Divider, Spin } from 'antd';
 import { PlusOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import supabase from '../../services/supabase/supabaseClient';
 import CreatePostModal from '../Post/CreatePostModal';
@@ -75,12 +75,14 @@ const BoardSidebar = () => {
 
   return (
     <aside className="board-sidebar">
-      <Card className="board-info-card">
-        <h2>{t('aboutTheBoard')}</h2>
-        
-        {loading ? (
-          <Skeleton active paragraph={{ rows: 4 }} />
-        ) : (
+      {loading ? (
+        <div className="loading-container">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <Card className="board-info-card">
+          <h2>{t('aboutTheBoard')}</h2>
+          
           <>
             <p className="board-description">
               {board?.description || t('noBoardDescription')}
@@ -125,11 +127,11 @@ const BoardSidebar = () => {
             </div>
             
             <div className="chat-block-container">
-              <JoinChatBlock boardId={id} boardName={board?.name} />
+              <JoinChatBlock boardId={board?.id} boardName={board?.name} />
             </div>
           </>
-        )}
-      </Card>
+        </Card>
+      )}
       
       {/* Create Post Modal */}
       {isCreatePostModalOpen && (
