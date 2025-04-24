@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Skeleton, Button, Tag, Tooltip, Divider, Spin } from 'antd';
+import { Card, Skeleton, Button, Tag, Tooltip, Divider } from 'antd';
 import { PlusOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import supabase from '../../services/supabase/supabaseClient';
 import CreatePostModal from '../Post/CreatePostModal';
@@ -8,7 +8,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import './BoardSidebar.scss';
 
 // Fix the import path by adding the file extension
-import JoinChatBlock from '../../components/sidebar/blocks/JoinChatBlock.jsx';
+import JoinChatBlock from '../Sidebar/blocks/JoinChatBlock';
 
 const BoardSidebar = () => {
   const { id } = useParams();
@@ -75,15 +75,10 @@ const BoardSidebar = () => {
 
   return (
     <aside className="board-sidebar">
-      {loading ? (
-        <div className="loading-container">
-          <Spin size="large" />
-        </div>
-      ) : (
-        <Card className="board-info-card">
-          <h2>{t('aboutTheBoard')}</h2>
-          
-          <>
+      <Card className="board-info-card">
+        <h2>{t('aboutTheBoard')}</h2>
+        
+                  <>
             <p className="board-description">
               {board?.description || t('noBoardDescription')}
             </p>
@@ -130,9 +125,9 @@ const BoardSidebar = () => {
               <JoinChatBlock boardId={board?.id} boardName={board?.name} />
             </div>
           </>
-        </Card>
-      )}
-      
+</Card>
+        )}
+            
       {/* Create Post Modal */}
       {isCreatePostModalOpen && (
         <CreatePostModal 
