@@ -7,7 +7,6 @@ import CreatePostModal from '../Post/CreatePostModal';
 import { useLanguage } from '../../context/LanguageContext';
 import './BoardSidebar.scss';
 
-// Fix the import path by adding the file extension
 import JoinChatBlock from '../Sidebar/blocks/JoinChatBlock';
 
 const BoardSidebar = () => {
